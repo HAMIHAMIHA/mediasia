@@ -1,7 +1,6 @@
 import INSTANCE from './api'
 import { Prisma } from '@prisma/client'
 import type { Element } from '@prisma/client'
-// import { PageTypes } from '../types'
 
 export const postElement = (data: Prisma.ElementCreateInput): Promise<Element> =>
     new Promise(async (resolve, reject) => {

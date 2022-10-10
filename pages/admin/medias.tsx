@@ -18,7 +18,7 @@ import { FileOutlined, PictureOutlined, VideoCameraOutlined } from '@ant-design/
 const AdminImages = () => {
     const queryClient = useQueryClient()
     const [q, setQ] = useState<string | undefined>()
-    const [type, setType] = useState<string>('images')
+    const [type, setType] = useState<string>('IMAGE')
     const debouncedQ = useDebounce<string | undefined>(q, 750)
 
     const queryKeys = [
@@ -93,7 +93,7 @@ const AdminImages = () => {
         }
 
         switch (type) {
-            case 'images':
+            case 'IMAGE':
                 return [
                     {
                         width: 75,
@@ -120,7 +120,7 @@ const AdminImages = () => {
                     uploadTime,
                     action,
                 ]
-            case 'videos':
+            case 'VIDEO':
                 return [
                     {
                         width: 35,
@@ -145,7 +145,7 @@ const AdminImages = () => {
                     uploadTime,
                     action,
                 ]
-            case 'files':
+            case 'FILE':
                 return [
                     {
                         width: 35,
@@ -205,7 +205,7 @@ const AdminImages = () => {
                                             Images
                                         </Space>
                                     ),
-                                    value: 'images',
+                                    value: 'IMAGE',
                                 },
                                 {
                                     label: (
@@ -214,7 +214,7 @@ const AdminImages = () => {
                                             Videos
                                         </Space>
                                     ),
-                                    value: 'videos',
+                                    value: 'VIDEO',
                                 },
                                 {
                                     label: (
@@ -223,7 +223,7 @@ const AdminImages = () => {
                                             Files
                                         </Space>
                                     ),
-                                    value: 'files',
+                                    value: 'FILE',
                                 },
                             ]}
                             onChange={(e) => {

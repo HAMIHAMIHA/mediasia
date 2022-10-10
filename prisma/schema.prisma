@@ -185,37 +185,54 @@ model Content {
   fieldsValue ContentField[] @relation(name: "contentValue")
 }
 
+enum ContainerFieldType {
+  DATE
+  BOOLEAN
+  NUMBER
+  LINK
+  PARAGRAPH
+  STRING
+  IMAGE
+  FILE
+  VIDEO
+  CONTENT
+  OPTION
+  WYSIWYG
+  COLOR
+}
+
 model ContainerField {
-  id                String     @id @default(cuid())
+  id                String             @id @default(cuid())
   label             String
   name              String
-  type              String
-  multiple          Boolean    @default(false)
+  type              ContainerFieldType
+  multiple          Boolean            @default(false)
+  options           Json?
   containerId       String
-  container         Container  @relation(fields: [containerId], references: [id])
+  container         Container          @relation(fields: [containerId], references: [id])
   linkedContainerId String?
-  linkedContainer   Container? @relation(fields: [linkedContainerId], references: [id], name: "linkedContentFields")
+  linkedContainer   Container?         @relation(fields: [linkedContainerId], references: [id], name: "linkedContentFields")
   metadata          String?
-  required          Boolean?   @default(false)
+  required          Boolean?           @default(false)
 }
 
-enum ContentFieldType {
-  STRING
-  NUMBER
-  DATE
-  IMAGE
-  LINK
-  CONTENT
-}
+// enum ContentFieldType {
+//   STRING
+//   NUMBER
+//   DATE
+//   IMAGE
+//   LINK
+//   CONTENT
+// }
 
 model ContentField {
-  id          String    @id @default(cuid())
+  id          String             @id @default(cuid())
   name        String
-  type        String
+  type        ContainerFieldType
   contentId   String?
-  content     Content?  @relation(fields: [contentId], references: [id], name: "contentLinked")
+  content     Content?           @relation(fields: [contentId], references: [id], name: "contentLinked")
   mediaId     String?
-  media       Media?    @relation(fields: [mediaId], references: [id])
+  media       Media?             @relation(fields: [mediaId], references: [id])
   textValue   String?
   numberValue Int?
   boolValue   Boolean?

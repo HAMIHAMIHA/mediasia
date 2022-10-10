@@ -5,6 +5,7 @@ import type { Props } from '../types'
 import { Card, Select, Space, Typography } from 'antd'
 import set from 'lodash.set'
 import get from 'lodash.get'
+import { ContainerFieldType } from '@prisma/client'
 
 const { Option } = Select
 const { Text } = Typography
@@ -35,39 +36,12 @@ const Edit = ({ defaultValues, onChange, theme, fields }: Props) => {
         }
     }
 
-    console.log('fields', fields)
-
-    const isText = (type: string) => type === 'string' || type === 'text'
+    const isText = (type: string) =>
+        type === ContainerFieldType.STRING || type === ContainerFieldType.PARAGRAPH
 
     return (
         <EditPanel
             view={
-                // <section className={styles.grid}>
-                //     <h1>Elements</h1>
-                //     <div className={styles.container}>
-                //         {Array.from(Array(2).keys()).map((e, i) => (
-                //             <div key={i} className={styles.card}>
-                //                 <div
-                //                     className={styles.img}
-                //                     style={{
-                //                         backgroundImage: 'url(/default.png)',
-                //                     }}
-                //                 />
-                //                 <h3>Title</h3>
-                //                 <span>18 Oct 2021</span>
-                //                 <p>
-                //                     lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-                //                     tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-                //                     veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-                //                     commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
-                //                     velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-                //                     cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id
-                //                     est laborum
-                //                 </p>
-                //             </div>
-                //         ))}
-                //     </div>
-                // </section>
                 <section className={styles.display}>
                     <div
                         className={styles.img}
@@ -96,7 +70,11 @@ const Edit = ({ defaultValues, onChange, theme, fields }: Props) => {
                         onChange={(e) => handleChange('fields.image', e)}
                     >
                         {fields?.map((field) => (
-                            <Option disabled={field.type !== 'image'} key={field.name} value={field.name}>
+                            <Option
+                                disabled={field.type !== ContainerFieldType.IMAGE}
+                                key={field.name}
+                                value={field.name}
+                            >
                                 {field.label}
                             </Option>
                         ))}
@@ -120,7 +98,11 @@ const Edit = ({ defaultValues, onChange, theme, fields }: Props) => {
                         onChange={(e) => handleChange('fields.subtitle', e)}
                     >
                         {fields?.map((field) => (
-                            <Option disabled={field.type !== 'date'} key={field.name} value={field.name}>
+                            <Option
+                                disabled={field.type !== ContainerFieldType.DATE}
+                                key={field.name}
+                                value={field.name}
+                            >
                                 {field.label}
                             </Option>
                         ))}

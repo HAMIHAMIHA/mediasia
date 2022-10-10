@@ -1,8 +1,7 @@
 import INSTANCE from './api'
 import type { Setting } from '@prisma/client'
-import { PageTypes } from '../types'
 
-export const getSettings = (type?: PageTypes): Promise<Setting[]> =>
+export const getSettings = (): Promise<Setting[]> =>
     new Promise((resolve, reject) => {
         INSTANCE({
             method: 'GET',
@@ -10,7 +9,6 @@ export const getSettings = (type?: PageTypes): Promise<Setting[]> =>
             headers: {
                 'Content-Type': 'application/json',
             },
-            params: { type },
         })
             .then(resolve)
             .catch(reject)

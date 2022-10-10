@@ -13,11 +13,12 @@ import {
     DatePicker,
     Divider,
     Tooltip,
+    Select,
 } from 'antd'
 import get from 'lodash.get'
 import { editContent, getContentDetails, postContent } from '../../../network/contents'
 import { getContainerDetails } from '../../../network/containers'
-import { Prisma, Content, ContainerField /*, ContentField*/, Media } from '@prisma/client'
+import { Prisma, Content, ContainerField /*, ContentField*/, Media, ContainerFieldType } from '@prisma/client'
 import { useMutation, useQuery, UseQueryResult, useQueryClient } from 'react-query'
 import Head from 'next/head'
 import { FullContainerEdit, FullSectionEdit } from '@types'
@@ -34,6 +35,7 @@ import { SizeType } from 'antd/lib/config-provider/SizeContext'
 import getNameFieldFromType from '../../../utils/getNameFieldFromType'
 
 const { Text } = Typography
+const { Option } = Select
 
 type MyType = any
 
@@ -82,10 +84,15 @@ const Admin = () => {
         validateOnBlur: false,
         validateOnChange: false,
         onSubmit: async (values) => {
+            console.log('valuesss', values)
             const fields = Object.keys(values.fieldsValue).map((key: string) => {
                 let mediaId = undefined
 
-                if (values.fieldsValue[key].type === 'media') {
+                if (
+                    values.fieldsValue[key].type === ContainerFieldType.IMAGE ||
+                    values.fieldsValue[key].type === ContainerFieldType.VIDEO ||
+                    values.fieldsValue[key].type === ContainerFieldType.FILE
+                ) {
                     if (values.fieldsValue[key].multiple) {
                         mediaId = values.fieldsValue[key].media.map((media: Media) => media.id)
                     } else {
@@ -123,13 +130,18 @@ const Admin = () => {
                 let fieldsValue: any = {}
                 get(data, 'fields', []).forEach((e: any, i: number) => {
                     const valueName = getNameFieldFromType(e.type)
-                    const newValues = e.multiple
-                        ? get(e, `childs`, []).map((c: any) =>
-                              e.type === 'date' ? c[valueName] : c[valueName]
-                          )
-                        : e.type === 'date'
-                        ? moment(e[valueName])
-                        : e[valueName]
+                    let newValues
+                    if (e.multiple) {
+                        newValues = get(e, `childs`, []).map((c: any) =>
+                            e.type === 'date' ? c[valueName] : c[valueName]
+                        )
+                    } else {
+                        if (e.type === 'date') {
+                            newValues = moment(e[valueName])
+                        } else {
+                            newValues = e[valueName]
+                        }
+                    }
 
                     fieldsValue[e.name] = {
                         type: e.type,
@@ -183,12 +195,12 @@ const Admin = () => {
             onSuccess: (data: Content) => {
                 message.success(`Content ${data.title} saved`)
                 queryClient.invalidateQueries('contents')
-                router.push('/admin/contents')
+                // router.push('/admin/contents')
             },
             onError: (err) => {
                 message.error('An error occured, while creating or updating the content')
                 queryClient.invalidateQueries('contents')
-                router.push('/admin/contents')
+                // router.push('/admin/contents')
             },
         }
     )
@@ -340,7 +352,7 @@ const ContentFieldsManager = ({ values, fields, onChange }: ContentFieldsManager
     const onHandleChange = (name: string, type: string, value: any, multi?: boolean) => {
         const newValue = { ...values }
         const valueName = getNameFieldFromType(type)
-        console.log('valuesName', type, valueName)
+        console.log('valuesName', type, valueName, value)
         set(newValue, name, { type, [valueName]: value, multiple: !!multi })
 
         onChange(newValue)
@@ -350,7 +362,7 @@ const ContentFieldsManager = ({ values, fields, onChange }: ContentFieldsManager
         <Space direction="vertical">
             {fields.map((field, idx) => {
                 switch (field.type) {
-                    case 'string':
+                    case ContainerFieldType.STRING:
                         return (
                             <Space key={idx} direction="vertical">
                                 <Text>{field.label}</Text>
@@ -373,7 +385,46 @@ const ContentFieldsManager = ({ values, fields, onChange }: ContentFieldsManager
                                 )}
                             </Space>
                         )
-                    case 'text':
+
+                    case ContainerFieldType.OPTION:
+                        return (
+                            <Space key={idx} direction="vertical">
+                                <Text>{field.label}</Text>
+                                {field.multiple ? (
+                                    <Select
+                                        mode="multiple"
+                                        allowClear
+                                        style={{ width: 480 }}
+                                        value={get(values, `${field.name}.textValue`, [])}
+                                        onChange={(e) => onHandleChange(field.name, field.type, e, true)}
+                                    >
+                                        {(get(field, 'options', []) as any[])?.map(
+                                            (option: any, jdx: number) => (
+                                                <Option key={option.value} value={option.value}>
+                                                    {option.label}
+                                                </Option>
+                                            )
+                                        )}
+                                    </Select>
+                                ) : (
+                                    <Select
+                                        style={{ width: 480 }}
+                                        value={get(values, `${field.name}.textValue`, '')}
+                                        onChange={(e) => onHandleChange(field.name, field.type, e)}
+                                    >
+                                        {(get(field, 'options', []) as any[])?.map(
+                                            (option: any, jdx: number) => (
+                                                <Option key={option.value} value={option.value}>
+                                                    {option.label}
+                                                </Option>
+                                            )
+                                        )}
+                                    </Select>
+                                )}
+                            </Space>
+                        )
+
+                    case ContainerFieldType.PARAGRAPH:
                         return (
                             <Space key={idx} direction="vertical">
                                 <Text>{field.label}</Text>
@@ -384,13 +435,14 @@ const ContentFieldsManager = ({ values, fields, onChange }: ContentFieldsManager
                                 />
                             </Space>
                         )
-                    case 'number':
+
+                    case ContainerFieldType.NUMBER:
                         return (
                             <Space key={idx} direction="vertical">
                                 <Text>{field.label}</Text>
                                 {field.multiple ? (
                                     <CustomMultipleWrapper
-                                        type="number"
+                                        type={ContainerFieldType.NUMBER}
                                         values={get(values, `${field.name}.numberValue`, [])}
                                         onChange={(e) => onHandleChange(field.name, field.type, e, true)}
                                         onClear={() =>
@@ -406,7 +458,8 @@ const ContentFieldsManager = ({ values, fields, onChange }: ContentFieldsManager
                                 )}
                             </Space>
                         )
-                    case 'boolean':
+
+                    case ContainerFieldType.BOOLEAN:
                         return (
                             <Space key={idx} direction="vertical">
                                 <Text>{field.label}</Text>
@@ -419,13 +472,14 @@ const ContentFieldsManager = ({ values, fields, onChange }: ContentFieldsManager
                                 </Radio.Group>
                             </Space>
                         )
-                    case 'date':
+
+                    case ContainerFieldType.DATE:
                         return (
                             <Space key={idx} direction="vertical">
                                 <Text>{field.label}</Text>
                                 {field.multiple ? (
                                     <CustomMultipleWrapper
-                                        type="date"
+                                        type={ContainerFieldType.DATE}
                                         values={get(values, `${field.name}.dateValue`, [])}
                                         onChange={(e) => onHandleChange(field.name, field.type, e, true)}
                                         onClear={() =>
@@ -441,7 +495,10 @@ const ContentFieldsManager = ({ values, fields, onChange }: ContentFieldsManager
                                 )}
                             </Space>
                         )
-                    case 'image':
+
+                    case ContainerFieldType.IMAGE:
+                    case ContainerFieldType.FILE:
+                    case ContainerFieldType.VIDEO:
                         return (
                             <Space key={idx} direction="vertical">
                                 <Text>{field.label}</Text>
@@ -452,23 +509,22 @@ const ContentFieldsManager = ({ values, fields, onChange }: ContentFieldsManager
                                     />
                                 ) : (
                                     <MediaModal
+                                        type={field.type}
                                         size="small"
                                         value={get(values, `${field.name}.media`, '')}
-                                        onMediaSelected={(e) => {
-                                            console.log('values xx', field.name, field.type, e)
-                                            onHandleChange(field.name, field.type, e)
-                                        }}
+                                        onMediaSelected={(e) => onHandleChange(field.name, field.type, e)}
                                     />
                                 )}
                             </Space>
                         )
-                    case 'link':
+
+                    case ContainerFieldType.LINK:
                         return (
                             <Space key={idx} direction="vertical">
                                 <Text>{field.label}</Text>
                                 {field.multiple ? (
                                     <CustomMultipleWrapper
-                                        type="link"
+                                        type={ContainerFieldType.LINK}
                                         values={get(values, `${field.name}.textValue`, [])}
                                         onChange={(e) => onHandleChange(field.name, field.type, e, true)}
                                         onClear={() =>
@@ -485,7 +541,7 @@ const ContentFieldsManager = ({ values, fields, onChange }: ContentFieldsManager
                             </Space>
                         )
 
-                    case 'content':
+                    case ContainerFieldType.CONTENT:
                         return (
                             <Space key={idx} direction="vertical">
                                 <Text>{field.label}</Text>
@@ -517,12 +573,16 @@ const ContentFieldsManager = ({ values, fields, onChange }: ContentFieldsManager
 }
 
 const MultipleImages = ({
-    value,
+    value = [],
     onChange,
 }: {
     value: Media[]
     onChange(list: (Media | undefined)[] | undefined): void
 }) => {
+    if (!Array.isArray(value)) {
+        value = []
+    }
+
     return (
         <div
             className="ant-select ant-select-multiple ant-select-allow-clear ant-select-show-search"
@@ -614,10 +674,14 @@ const CustomMultipleWrapper = ({
     onChange,
 }: {
     values: any[]
-    type?: string
+    type?: ContainerFieldType
     onClear(): void
     onChange(e: any): void
 }) => {
+    if (!Array.isArray(values)) {
+        values = [values]
+    }
+
     return (
         <div
             className="ant-select ant-select-multiple ant-select-allow-clear ant-select-show-search"
@@ -625,7 +689,7 @@ const CustomMultipleWrapper = ({
         >
             <div className="ant-select-selector">
                 <div className="ant-select-selection-overflow">
-                    {values.map((e, i) => (
+                    {values?.map((e, i) => (
                         <CustomInputTag
                             key={i}
                             text={e}

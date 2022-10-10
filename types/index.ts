@@ -20,9 +20,6 @@ import type {
 } from '@prisma/client'
 import { Prisma } from '@prisma/client'
 
-export type UserRoleTypes = 'super-admin' | 'admin' | 'user'
-export type PageTypes = 'home' | 'error' | 'list' | 'page' | 'signin'
-
 export interface ContextUser {
     email: string
     id: string
@@ -179,6 +176,8 @@ export type LayoutProps = {
         form: Form | null
     })[]
 }
+
+export type FileType = 'IMAGE' | 'VIDEO' | 'FILE'
 
 // export type AuthResponse = {
 //     title: string,

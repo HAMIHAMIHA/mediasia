@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import type { Metadata, Section, Prisma, ContentField } from '@prisma/client'
+import { Metadata, Section, Prisma, ContentField, ContainerFieldType } from '@prisma/client'
 import get from 'lodash.get'
 
 import { prisma } from '../../../utils/prisma'
@@ -73,7 +73,16 @@ const POST = async (req: NextApiRequest, res: NextApiResponse) => {
 
     const withMultiFields = fields.map((field, idx) => {
         if (field.multiple) {
-            const valueName = getNameFieldFromType(field.type)
+            let valueName = getNameFieldFromType(field.type)
+
+            if (
+                field.type === ContainerFieldType.IMAGE ||
+                field.type === ContainerFieldType.VIDEO ||
+                field.type === ContainerFieldType.FILE
+            ) {
+                valueName = 'mediaId'
+            }
+
             const values = get(field, valueName, [])
 
             return {

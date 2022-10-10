@@ -2,7 +2,7 @@ import get from 'lodash.get'
 import checkAuth from '@utils/checkAuth'
 import { FullContainerEdit } from '../../../types'
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { ContentField, Metadata, Section } from '@prisma/client'
+import { ContainerFieldType, ContentField, Metadata, Section } from '@prisma/client'
 
 import { prisma } from '../../../utils/prisma'
 import getNameFieldFromType from '@utils/getNameFieldFromType'
@@ -17,7 +17,7 @@ const GET = async (req: NextApiRequest, res: NextApiResponse) => {
             accesses: true,
             sections: true,
             slug: true,
-            fields: { include: { media: true, childs: true } },
+            fields: { include: { media: true, childs: { include: { media: true } } } },
         },
     })
 
@@ -47,7 +47,16 @@ const PUT = async (req: NextApiRequest, res: NextApiResponse) => {
 
     const withMultiFields = fields.map((field, idx) => {
         if (field.multiple) {
-            const valueName = getNameFieldFromType(field.type)
+            let valueName = getNameFieldFromType(field.type)
+
+            if (
+                field.type === ContainerFieldType.IMAGE ||
+                field.type === ContainerFieldType.VIDEO ||
+                field.type === ContainerFieldType.FILE
+            ) {
+                valueName = 'mediaId'
+            }
+
             const values = get(field, valueName, [])
 
             return {

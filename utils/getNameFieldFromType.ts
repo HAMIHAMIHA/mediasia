@@ -1,26 +1,30 @@
+import { ContainerFieldType } from '@prisma/client'
+
 const getNameFieldFromType = (type: string) => {
     let valueName = 'textValue'
 
     switch (type) {
-        case 'string':
-        case 'text':
-        case 'link':
+        case ContainerFieldType.STRING:
+        case ContainerFieldType.PARAGRAPH:
+        case ContainerFieldType.LINK:
+        case ContainerFieldType.OPTION:
             valueName = 'textValue'
             break
-        case 'number':
+        case ContainerFieldType.NUMBER:
             valueName = 'numberValue'
             break
-        case 'boolean':
+        case ContainerFieldType.BOOLEAN:
             valueName = 'boolValue'
             break
-        case 'date':
+        case ContainerFieldType.DATE:
             valueName = 'dateValue'
             break
-        case 'image':
-        case 'file':
+        case ContainerFieldType.IMAGE:
+        case ContainerFieldType.FILE:
+        case ContainerFieldType.VIDEO:
             valueName = 'media'
             break
-        case 'content':
+        case ContainerFieldType.CONTENT:
             valueName = 'contentValueId'
             break
     }

@@ -10,13 +10,14 @@ import UploadButton from '../../components/UploadButton'
 import useDebounce from '@hooks/useDebounce'
 import trim from 'lodash.trim'
 import { SizeType } from 'antd/lib/config-provider/SizeContext'
+import { FileType } from '@types'
 
 const { Text } = Typography
 
 interface Props {
     value?: Media
     onMediaSelected: (media: Media | undefined) => void
-    type?: 'images' | 'videos' | 'files'
+    type?: FileType
     size?: SizeType
     label?: string
     icon?: ReactNode
@@ -27,7 +28,7 @@ interface Props {
 const MediaModal = ({
     value,
     onMediaSelected,
-    type = 'images',
+    type = 'IMAGE',
     size = 'middle',
     label = 'Choose a picture',
     primary = true,

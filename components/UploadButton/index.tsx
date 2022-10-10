@@ -4,15 +4,16 @@ import { Button, Space, Typography } from 'antd'
 import { UploadOutlined, CloseOutlined } from '@ant-design/icons'
 
 import { uploadMedia, uploadFavicon } from '../../network/medias'
+import { FileType } from '@types'
 
 interface Props {
     value?: Media
     onDeleteValue?(): void
     onFileRecieved(file: Media): void
-    type?: 'images' | 'videos' | 'files'
+    type?: FileType
 }
 
-const UploadButton = ({ value, onDeleteValue, onFileRecieved, type = 'images' }: Props) => {
+const UploadButton = ({ value, onDeleteValue, onFileRecieved, type = 'IMAGE' }: Props) => {
     const [loading, setLoading] = useState(false)
     // const [value, setValue] = useState<File | null>(null)
 
@@ -33,7 +34,12 @@ const UploadButton = ({ value, onDeleteValue, onFileRecieved, type = 'images' }:
 
     return (
         <Space>
-            <Button type="primary" icon={<UploadOutlined />} style={{ position: 'relative' }} loading={loading}>
+            <Button
+                type="primary"
+                icon={<UploadOutlined />}
+                style={{ position: 'relative' }}
+                loading={loading}
+            >
                 Upload
                 <input
                     style={{
@@ -87,7 +93,12 @@ const Favicon = () => {
 
     return (
         <Space>
-            <Button type="primary" icon={<UploadOutlined />} style={{ position: 'relative' }} loading={loading}>
+            <Button
+                type="primary"
+                icon={<UploadOutlined />}
+                style={{ position: 'relative' }}
+                loading={loading}
+            >
                 Upload
                 <input
                     style={{

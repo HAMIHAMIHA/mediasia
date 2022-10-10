@@ -38,19 +38,19 @@ const GET = async (req: NextApiRequest, res: NextApiResponse) => {
     let mime: any = { mimeType: { startsWith: 'image/' } }
 
     switch (type) {
-        case 'images': {
+        case 'IMAGE': {
             mime = {
                 mimeType: { startsWith: 'image/' },
             }
             break
         }
-        case 'videos': {
+        case 'VIDEO': {
             mime = {
                 mimeType: { startsWith: 'video/' },
             }
             break
         }
-        case 'files': {
+        case 'FILE': {
             mime = {
                 AND: [
                     { NOT: { mimeType: { startsWith: 'image/' } } },

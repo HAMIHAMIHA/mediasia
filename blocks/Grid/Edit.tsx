@@ -5,6 +5,7 @@ import type { Props } from '../types'
 import { Card, Select, Space, Typography } from 'antd'
 import set from 'lodash.set'
 import get from 'lodash.get'
+import { ContainerFieldType } from '@prisma/client'
 
 const { Option } = Select
 const { Text } = Typography
@@ -35,7 +36,8 @@ const Edit = ({ defaultValues, onChange, theme, fields }: Props) => {
         }
     }
 
-    const isText = (type: string) => type === 'string' || type === 'text'
+    const isText = (type: string) =>
+        type === ContainerFieldType.STRING || type === ContainerFieldType.PARAGRAPH
 
     return (
         <EditPanel
@@ -76,7 +78,11 @@ const Edit = ({ defaultValues, onChange, theme, fields }: Props) => {
                         onChange={(e) => handleChange('fields.image', e)}
                     >
                         {fields?.map((field) => (
-                            <Option disabled={field.type !== 'image'} key={field.name} value={field.name}>
+                            <Option
+                                disabled={field.type !== ContainerFieldType.IMAGE}
+                                key={field.name}
+                                value={field.name}
+                            >
                                 {field.label}
                             </Option>
                         ))}
@@ -100,7 +106,11 @@ const Edit = ({ defaultValues, onChange, theme, fields }: Props) => {
                         onChange={(e) => handleChange('fields.subtitle', e)}
                     >
                         {fields?.map((field) => (
-                            <Option disabled={field.type !== 'date'} key={field.name} value={field.name}>
+                            <Option
+                                disabled={field.type !== ContainerFieldType.DATE}
+                                key={field.name}
+                                value={field.name}
+                            >
                                 {field.label}
                             </Option>
                         ))}

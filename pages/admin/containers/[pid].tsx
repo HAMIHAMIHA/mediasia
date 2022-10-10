@@ -29,6 +29,7 @@ import { FullContainerEdit, FullSection, FullSectionEdit } from '../../../types'
 import { editContainer, getContainerDetails, postContainer } from '../../../network/containers'
 import camelcase from 'lodash.camelcase'
 import CustomSelect from '@components/CustomSelect'
+import { ContainerField, ContainerFieldType } from '@prisma/client'
 
 const { Text, Title } = Typography
 const { TabPane } = Tabs
@@ -467,26 +468,24 @@ const FieldsManager = ({ values, onChange }: FieldsManagerProps) => {
         onChange(newValue)
     }
 
-    const canMeta = (type: string) => {
-        return (
-            type === 'string' ||
-            type === 'text' ||
-            type === 'number' ||
-            type === 'boolean' ||
-            type === 'date' ||
-            type === 'link'
-        )
-    }
+    const canMeta = (type: string) =>
+        type === ContainerFieldType.STRING ||
+        type === ContainerFieldType.PARAGRAPH ||
+        type === ContainerFieldType.NUMBER ||
+        type === ContainerFieldType.BOOLEAN ||
+        type === ContainerFieldType.DATE ||
+        type === ContainerFieldType.LINK
 
-    const canMultiple = (type: string) => {
-        return type !== 'boolean' && type !== 'wysiwyg'
-    }
+    const canMultiple = (type: string) =>
+        type !== ContainerFieldType.BOOLEAN &&
+        type !== ContainerFieldType.WYSIWYG &&
+        type !== ContainerFieldType.PARAGRAPH
 
     return (
         <Card title="Fields">
             <Space direction="vertical">
-                {values.map((field: any, idx: number) => (
-                    <Space key={idx} align="end">
+                {values.map((field: ContainerField, idx: number) => (
+                    <Space key={idx} align="start">
                         <Space direction="vertical">
                             <Text>Label</Text>
                             <Input
@@ -521,35 +520,97 @@ const FieldsManager = ({ values, onChange }: FieldsManagerProps) => {
                                     if (!canMultiple(e)) {
                                         modifyField(idx, 'multiple', false)
                                     }
+                                    if (e === ContainerFieldType.OPTION) {
+                                        modifyField(idx, 'options', [{ label: '', value: '' }])
+                                    } else {
+                                        modifyField(idx, 'options', undefined)
+                                    }
                                     modifyField(idx, 'containerId', undefined)
                                 }}
                             >
-                                <Select.Option value="string">Text</Select.Option>
-                                <Select.Option value="text">Paragraph</Select.Option>
-                                <Select.Option value="number">Number</Select.Option>
-                                <Select.Option value="boolean">Boolean</Select.Option>
-                                <Select.Option value="date">Date</Select.Option>
-                                <Select.Option value="image">Image</Select.Option>
-                                <Select.Option value="file" disabled>
+                                <Select.Option value={ContainerFieldType.STRING}>Text</Select.Option>
+                                <Select.Option value={ContainerFieldType.PARAGRAPH}>Paragraph</Select.Option>
+                                <Select.Option value={ContainerFieldType.NUMBER}>Number</Select.Option>
+                                <Select.Option value={ContainerFieldType.BOOLEAN}>Boolean</Select.Option>
+                                <Select.Option value={ContainerFieldType.OPTION}>Option</Select.Option>
+                                <Select.Option value={ContainerFieldType.DATE}>Date</Select.Option>
+                                <Select.Option value={ContainerFieldType.IMAGE}>Image</Select.Option>
+                                <Select.Option value={ContainerFieldType.FILE} disabled>
                                     File
                                 </Select.Option>
-                                <Select.Option value="link">Link</Select.Option>
-                                <Select.Option value="wysiwyg" disabled>
+                                <Select.Option value={ContainerFieldType.VIDEO} disabled>
+                                    Video
+                                </Select.Option>
+                                <Select.Option value={ContainerFieldType.LINK}>Link</Select.Option>
+                                <Select.Option value={ContainerFieldType.WYSIWYG} disabled>
                                     Wysiwyg
                                 </Select.Option>
-                                <Select.Option value="list" disabled>
-                                    List
-                                </Select.Option>
-                                <Select.Option value="content">Content</Select.Option>
+                                <Select.Option value={ContainerFieldType.CONTENT}>Content</Select.Option>
+                                <Select.Option value={ContainerFieldType.COLOR}>Color</Select.Option>
                             </Select>
                         </Space>
 
-                        {field.type === 'content' && (
+                        {field.type === ContainerFieldType.CONTENT && (
                             <Space direction="vertical">
                                 <Text>Content from</Text>
                                 <CustomSelect.ListContainers
-                                    value={field.linkedContainerId}
+                                    value={field.linkedContainerId || undefined}
                                     onChange={(e: string) => modifyField(idx, 'linkedContainerId', e)}
+                                />
+                            </Space>
+                        )}
+
+                        {field.type === ContainerFieldType.OPTION && (
+                            <Space direction="vertical">
+                                <Text>Options</Text>
+                                <>
+                                    {(get(field, 'options', []) as any[])?.map((option: any, jdx: number) => (
+                                        <Space key={jdx}>
+                                            <Input
+                                                size="small"
+                                                value={option.label}
+                                                onChange={(e) =>
+                                                    modifyField(idx, `options.${jdx}.label`, e.target.value)
+                                                }
+                                                placeholder="Label"
+                                            />
+                                            <Input
+                                                size="small"
+                                                value={option.value}
+                                                onChange={(e) =>
+                                                    modifyField(
+                                                        idx,
+                                                        `options.${jdx}.value`,
+                                                        kebabcase(e.target.value)
+                                                    )
+                                                }
+                                                placeholder="Value"
+                                            />
+                                            <Button
+                                                size="small"
+                                                onClick={() => {
+                                                    const copyOpts = [...(get(field, 'options', []) as any[])]
+                                                    copyOpts.splice(jdx, 1)
+
+                                                    modifyField(idx, 'options', copyOpts)
+                                                }}
+                                                type="primary"
+                                                danger
+                                                icon={<MinusOutlined />}
+                                            />
+                                        </Space>
+                                    ))}
+                                </>
+                                <Button
+                                    size="small"
+                                    onClick={() =>
+                                        modifyField(idx, 'options', [
+                                            ...(get(field, 'options', []) as any[]),
+                                            { label: '', value: '' },
+                                        ])
+                                    }
+                                    type="primary"
+                                    icon={<PlusOutlined />}
                                 />
                             </Space>
                         )}
@@ -583,7 +644,7 @@ const FieldsManager = ({ values, onChange }: FieldsManagerProps) => {
                                 }}
                             >
                                 <Switch
-                                    checked={field.required}
+                                    checked={field.required || undefined}
                                     onClick={(e) => {
                                         console.log('e', e)
                                         modifyField(idx, 'required', e)
@@ -626,6 +687,7 @@ const FieldsManager = ({ values, onChange }: FieldsManagerProps) => {
 
                         <Button
                             id={`field-minus-${idx}`}
+                            style={{ marginTop: 30 }}
                             onClick={() => removeField(idx)}
                             type="primary"
                             danger
