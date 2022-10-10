@@ -64,7 +64,7 @@ const PUT = async (req: NextApiRequest, res: NextApiResponse) => {
             }
         }
 
-        return field
+        return { ...field, contentId: id }
     })
 
     for (const field of withMultiFields) {
@@ -140,16 +140,16 @@ const PUT = async (req: NextApiRequest, res: NextApiResponse) => {
         },
     })
 
-    if (content.slug[0].slug !== newSlug) {
+    if (content.slug?.basic !== newSlug) {
         await prisma.slug.update({
-            where: { id: content.slug[0].id || '' },
-            data: { fullSlug: `${content.slug[0].parent?.fullSlug}/${newSlug}`, slug: newSlug },
+            where: { id: content.id || '' },
+            data: { full: `${content.slug?.parent?.full}/${newSlug}`, basic: newSlug },
         })
     }
 
     res.status(200).json(content)
 
-    return res.revalidate(`/${content.slug[0].fullSlug}`) //`/${page.slug}`)
+    return res.revalidate(`/${content.slug?.full}`) //`/${page.slug}`)
 }
 
 const DELETE = async (req: NextApiRequest, res: NextApiResponse) => {

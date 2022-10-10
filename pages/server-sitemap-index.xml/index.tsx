@@ -12,7 +12,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     })
 
     const paths = slugs.map((slug) => ({
-        loc: `${process.env.SITE_URL}/${slug.fullSlug}`,
+        loc: `${process.env.SITE_URL}/${slug.full}`,
         lastmod: new Date().toISOString(),
     }))
 

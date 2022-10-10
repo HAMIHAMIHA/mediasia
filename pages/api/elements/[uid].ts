@@ -65,7 +65,7 @@ const PUT = async (req: NextApiRequest, res: NextApiResponse) => {
     //     await res.revalidate(`/${slug.fullSlug}`)
     // }
 
-    return await slugs.forEach((slug) => res.revalidate(`/${slug.fullSlug}`))
+    return await slugs.forEach((slug) => res.revalidate(`/${slug.full}`))
 
     // const URIs = new Set<string>()
 

@@ -105,7 +105,7 @@ const columns = [
             e.id === 'notfound' || e.id === 'signin' ? <Badge color="geekblue" text={e.title} /> : e.title,
     },
     {
-        title: 'Title',
+        title: 'Container',
         dataIndex: 'container',
         render: (e: Container) => e.title,
     },
@@ -113,14 +113,14 @@ const columns = [
         title: 'URL',
         dataIndex: 'slug',
         render: (e: Slug[]) => {
-            const fullSlug = get(e, '0.fullSlug', '')
+            const full = get(e, 'full', '')
 
             return (
-                <Link href={`/${fullSlug}`}>
+                <Link href={`/${full}`}>
                     <a>
                         <Breadcrumb>
                             <Breadcrumb.Item>&#8203;</Breadcrumb.Item>
-                            {fullSlug.split('/').map((s: string, idx: number) => (
+                            {full.split('/').map((s: string, idx: number) => (
                                 <Breadcrumb.Item key={idx}>{s || <>&#8203;</>}</Breadcrumb.Item>
                             ))}
                         </Breadcrumb>

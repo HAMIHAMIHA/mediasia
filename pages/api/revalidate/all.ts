@@ -9,7 +9,7 @@ const POST = async (req: NextApiRequest, res: NextApiResponse) => {
         const urls: string[] = []
 
         for (const slug of slugs) {
-            const uri = `/${slug.fullSlug}`
+            const uri = `/${slug.full}`
             await res.revalidate(uri)
             urls.push(uri)
         }

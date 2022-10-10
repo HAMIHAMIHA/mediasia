@@ -137,7 +137,7 @@ const Admin = () => {
 
                 const accesses = get(data, 'accesses', []).map((access) => get(access, 'roleId', ''))
 
-                const slug = decodeURI(get(data, 'slug.0.slug', '') || '')
+                const slug = decodeURI(get(data, 'slug.basic', '') || '')
                 const slugEdit = slug.split('/')
 
                 setValues({ ...data, sections, contentSections, accesses, slugEdit })
@@ -526,7 +526,7 @@ const FieldsManager = ({ values, onChange }: FieldsManagerProps) => {
                             >
                                 <Select.Option value="string">Text</Select.Option>
                                 <Select.Option value="text">Paragraph</Select.Option>
-                                <Select.Option value="int">Number</Select.Option>
+                                <Select.Option value="number">Number</Select.Option>
                                 <Select.Option value="boolean">Boolean</Select.Option>
                                 <Select.Option value="date">Date</Select.Option>
                                 <Select.Option value="image">Image</Select.Option>

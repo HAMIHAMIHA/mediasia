@@ -77,8 +77,8 @@ const POST = async (req: NextApiRequest, res: NextApiResponse) => {
             },
             slug: {
                 create: {
-                    fullSlug: encodeURI(slug),
-                    slug: encodeURI(slug),
+                    full: encodeURI(slug),
+                    basic: encodeURI(slug),
                     published: true,
                 },
             },

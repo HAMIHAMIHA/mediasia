@@ -19,6 +19,7 @@ const getNameFieldFromType = (type: string) => {
         case 'image':
         case 'file':
             valueName = 'media'
+            break
         case 'content':
             valueName = 'contentValueId'
             break

@@ -82,19 +82,30 @@ const Admin = () => {
         validateOnBlur: false,
         validateOnChange: false,
         onSubmit: async (values) => {
-            const fields = Object.keys(values.fieldsValue).map((key: string) => ({
-                name: key,
-                ...values.fieldsValue[key],
-                mediaId: get(values, `fieldsValue.${key}.media.id`, null),
-                media: undefined,
-            }))
-            delete values.fieldsValue
+            const fields = Object.keys(values.fieldsValue).map((key: string) => {
+                let mediaId = undefined
+
+                if (values.fieldsValue[key].type === 'media') {
+                    if (values.fieldsValue[key].multiple) {
+                        mediaId = values.fieldsValue[key].media.map((media: Media) => media.id)
+                    } else {
+                        mediaId = values.fieldsValue[key].media.id
+                    }
+                }
+
+                return {
+                    name: key,
+                    ...values.fieldsValue[key],
+                    mediaId,
+                    media: undefined,
+                }
+            })
 
             const slug = encodeURI(get(values, 'slug', ''))
 
             mutation.mutate({
                 pid: pid as string,
-                values: { ...values, fields, slug, fieldsValue: undefined },
+                values: { ...values, fields, fieldsValue: undefined, slug },
             })
         },
     })
@@ -107,13 +118,17 @@ const Admin = () => {
             onSuccess: (data: FullContainerEdit) => {
                 const sections = get(data, 'sections', []).sort((a, b) => a.position - b.position)
 
-                const slug = decodeURI(get(data, 'slug.0.slug', '') || '')
+                const slug = decodeURI(get(data, 'slug.basic', '') || '')
 
                 let fieldsValue: any = {}
                 get(data, 'fields', []).forEach((e: any, i: number) => {
                     const valueName = getNameFieldFromType(e.type)
                     const newValues = e.multiple
-                        ? get(e, `childs`, []).map((c: any) => c[valueName])
+                        ? get(e, `childs`, []).map((c: any) =>
+                              e.type === 'date' ? c[valueName] : c[valueName]
+                          )
+                        : e.type === 'date'
+                        ? moment(e[valueName])
                         : e[valueName]
 
                     fieldsValue[e.name] = {
@@ -325,13 +340,11 @@ const ContentFieldsManager = ({ values, fields, onChange }: ContentFieldsManager
     const onHandleChange = (name: string, type: string, value: any, multi?: boolean) => {
         const newValue = { ...values }
         const valueName = getNameFieldFromType(type)
-
+        console.log('valuesName', type, valueName)
         set(newValue, name, { type, [valueName]: value, multiple: !!multi })
 
         onChange(newValue)
     }
-
-    console.log('values 2', values)
 
     return (
         <Space direction="vertical">
@@ -441,7 +454,10 @@ const ContentFieldsManager = ({ values, fields, onChange }: ContentFieldsManager
                                     <MediaModal
                                         size="small"
                                         value={get(values, `${field.name}.media`, '')}
-                                        onMediaSelected={(e) => onHandleChange(field.name, field.type, e)}
+                                        onMediaSelected={(e) => {
+                                            console.log('values xx', field.name, field.type, e)
+                                            onHandleChange(field.name, field.type, e)
+                                        }}
                                     />
                                 )}
                             </Space>
@@ -543,6 +559,7 @@ const MultipleImages = ({
                             label="Add new"
                             icon={<PlusOutlined />}
                             onMediaSelected={(e) => {
+                                console.log('values onMediaSelected', e)
                                 const newValues = [...value, e]
                                 onChange(newValues)
                             }}

@@ -31,12 +31,12 @@ const LinkInput = ({ value, onChange, width = 300, ...rest }: Props) => {
     const options = useMemo(() => {
         const pagesOptions =
             slugs?.data?.map((slug: any) => ({
-                value: `/${slug.fullSlug}`,
+                value: `/${slug.full}`,
                 searchLabel: slug?.content?.title || slug?.container?.title,
                 label: (
                     <>
                         <Text>{slug?.content?.title || slug?.container?.title}</Text>
-                        <Text type="secondary">{` (/${slug.fullSlug})`}</Text>
+                        <Text type="secondary">{` (/${slug.full})`}</Text>
                     </>
                 ),
             })) || []

@@ -165,7 +165,7 @@ model Container {
   contents           Content[]
   published          Boolean          @default(true)
   updatedAt          DateTime         @updatedAt
-  slug               Slug[]
+  slug               Slug?
   contentFields      ContainerField[] @relation(name: "linkedContentFields")
 }
 
@@ -181,7 +181,7 @@ model Content {
   container   Container      @relation(fields: [containerId], references: [id])
   published   Boolean        @default(true)
   updatedAt   DateTime       @updatedAt
-  slug        Slug[]
+  slug        Slug?
   fieldsValue ContentField[] @relation(name: "contentValue")
 }
 
@@ -232,8 +232,8 @@ model ContentField {
 
 model Slug {
   id       String  @id @default(cuid())
-  fullSlug String  @unique
-  slug     String
+  full     String  @unique
+  basic    String
   parentId String?
   parent   Slug?   @relation(fields: [parentId], references: [id], name: "childs")
   childs   Slug[]  @relation(name: "childs")

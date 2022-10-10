@@ -31,8 +31,8 @@ const sanitizeAll = <T>(props: T) => {
                 updatedAt: sanitizeDate(content.updatedAt),
                 slug: [
                     {
-                        ...get(content, 'slug.0', {}),
-                        updatedAt: sanitizeDate(get(content, 'slug.0.updatedAt', null)),
+                        ...get(content, 'slug', {}),
+                        updatedAt: sanitizeDate(get(content, 'slug.updatedAt', null)),
                     },
                 ],
                 fields: get(content, 'fields', [])?.map((field: ContentField) => ({
@@ -73,7 +73,7 @@ const getPagePropsFromUrl = async (slug: string) => {
     const notFound = { notFound: true }
 
     const releatedSlug = await prisma.slug.findUnique({
-        where: { fullSlug: slug },
+        where: { full: slug },
         include: {
             container: {
                 include: {

@@ -81,14 +81,14 @@ const columns = [
         title: 'URL',
         dataIndex: 'slug',
         render: (e: Slug[]) => {
-            const fullSlug = get(e, '0.fullSlug', '')
+            const full = get(e, 'full', '')
 
             return (
-                <Link href={`/${fullSlug}`}>
+                <Link href={`/${full}`}>
                     <a>
                         <Breadcrumb>
                             <Breadcrumb.Item>&#8203;</Breadcrumb.Item>
-                            {fullSlug.split('/').map((s: string, idx: number) => (
+                            {full.split('/').map((s: string, idx: number) => (
                                 <Breadcrumb.Item key={idx}>{s || <>&#8203;</>}</Breadcrumb.Item>
                             ))}
                         </Breadcrumb>
@@ -106,7 +106,10 @@ const columns = [
         title: 'Last updated',
         dataIndex: 'published',
         render: (published: boolean) => (
-            <Badge status={published ? 'success' : 'error'} text={published ? 'Published' : 'Not published'} />
+            <Badge
+                status={published ? 'success' : 'error'}
+                text={published ? 'Published' : 'Not published'}
+            />
         ),
     },
     {

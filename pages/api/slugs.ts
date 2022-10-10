@@ -5,7 +5,7 @@ import { prisma } from '../../utils/prisma'
 
 const GET = async (req: NextApiRequest, res: NextApiResponse) => {
     const slugs = await prisma.slug.findMany({
-        orderBy: { fullSlug: 'asc' },
+        orderBy: { full: 'asc' },
         include: { container: true, content: true },
     })
 

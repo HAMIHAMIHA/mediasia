@@ -23,7 +23,7 @@ const DefaultSectionsHome = (props: PageProps) => {
                 <ul>
                     {contents?.map((content) => (
                         <li key={content.id}>
-                            <Link href={get(content, 'slug.0.fullSlug', '')}>
+                            <Link href={get(content, 'slug.full', '')}>
                                 <a>{content.title}</a>
                             </Link>
                         </li>
@@ -81,12 +81,12 @@ export async function getStaticProps(context: NewGetStaticPathsContext) {
 export async function getStaticPaths(context: GetStaticPathsContext) {
     const slugs = await prisma.slug.findMany({
         where: {
-            AND: [{ published: true }, { NOT: { fullSlug: '' } }, { NOT: { fullSlug: 'sign-in' } }],
+            AND: [{ published: true }, { NOT: { full: '' } }, { NOT: { full: 'sign-in' } }],
         },
     })
 
     const paths = slugs.map((slug) => ({
-        params: { slug: slug.fullSlug.split('/') },
+        params: { slug: slug.full.split('/') },
     }))
 
     return {

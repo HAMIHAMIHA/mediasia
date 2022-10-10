@@ -103,9 +103,9 @@ const POST = async (req: NextApiRequest, res: NextApiResponse) => {
             },
             slug: {
                 create: {
-                    parentId: parentSlug!.id,
-                    fullSlug: `${parentSlug!.slug}/${slug}`,
-                    slug: slug,
+                    parentId: parentSlug?.id,
+                    full: `${parentSlug?.basic}/${slug}`,
+                    basic: slug,
                     published: true,
                 },
             },

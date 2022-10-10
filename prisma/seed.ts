@@ -9,7 +9,7 @@ async function main() {
         include: { slug: true },
     })
 
-    let parentId = get(defaultContainer, 'slug.0.id', undefined)
+    let parentId = get(defaultContainer, 'slug.id', undefined)
 
     if (!defaultContainer) {
         const newDefaultContainer = await prisma.container.create({
@@ -20,15 +20,15 @@ async function main() {
                 published: true,
                 slug: {
                     create: {
-                        fullSlug: '',
-                        slug: '',
+                        full: '',
+                        basic: '',
                     },
                 },
             },
             include: { slug: true },
         })
 
-        parentId = get(newDefaultContainer, 'slug.0.id', undefined)
+        parentId = get(newDefaultContainer, 'slug.id', undefined)
     }
 
     const notfound = await prisma.content.findUnique({
@@ -44,8 +44,8 @@ async function main() {
                 published: true,
                 slug: {
                     create: {
-                        fullSlug: 'not-found',
-                        slug: 'not-found',
+                        full: 'not-found',
+                        basic: 'not-found',
                         parentId,
                     },
                 },
@@ -66,8 +66,8 @@ async function main() {
                 published: true,
                 slug: {
                     create: {
-                        fullSlug: 'sign-in',
-                        slug: 'sign-in',
+                        full: 'sign-in',
+                        basic: 'sign-in',
                         parentId,
                     },
                 },
