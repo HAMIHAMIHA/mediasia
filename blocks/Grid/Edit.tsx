@@ -10,30 +10,12 @@ import { ContainerFieldType } from '@prisma/client'
 const { Option } = Select
 const { Text } = Typography
 
-const parseDefaultValue = (values: string) => {
-    try {
-        return JSON.parse(values)
-    } catch (e) {
-        return {}
-    }
-}
-
-const Edit = ({ defaultValues, onChange, theme, fields }: Props) => {
-    // const { background, primary, secondary } = theme
-    const [values, setValues] = useState<any>(parseDefaultValue(defaultValues))
-
+const Edit = ({ value = {}, onChange, theme, fields }: Props) => {
     const handleChange = (name: string, value: any) => {
-        const newValue = { ...values }
+        const newValue = { ...value }
 
         set(newValue, name, value)
-
-        setValues(newValue)
-
-        try {
-            if (onChange) onChange(JSON.stringify(newValue))
-        } catch (e) {
-            console.log('Error on edit')
-        }
+        if (!!onChange) onChange(newValue)
     }
 
     const isText = (type: string) =>
@@ -74,7 +56,7 @@ const Edit = ({ defaultValues, onChange, theme, fields }: Props) => {
                     <Text>Image :</Text>
                     <Select
                         style={{ width: '100%' }}
-                        value={get(values, 'fields.image', undefined)}
+                        value={get(value, 'fields.image', undefined)}
                         onChange={(e) => handleChange('fields.image', e)}
                     >
                         {fields?.map((field) => (
@@ -90,7 +72,7 @@ const Edit = ({ defaultValues, onChange, theme, fields }: Props) => {
                     <Text>Title :</Text>
                     <Select
                         style={{ width: '100%' }}
-                        value={get(values, 'fields.title', undefined)}
+                        value={get(value, 'fields.title', undefined)}
                         onChange={(e) => handleChange('fields.title', e)}
                     >
                         {fields?.map((field) => (
@@ -102,7 +84,7 @@ const Edit = ({ defaultValues, onChange, theme, fields }: Props) => {
                     <Text>Subtitle :</Text>
                     <Select
                         style={{ width: '100%' }}
-                        value={get(values, 'fields.subtitle', undefined)}
+                        value={get(value, 'fields.subtitle', undefined)}
                         onChange={(e) => handleChange('fields.subtitle', e)}
                     >
                         {fields?.map((field) => (
@@ -118,7 +100,7 @@ const Edit = ({ defaultValues, onChange, theme, fields }: Props) => {
                     <Text>Description :</Text>
                     <Select
                         style={{ width: '100%' }}
-                        value={get(values, 'fields.description', undefined)}
+                        value={get(value, 'fields.description', undefined)}
                         onChange={(e) => handleChange('fields.description', e)}
                     >
                         {fields?.map((field) => (

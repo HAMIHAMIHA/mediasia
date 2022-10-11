@@ -6,30 +6,14 @@ import { Card } from 'antd'
 import StyledInput from '../../components/StyledInput'
 import set from 'lodash.set'
 
-const parseDefaultValue = (values: string) => {
-    try {
-        return JSON.parse(values)
-    } catch (e) {
-        return {}
-    }
-}
+const Edit = ({ value = {}, onChange, theme }: Props) => {
+    const handleChange = (name: string, e: any) => {
+        const newValue = { ...value }
 
-const Edit = ({ defaultValues, onChange, theme }: Props) => {
-    // const { background, primary, secondary } = theme
-    const [values, setValues] = useState<any>(parseDefaultValue(defaultValues))
+        console.log('001', newValue)
 
-    const handleChange = (name: string, value: any) => {
-        const newValue = { ...values }
-
-        set(newValue, name, value)
-
-        setValues(newValue)
-
-        try {
-            if (onChange) onChange(JSON.stringify(newValue))
-        } catch (e) {
-            console.log('Error on edit')
-        }
+        set(newValue, name, e)
+        if (!!onChange) onChange(newValue)
     }
 
     return (
@@ -42,7 +26,7 @@ const Edit = ({ defaultValues, onChange, theme }: Props) => {
                         //     textShadow: `0.025em 0.025em 0 ${background}, 0.05em 0.05em 0 ${secondary}, 0.075em 0.075em 0 ${background}, 0.1em 0.1em 0 ${secondary}`,
                         // }}
                         className={styles.title}
-                        value={values.title}
+                        value={value.title}
                         onChange={(e) => handleChange('title', e)}
                     />
                 </section>

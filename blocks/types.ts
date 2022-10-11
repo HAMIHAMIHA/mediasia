@@ -10,13 +10,13 @@ export interface Block {
 }
 
 export interface Props {
-    defaultValues: string
+    value: any
+    onChange?: (value: any | undefined) => void
     theme: {
         background: string
         primary: string
         secondary: string
     }
-    onChange?: (values: string) => void
     section?: FullSection
     page?: PageProps
     fields?: ContainerField[]

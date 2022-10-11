@@ -14,6 +14,7 @@ import {
     Radio,
     Divider,
     Switch,
+    InputNumber,
 } from 'antd'
 import Head from 'next/head'
 import get from 'lodash.get'
@@ -518,6 +519,8 @@ const FieldsManager = ({ values, onChange }: FieldsManagerProps) => {
                                         modifyField(idx, 'metadata', undefined)
                                     }
                                     if (!canMultiple(e)) {
+                                        modifyField(idx, 'min', undefined)
+                                        modifyField(idx, 'max', undefined)
                                         modifyField(idx, 'multiple', false)
                                     }
                                     if (e === ContainerFieldType.OPTION) {
@@ -535,12 +538,8 @@ const FieldsManager = ({ values, onChange }: FieldsManagerProps) => {
                                 <Select.Option value={ContainerFieldType.OPTION}>Option</Select.Option>
                                 <Select.Option value={ContainerFieldType.DATE}>Date</Select.Option>
                                 <Select.Option value={ContainerFieldType.IMAGE}>Image</Select.Option>
-                                <Select.Option value={ContainerFieldType.FILE} disabled>
-                                    File
-                                </Select.Option>
-                                <Select.Option value={ContainerFieldType.VIDEO} disabled>
-                                    Video
-                                </Select.Option>
+                                <Select.Option value={ContainerFieldType.FILE}>File</Select.Option>
+                                <Select.Option value={ContainerFieldType.VIDEO}>Video</Select.Option>
                                 <Select.Option value={ContainerFieldType.LINK}>Link</Select.Option>
                                 <Select.Option value={ContainerFieldType.WYSIWYG} disabled>
                                     Wysiwyg
@@ -641,10 +640,48 @@ const FieldsManager = ({ values, onChange }: FieldsManagerProps) => {
                                 <Switch
                                     disabled={!canMultiple(field.type)}
                                     checked={field.multiple}
-                                    onClick={(e) => modifyField(idx, 'multiple', e)}
+                                    onClick={(e) => {
+                                        if (!e) {
+                                            modifyField(idx, 'min', undefined)
+                                            modifyField(idx, 'max', undefined)
+                                        } else {
+                                            modifyField(idx, 'min', 1)
+                                            modifyField(idx, 'max', 15)
+                                        }
+                                        modifyField(idx, 'multiple', e)
+                                    }}
                                 />
                             </div>
                         </Space>
+
+                        {field.multiple && (
+                            <>
+                                <Space direction="vertical">
+                                    <Text>Min</Text>
+                                    <InputNumber
+                                        style={{
+                                            width: 65,
+                                        }}
+                                        value={field.min}
+                                        onChange={(e) => modifyField(idx, 'min', e)}
+                                        min={0}
+                                        max={field.max || undefined}
+                                    />
+                                </Space>
+                                <Space direction="vertical">
+                                    <Text>Max</Text>
+                                    <InputNumber
+                                        style={{
+                                            width: 65,
+                                        }}
+                                        value={field.max}
+                                        onChange={(e) => modifyField(idx, 'max', e)}
+                                        min={field.min || undefined}
+                                        max={999}
+                                    />
+                                </Space>
+                            </>
+                        )}
 
                         <Space direction="vertical">
                             <Text>Required</Text>
@@ -658,10 +695,7 @@ const FieldsManager = ({ values, onChange }: FieldsManagerProps) => {
                             >
                                 <Switch
                                     checked={field.required || undefined}
-                                    onClick={(e) => {
-                                        console.log('e', e)
-                                        modifyField(idx, 'required', e)
-                                    }}
+                                    onClick={(e) => modifyField(idx, 'required', e)}
                                 />
                             </div>
                         </Space>

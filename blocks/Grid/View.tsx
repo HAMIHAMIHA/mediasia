@@ -5,17 +5,9 @@ import get from 'lodash.get'
 import Link from 'next/link'
 import moment from 'moment'
 
-const parseDefaultValue = (values: string) => {
-    try {
-        return JSON.parse(values)
-    } catch (e) {
-        return {}
-    }
-}
-
-const View = ({ defaultValues, theme, page }: Props) => {
+const View = ({ value = {}, theme, page }: Props) => {
     // const { primary, secondary, background } = theme
-    const { fields } = parseDefaultValue(defaultValues)
+    const { fields } = value
 
     return (
         <section className={styles.grid}>

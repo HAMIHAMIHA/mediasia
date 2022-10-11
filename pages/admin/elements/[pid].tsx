@@ -44,21 +44,21 @@ const Admin = () => {
     const { pid } = router.query
     const queryClient = useQueryClient()
 
-    const { values, /*errors,*/ handleSubmit, handleChange, setValues } = useFormik<Prisma.ElementCreateInput>({
-        initialValues,
-        validate,
-        onSubmit: async (values) => mutation.mutate({ pid: pid as string, values }),
-    })
+    const { values, /*errors,*/ handleSubmit, handleChange, setValues } =
+        useFormik<Prisma.ElementCreateInput>({
+            initialValues,
+            validate,
+            onSubmit: async (values) => mutation.mutate({ pid: pid as string, values }),
+        })
 
-    const element: UseQueryResult<Prisma.ElementCreateInput, Error> = useQuery<Prisma.ElementCreateInput, Error>(
-        ['elements', { id: pid }],
-        () => getElementDetails(pid as string),
-        {
-            enabled: !!pid && pid !== 'create',
-            onSuccess: (data: Prisma.ElementCreateInput) => setValues(data),
-            onError: (err) => router.push('/admin/articles'),
-        }
-    )
+    const element: UseQueryResult<Prisma.ElementCreateInput, Error> = useQuery<
+        Prisma.ElementCreateInput,
+        Error
+    >(['elements', { id: pid }], () => getElementDetails(pid as string), {
+        enabled: !!pid && pid !== 'create',
+        onSuccess: (data: Prisma.ElementCreateInput) => setValues(data),
+        onError: (err) => router.push('/admin/articles'),
+    })
 
     const mutation = useMutation(
         (data: { pid: string; values: Prisma.ElementCreateInput }) =>
@@ -150,7 +150,7 @@ const Admin = () => {
                         >
                             <GetEditComponent
                                 block={values.block}
-                                defaultValues={values.content}
+                                value={values.content}
                                 onChange={(e) => onHandleChange('content', e)}
                             />
                         </Card>

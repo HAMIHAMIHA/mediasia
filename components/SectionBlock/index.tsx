@@ -16,7 +16,7 @@ const SectionBlock = ({ section, theme, page }: Props) => {
         return null
     }
 
-    return <Component.View defaultValues={section.content} page={page} section={section} theme={theme} />
+    return <Component.View value={section.content} page={page} section={section} theme={theme} />
 }
 
 export default SectionBlock

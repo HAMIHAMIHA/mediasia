@@ -54,7 +54,7 @@ model Section {
   elementId          String?
   element            Element?   @relation(fields: [elementId], references: [id])
   position           Int
-  content            String?
+  content            Json?
 }
 
 model Element {
@@ -208,6 +208,8 @@ model ContainerField {
   type              ContainerFieldType
   multiple          Boolean            @default(false)
   options           Json?
+  min               Int?
+  max               Int?
   containerId       String
   container         Container          @relation(fields: [containerId], references: [id])
   linkedContainerId String?

@@ -1,19 +1,10 @@
-import styles from './Display.module.css'
-
-import type { Props } from '../types'
 import moment from 'moment'
 
-const parseDefaultValue = (values: string) => {
-    try {
-        return JSON.parse(values)
-    } catch (e) {
-        return {}
-    }
-}
+import type { Props } from '../types'
+import styles from './Display.module.css'
 
-const View = ({ defaultValues, theme, page }: Props) => {
-    // const { primary, secondary, background } = theme
-    const { fields } = parseDefaultValue(defaultValues)
+const View = ({ value = {}, theme, page }: Props) => {
+    const { fields } = value
 
     const image = page?.fields?.find((e) => e.name === fields.image)?.media?.uri || ''
     const title = page?.fields?.find((e) => e.name === fields.title)?.textValue || ''

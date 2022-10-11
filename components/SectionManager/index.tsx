@@ -132,7 +132,7 @@ const SectionManager = ({ values, onChange, fields }: SectionManagerProps) => {
                             <GetEditComponent
                                 block={section.block}
                                 theme={get(theme, 'data', { background: '', primary: '', secondary: '' })}
-                                defaultValues={section.content}
+                                value={section.content}
                                 onChange={(e) => onHandleChange(`${idx}.content`, e)}
                                 fields={fields}
                             />

@@ -11,43 +11,19 @@ import LinkInput from '../../components/LinkInput'
 
 const { Text } = Typography
 
-const parseDefaultValue = (values: string) => {
-    try {
-        return JSON.parse(values)
-    } catch (e) {
-        return {}
-    }
-}
-
-const Edit = ({ defaultValues, onChange }: Props) => {
-    const [values, setValues] = useState<any>(parseDefaultValue(defaultValues))
-
+const Edit = ({ value = {}, onChange }: Props) => {
     const handleChange = (name: string, value: any) => {
-        const newValue = { ...values }
+        const newValue = { ...value }
 
         set(newValue, name, value)
-
-        setValues(newValue)
-
-        try {
-            if (onChange) onChange(JSON.stringify(newValue))
-        } catch (e) {
-            console.log('Error on edit')
-        }
+        if (!!onChange) onChange(newValue)
     }
 
     const remove = (index: number) => {
-        const newValue = { ...values }
+        const newValue = { ...value }
 
         newValue.links.splice(index, 1)
-
-        setValues(newValue)
-
-        try {
-            if (onChange) onChange(JSON.stringify(newValue))
-        } catch (e) {
-            console.log('Error on edit')
-        }
+        if (!!onChange) onChange(newValue)
     }
 
     return (
@@ -56,7 +32,7 @@ const Edit = ({ defaultValues, onChange }: Props) => {
                 <nav className={styles.navigation}>
                     <div className={styles.container}>
                         <ul>
-                            {get(values, 'links', []).map((e: any, i: number) => (
+                            {get(value, 'links', []).map((e: any, i: number) => (
                                 <li key={i}>
                                     <StyledInput.a
                                         className={styles.title}
@@ -81,7 +57,7 @@ const Edit = ({ defaultValues, onChange }: Props) => {
                         </ul>
                     </div>
                     <Button
-                        onClick={() => handleChange(`links.${get(values, 'links', []).length}`, {})}
+                        onClick={() => handleChange(`links.${get(value, 'links', []).length}`, {})}
                         size="small"
                         shape="circle"
                         type="primary"
@@ -96,7 +72,7 @@ const Edit = ({ defaultValues, onChange }: Props) => {
             }
             panel={
                 <Space direction="vertical" style={{ width: '100%' }}>
-                    {get(values, 'links', []).map((e: any, i: number) => (
+                    {get(value, 'links', []).map((e: any, i: number) => (
                         <Fragment key={i}>
                             <Text>Link {e.title}</Text>
                             <LinkInput value={e.link} onChange={(e) => handleChange(`links.${i}.link`, e)} />

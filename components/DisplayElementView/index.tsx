@@ -22,7 +22,7 @@ const DisplayElementView = ({ id }: { id: string }) => {
 
     const Component = get(Blocks, element.data.block, () => null)
 
-    return <Component.View defaultValues={element.data.content} />
+    return <Component.View value={element.data.content} />
 }
 
 export default DisplayElementView
