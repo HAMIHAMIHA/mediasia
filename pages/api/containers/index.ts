@@ -51,7 +51,7 @@ const GET = async (req: NextApiRequest, res: NextApiResponse) => {
 const POST = async (req: NextApiRequest, res: NextApiResponse) => {
     const newContainerContent = req.body as FullContainerEdit
 
-    const fields: ContainerField[] = get(req, 'body.fields', [])
+    const fields: Prisma.ContainerFieldCreateInput[] = get(req, 'body.fields', [])
     delete newContainerContent.fields
     const sections: Section[] = get(req, 'body.sections', [])
     delete newContainerContent.sections

@@ -147,7 +147,10 @@ const Admin = () => {
                                     borderColor: '#000',
                                 }}
                                 icon={<BgColorsOutlined />}
-                            />
+                            >
+                                {get(settings, 'background_color', undefined)?.toLocaleUpperCase() ||
+                                    'Pick color'}
+                            </Button>
                         </Popover>
                     </Space>
                     <Space>
@@ -171,7 +174,10 @@ const Admin = () => {
                                     borderColor: '#000',
                                 }}
                                 icon={<BgColorsOutlined />}
-                            />
+                            >
+                                {get(settings, 'primary_color', undefined)?.toLocaleUpperCase() ||
+                                    'Pick color'}
+                            </Button>
                         </Popover>
                     </Space>
                     <Space>
@@ -195,7 +201,10 @@ const Admin = () => {
                                     borderColor: '#000',
                                 }}
                                 icon={<BgColorsOutlined />}
-                            />
+                            >
+                                {get(settings, 'secondary_color', undefined)?.toLocaleUpperCase() ||
+                                    'Pick color'}
+                            </Button>
                         </Popover>
                     </Space>
                 </Space>

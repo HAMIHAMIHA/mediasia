@@ -8,6 +8,7 @@ const getNameFieldFromType = (type: string) => {
         case ContainerFieldType.PARAGRAPH:
         case ContainerFieldType.LINK:
         case ContainerFieldType.OPTION:
+        case ContainerFieldType.COLOR:
             valueName = 'textValue'
             break
         case ContainerFieldType.NUMBER:

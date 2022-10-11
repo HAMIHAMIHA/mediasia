@@ -14,6 +14,7 @@ import {
     Divider,
     Tooltip,
     Select,
+    Popover,
 } from 'antd'
 import get from 'lodash.get'
 import { editContent, getContentDetails, postContent } from '../../../network/contents'
@@ -30,9 +31,17 @@ import set from 'lodash.set'
 import AccessCheckboxes from '@components/AccessCheckboxes'
 import moment from 'moment'
 import { useState } from 'react'
-import { PlusOutlined, QuestionCircleOutlined, CloseOutlined, CloseCircleFilled } from '@ant-design/icons'
+import {
+    PlusOutlined,
+    QuestionCircleOutlined,
+    CloseOutlined,
+    CloseCircleFilled,
+    BgColorsOutlined,
+    MinusOutlined,
+} from '@ant-design/icons'
 import { SizeType } from 'antd/lib/config-provider/SizeContext'
 import getNameFieldFromType from '../../../utils/getNameFieldFromType'
+import { ChromePicker } from 'react-color'
 
 const { Text } = Typography
 const { Option } = Select
@@ -195,12 +204,11 @@ const Admin = () => {
             onSuccess: (data: Content) => {
                 message.success(`Content ${data.title} saved`)
                 queryClient.invalidateQueries('contents')
-                // router.push('/admin/contents')
+                router.push('/admin/contents')
             },
             onError: (err) => {
                 message.error('An error occured, while creating or updating the content')
                 queryClient.invalidateQueries('contents')
-                // router.push('/admin/contents')
             },
         }
     )
@@ -503,7 +511,7 @@ const ContentFieldsManager = ({ values, fields, onChange }: ContentFieldsManager
                             <Space key={idx} direction="vertical">
                                 <Text>{field.label}</Text>
                                 {field.multiple ? (
-                                    <MultipleImages
+                                    <MultipleFiles
                                         value={get(values, `${field.name}.media`, [])}
                                         onChange={(e) => onHandleChange(field.name, field.type, e, true)}
                                     />
@@ -564,6 +572,51 @@ const ContentFieldsManager = ({ values, fields, onChange }: ContentFieldsManager
                             </Space>
                         )
 
+                    case ContainerFieldType.COLOR:
+                        return (
+                            <Space key={idx} direction="vertical">
+                                <Text>{field.label}</Text>
+                                {field.multiple ? (
+                                    <MultipleColor
+                                        values={get(values, `${field.name}.textValue`, [])}
+                                        onChange={(e) => onHandleChange(field.name, field.type, e, true)}
+                                    />
+                                ) : (
+                                    <Popover
+                                        placement="right"
+                                        trigger="click"
+                                        content={
+                                            <ChromePicker
+                                                color={get(values, `${field.name}.textValue`, undefined)}
+                                                onChange={(e) =>
+                                                    onHandleChange(field.name, field.type, e.hex)
+                                                }
+                                            />
+                                        }
+                                    >
+                                        <Button
+                                            type="primary"
+                                            style={{
+                                                backgroundColor: get(
+                                                    values,
+                                                    `${field.name}.textValue`,
+                                                    undefined
+                                                ),
+                                                borderColor: '#000',
+                                            }}
+                                            icon={<BgColorsOutlined />}
+                                        >
+                                            {get(
+                                                values,
+                                                `${field.name}.textValue`,
+                                                undefined
+                                            )?.toLocaleUpperCase() || 'Pick color'}
+                                        </Button>
+                                    </Popover>
+                                )}
+                            </Space>
+                        )
+
                     default:
                         return null
                 }
@@ -572,7 +625,98 @@ const ContentFieldsManager = ({ values, fields, onChange }: ContentFieldsManager
     )
 }
 
-const MultipleImages = ({
+Admin.requireAuth = true
+
+export default Admin
+
+const MultipleColor = ({
+    values = [],
+    onChange,
+}: {
+    values: string[]
+    onChange(list: (string | undefined)[] | undefined): void
+}) => {
+    if (!Array.isArray(values)) {
+        values = [values]
+    }
+
+    return (
+        <div
+            className="ant-select ant-select-multiple ant-select-allow-clear ant-select-show-search"
+            style={{ width: 480 }}
+        >
+            <div className="ant-select-selector">
+                <div
+                    className="ant-select-selection-overflow"
+                    style={{ paddingTop: !values?.length ? undefined : 1.5 }}
+                >
+                    {values?.map((e: string, idx: number) => (
+                        <Space key={idx} size={5} style={{ marginRight: 5, marginBottom: 5 }}>
+                            <Popover
+                                placement="right"
+                                trigger="click"
+                                content={
+                                    <ChromePicker
+                                        onChange={(e) => {
+                                            const newValues = [...values]
+                                            newValues[idx] = e.hex
+                                            onChange(newValues)
+                                        }}
+                                        color={e}
+                                    />
+                                }
+                            >
+                                <Button
+                                    type="primary"
+                                    style={{
+                                        backgroundColor: e,
+                                        borderColor: '#000',
+                                    }}
+                                    icon={<BgColorsOutlined />}
+                                >
+                                    {e?.toLocaleUpperCase() || 'Pick color'}
+                                </Button>
+                            </Popover>
+                            <Button
+                                type="primary"
+                                danger
+                                size="small"
+                                onClick={(e) => {
+                                    const newValues = [...values]
+                                    newValues.splice(idx, 1)
+                                    onChange(newValues)
+                                }}
+                                icon={<MinusOutlined />}
+                            />
+                        </Space>
+                    ))}
+                    <Button
+                        type="primary"
+                        onClick={(e) => {
+                            const newValues = [...values, undefined]
+                            onChange(newValues)
+                        }}
+                        icon={<PlusOutlined />}
+                    />
+                </div>
+            </div>
+            {!!values?.length && (
+                <span
+                    className="ant-select-clear"
+                    unselectable="on"
+                    aria-hidden="true"
+                    style={{ userSelect: 'none' }}
+                >
+                    <span role="img" aria-label="close-circle" className="anticon anticon-close-circle">
+                        <CloseCircleFilled onClick={() => onChange(undefined)} />
+                    </span>
+                </span>
+            )}
+        </div>
+    )
+}
+
+const MultipleFiles = ({
     value = [],
     onChange,
 }: {
@@ -580,7 +724,7 @@ const MultipleImages = ({
     onChange(list: (Media | undefined)[] | undefined): void
 }) => {
     if (!Array.isArray(value)) {
-        value = []
+        value = [value]
     }
 
     return (
@@ -662,10 +806,6 @@ const MultipleImages = ({
         </div>
     )
 }
-
-Admin.requireAuth = true
-
-export default Admin
 
 const CustomMultipleWrapper = ({
     values = [],

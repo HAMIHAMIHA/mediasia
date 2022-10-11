@@ -485,7 +485,7 @@ const FieldsManager = ({ values, onChange }: FieldsManagerProps) => {
         <Card title="Fields">
             <Space direction="vertical">
                 {values.map((field: ContainerField, idx: number) => (
-                    <Space key={idx} align="start">
+                    <Space key={idx} align="start" style={{ flexWrap: 'wrap' }}>
                         <Space direction="vertical">
                             <Text>Label</Text>
                             <Input
@@ -564,48 +564,61 @@ const FieldsManager = ({ values, onChange }: FieldsManagerProps) => {
                             <Space direction="vertical">
                                 <Text>Options</Text>
                                 <>
-                                    {(get(field, 'options', []) as any[])?.map((option: any, jdx: number) => (
-                                        <Space key={jdx}>
-                                            <Input
-                                                size="small"
-                                                value={option.label}
-                                                onChange={(e) =>
-                                                    modifyField(idx, `options.${jdx}.label`, e.target.value)
-                                                }
-                                                placeholder="Label"
-                                            />
-                                            <Input
-                                                size="small"
-                                                value={option.value}
-                                                onChange={(e) =>
-                                                    modifyField(
-                                                        idx,
-                                                        `options.${jdx}.value`,
-                                                        kebabcase(e.target.value)
-                                                    )
-                                                }
-                                                placeholder="Value"
-                                            />
-                                            <Button
-                                                size="small"
-                                                onClick={() => {
-                                                    const copyOpts = [...(get(field, 'options', []) as any[])]
-                                                    copyOpts.splice(jdx, 1)
+                                    {((get(field, 'options', []) as any[]) || [])?.map(
+                                        (option: any, jdx: number) => (
+                                            <Space key={jdx}>
+                                                <Input
+                                                    size="small"
+                                                    style={{ width: 150 }}
+                                                    value={option.label}
+                                                    onChange={(e) =>
+                                                        modifyField(
+                                                            idx,
+                                                            `options.${jdx}.label`,
+                                                            e.target.value
+                                                        )
+                                                    }
+                                                    placeholder="Label"
+                                                />
+                                                <Input
+                                                    size="small"
+                                                    style={{ width: 150 }}
+                                                    value={option.value}
+                                                    onChange={(e) =>
+                                                        modifyField(
+                                                            idx,
+                                                            `options.${jdx}.value`,
+                                                            kebabcase(e.target.value)
+                                                        )
+                                                    }
+                                                    placeholder="Value"
+                                                />
+                                                <Button
+                                                    size="small"
+                                                    disabled={
+                                                        (get(field, 'options', []) as any[]).length === 1
+                                                    }
+                                                    onClick={() => {
+                                                        const copyOpts = [
+                                                            ...(get(field, 'options', []) as any[]),
+                                                        ]
+                                                        copyOpts.splice(jdx, 1)
 
-                                                    modifyField(idx, 'options', copyOpts)
-                                                }}
-                                                type="primary"
-                                                danger
-                                                icon={<MinusOutlined />}
-                                            />
-                                        </Space>
-                                    ))}
+                                                        modifyField(idx, 'options', copyOpts)
+                                                    }}
+                                                    type="primary"
+                                                    danger
+                                                    icon={<MinusOutlined />}
+                                                />
+                                            </Space>
+                                        )
+                                    )}
                                 </>
                                 <Button
                                     size="small"
                                     onClick={() =>
                                         modifyField(idx, 'options', [
-                                            ...(get(field, 'options', []) as any[]),
+                                            ...((get(field, 'options', []) as any[]) || []),
                                             { label: '', value: '' },
                                         ])
                                     }
@@ -651,19 +664,6 @@ const FieldsManager = ({ values, onChange }: FieldsManagerProps) => {
                                     }}
                                 />
                             </div>
-                            {/* <Radio.Group
-                                style={{
-                                    height: 32,
-                                    alignItems: 'center',
-                                    display: 'flex',
-                                }}
-                                id={`required-${idx}`}
-                                value={field.required}
-                                onChange={(e) => modifyField(idx, 'required', e.target.value)}
-                            >
-                                <Radio value={true}>Required</Radio>
-                                <Radio value={false}>Not Required</Radio>
-                            </Radio.Group> */}
                         </Space>
 
                         <Space direction="vertical">

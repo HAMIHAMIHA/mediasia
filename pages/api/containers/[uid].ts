@@ -39,20 +39,14 @@ const PUT = async (req: NextApiRequest, res: NextApiResponse) => {
     })
 
     // put the fields separately
-    const newFields: ContainerField[] = get(req, 'body.fields', [])
+    const newFields = get(req, 'body.fields', [])
     delete newContainerContent.fields
 
     for (const field of newFields) {
         await prisma.containerField.create({
             data: {
                 containerId: id,
-                label: field.label,
-                name: field.name,
-                type: field.type,
-                metadata: field.metadata,
-                required: field.required,
-                multiple: field.multiple,
-                linkedContainerId: field.linkedContainerId,
+                ...field,
             },
         })
     }
