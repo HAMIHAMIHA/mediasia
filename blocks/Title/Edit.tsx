@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import styles from './Title.module.css'
 
 import type { Props } from '../types'
@@ -9,8 +8,6 @@ import set from 'lodash.set'
 const Edit = ({ value = {}, onChange, theme }: Props) => {
     const handleChange = (name: string, e: any) => {
         const newValue = { ...value }
-
-        console.log('001', newValue)
 
         set(newValue, name, e)
         if (!!onChange) onChange(newValue)

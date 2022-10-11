@@ -42,6 +42,7 @@ import {
 import { SizeType } from 'antd/lib/config-provider/SizeContext'
 import getNameFieldFromType from '../../../utils/getNameFieldFromType'
 import { ChromePicker } from 'react-color'
+import RichEditor from '@components/RichEditor'
 
 const { Text } = Typography
 const { Option } = Select
@@ -93,7 +94,6 @@ const Admin = () => {
         validateOnBlur: false,
         validateOnChange: false,
         onSubmit: async (values) => {
-            console.log('valuesss', values)
             const fields = Object.keys(values.fieldsValue).map((key: string) => {
                 let mediaId = undefined
 
@@ -360,7 +360,6 @@ const ContentFieldsManager = ({ values, fields, onChange }: ContentFieldsManager
     const onHandleChange = (name: string, type: string, value: any, multi?: boolean) => {
         const newValue = { ...values }
         const valueName = getNameFieldFromType(type)
-        console.log('valuesName', type, valueName, value)
         set(newValue, name, { type, [valueName]: value, multiple: !!multi })
 
         onChange(newValue)
@@ -617,6 +616,17 @@ const ContentFieldsManager = ({ values, fields, onChange }: ContentFieldsManager
                             </Space>
                         )
 
+                    case ContainerFieldType.WYSIWYG:
+                        return (
+                            <Space key={idx} direction="vertical">
+                                <Text>{field.label}</Text>
+                                <RichEditor
+                                    defaultValue={get(values, `${field.name}.textValue`, undefined)}
+                                    onChange={(e) => onHandleChange(field.name, field.type, e)}
+                                />
+                            </Space>
+                        )
+
                     default:
                         return null
                 }
@@ -763,7 +773,6 @@ const MultipleFiles = ({
                             label="Add new"
                             icon={<PlusOutlined />}
                             onMediaSelected={(e) => {
-                                console.log('values onMediaSelected', e)
                                 const newValues = [...value, e]
                                 onChange(newValues)
                             }}

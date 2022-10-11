@@ -541,9 +541,7 @@ const FieldsManager = ({ values, onChange }: FieldsManagerProps) => {
                                 <Select.Option value={ContainerFieldType.FILE}>File</Select.Option>
                                 <Select.Option value={ContainerFieldType.VIDEO}>Video</Select.Option>
                                 <Select.Option value={ContainerFieldType.LINK}>Link</Select.Option>
-                                <Select.Option value={ContainerFieldType.WYSIWYG} disabled>
-                                    Wysiwyg
-                                </Select.Option>
+                                <Select.Option value={ContainerFieldType.WYSIWYG}>Wysiwyg</Select.Option>
                                 <Select.Option value={ContainerFieldType.CONTENT}>Content</Select.Option>
                                 <Select.Option value={ContainerFieldType.COLOR}>Color</Select.Option>
                             </Select>
