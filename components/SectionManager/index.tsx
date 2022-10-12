@@ -27,7 +27,6 @@ const SectionManager = ({ values, onChange, fields }: SectionManagerProps) => {
             {
                 block: null,
                 position: values.length,
-                content: '{}',
             },
         ])
     }

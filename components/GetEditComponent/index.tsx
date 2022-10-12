@@ -16,6 +16,8 @@ const GetEditComponent = ({ block, value, onChange, theme, fields }: GetEditComp
 
     const Component = get(Blocks, block, () => null)
 
+    console.log('Edit :', value, typeof value)
+
     return <Component.Edit value={value} onChange={onChange} theme={theme} fields={fields} />
 }
 

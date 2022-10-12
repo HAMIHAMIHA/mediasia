@@ -47,6 +47,7 @@ const PUT = async (req: NextApiRequest, res: NextApiResponse) => {
             data: {
                 containerId: id,
                 ...field,
+                options: field?.options || undefined,
             },
         })
     }

@@ -6,12 +6,12 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "postgres"
   url      = env("DATABASE_URL")
 }
 
 model Access {
-  id          String     @id @default(cuid())
+  id          String     @id @default(cuid()) // @map("_id")
   containerId String?
   container   Container? @relation(fields: [containerId], references: [id])
   contentId   String?
@@ -30,7 +30,7 @@ enum MetadataType {
 }
 
 model Metadata {
-  id            String     @id @default(cuid())
+  id            String     @id @default(cuid()) // @map("_id")
   name          String
   content       String
   containerId   String?
@@ -40,7 +40,7 @@ model Metadata {
 }
 
 model Section {
-  id                 String     @id @default(cuid())
+  id                 String     @id @default(cuid()) // @map("_id")
   type               String? // page header footer top-body bottom-body
   block              String?
   formId             String?
@@ -58,7 +58,7 @@ model Section {
 }
 
 model Element {
-  id        String    @id @default(cuid())
+  id        String    @id @default(cuid()) // @map("_id")
   title     String    @unique
   block     String
   section   Section[]
@@ -67,7 +67,7 @@ model Element {
 }
 
 model Media {
-  id         String         @id @default(cuid())
+  id         String         @id @default(cuid()) // @map("_id")
   uri        String         @unique
   mimeType   String
   name       String
@@ -78,14 +78,14 @@ model Media {
 }
 
 model User {
-  id        String   @id @default(cuid())
+  id        String   @id @default(cuid()) // @map("_id")
   name      String?
   login     Login?
   updatedAt DateTime @updatedAt
 }
 
 model Login {
-  id        String    @id @default(cuid())
+  id        String    @id @default(cuid()) // @map("_id")
   userId    String    @unique
   user      User      @relation(fields: [userId], references: [id])
   sessions  Session[]
@@ -97,7 +97,7 @@ model Login {
 }
 
 model Role {
-  id        String   @id @default(cuid())
+  id        String   @id @default(cuid()) // @map("_id")
   name      String
   logins    Login[]
   Accesses  Access[]
@@ -105,7 +105,7 @@ model Role {
 }
 
 model Session {
-  id        String   @id @default(cuid())
+  id        String   @id @default(cuid()) // @map("_id")
   token     String   @unique
   loginId   String
   login     Login    @relation(fields: [loginId], references: [id])
@@ -114,14 +114,14 @@ model Session {
 }
 
 model Setting {
-  id        String   @id @default(cuid())
+  id        String   @id @default(cuid()) // @map("_id")
   name      String   @unique
   value     String
   updatedAt DateTime @updatedAt
 }
 
 model Form {
-  id        String      @id @default(cuid())
+  id        String      @id @default(cuid()) // @map("_id")
   title     String      @unique
   sendMail  Boolean     @default(false)
   sendTo    String?
@@ -132,7 +132,7 @@ model Form {
 }
 
 model FormField {
-  id          String   @id @default(cuid())
+  id          String   @id @default(cuid()) // @map("_id")
   formId      String
   form        Form     @relation(fields: [formId], references: [id])
   name        String?
@@ -144,7 +144,7 @@ model FormField {
 }
 
 model Message {
-  id        String   @id @default(cuid())
+  id        String   @id @default(cuid()) // @map("_id")
   read      Boolean  @default(false)
   formId    String
   form      Form     @relation(fields: [formId], references: [id])
@@ -153,7 +153,7 @@ model Message {
 }
 
 model Container {
-  id                 String           @id @default(cuid())
+  id                 String           @id @default(cuid()) // @map("_id")
   title              String
   metadatas          Metadata[]       @relation(name: "metadatas")
   // slug               String?          @unique
@@ -170,7 +170,7 @@ model Container {
 }
 
 model Content {
-  id          String         @id @default(cuid())
+  id          String         @id @default(cuid()) // @map("_id")
   title       String
   metadatas   Metadata[]
   // slug        String?
@@ -202,7 +202,7 @@ enum ContainerFieldType {
 }
 
 model ContainerField {
-  id                String             @id @default(cuid())
+  id                String             @id @default(cuid()) // @map("_id")
   label             String
   name              String
   type              ContainerFieldType
@@ -218,17 +218,8 @@ model ContainerField {
   required          Boolean?           @default(false)
 }
 
-// enum ContentFieldType {
-//   STRING
-//   NUMBER
-//   DATE
-//   IMAGE
-//   LINK
-//   CONTENT
-// }
-
 model ContentField {
-  id          String             @id @default(cuid())
+  id          String             @id @default(cuid()) // @map("_id")
   name        String
   type        ContainerFieldType
   contentId   String?
@@ -245,16 +236,16 @@ model ContentField {
 
   multiple Boolean        @default(false)
   parentId String?
-  parent   ContentField?  @relation(fields: [parentId], references: [id], name: "list", onDelete: Cascade)
+  parent   ContentField?  @relation(fields: [parentId], references: [id], name: "list", onDelete: Cascade, onUpdate: NoAction)
   childs   ContentField[] @relation(name: "list")
 }
 
 model Slug {
-  id       String  @id @default(cuid())
+  id       String  @id @default(cuid()) // @map("_id")
   full     String  @unique
   basic    String
   parentId String?
-  parent   Slug?   @relation(fields: [parentId], references: [id], name: "childs")
+  parent   Slug?   @relation(fields: [parentId], references: [id], name: "childs", onDelete: NoAction, onUpdate: NoAction)
   childs   Slug[]  @relation(name: "childs")
 
   containerId String?    @unique

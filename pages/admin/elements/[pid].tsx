@@ -14,7 +14,6 @@ const { Text } = Typography
 const initialValues: Prisma.ElementCreateInput = {
     title: '',
     block: '',
-    content: '{}',
 }
 
 const validate = (values: Prisma.ElementCreateInput) => {

@@ -10,10 +10,10 @@ const { Option } = Select
 const { Text } = Typography
 
 const Edit = ({ value = {}, onChange, theme, fields }: Props) => {
-    const handleChange = (name: string, value: any) => {
+    const handleChange = (name: string, e: any) => {
         const newValue = { ...value }
 
-        set(newValue, name, value)
+        set(newValue, name, e)
         if (!!onChange) onChange(newValue)
     }
 
