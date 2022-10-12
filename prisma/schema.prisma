@@ -197,7 +197,7 @@ enum ContainerFieldType {
   VIDEO
   CONTENT
   OPTION
-  WYSIWYG
+  RICHTEXT
   COLOR
 }
 

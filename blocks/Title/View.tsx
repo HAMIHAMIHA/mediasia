@@ -1,5 +1,4 @@
 import styles from './Title.module.css'
-
 import type { Props } from '../types'
 
 const View = ({ value = {}, theme }: Props) => {

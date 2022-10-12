@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { Metadata, Section, Prisma, ContainerField } from '@prisma/client'
+import { Metadata, Prisma } from '@prisma/client'
 import get from 'lodash.get'
 import { FullContainerEdit } from '../../../types'
 
@@ -53,9 +53,9 @@ const POST = async (req: NextApiRequest, res: NextApiResponse) => {
 
     const fields: Prisma.ContainerFieldCreateInput[] = get(req, 'body.fields', [])
     delete newContainerContent.fields
-    const sections: Section[] = get(req, 'body.sections', [])
+    const sections: Prisma.SectionCreateInput[] = get(req, 'body.sections', [])
     delete newContainerContent.sections
-    const contentSections: Section[] = get(req, 'body.contentSections', [])
+    const contentSections: Prisma.SectionCreateInput[] = get(req, 'body.contentSections', [])
     delete newContainerContent.contentSections
     const metadatas: Metadata[] = get(req, 'body.metadatas', [])
     delete newContainerContent.metadatas

@@ -616,7 +616,7 @@ const ContentFieldsManager = ({ values, fields, onChange }: ContentFieldsManager
                             </Space>
                         )
 
-                    case ContainerFieldType.WYSIWYG:
+                    case ContainerFieldType.RICHTEXT:
                         return (
                             <Space key={idx} direction="vertical">
                                 <Text>{field.label}</Text>

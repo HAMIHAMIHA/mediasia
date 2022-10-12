@@ -1,9 +1,9 @@
-import styles from './Grid.module.css'
-
-import type { Props } from '../types'
 import get from 'lodash.get'
 import Link from 'next/link'
 import moment from 'moment'
+
+import type { Props } from '../types'
+import styles from './Grid.module.css'
 
 const View = ({ value = {}, theme, page }: Props) => {
     // const { primary, secondary, background } = theme

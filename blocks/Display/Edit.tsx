@@ -1,11 +1,10 @@
-import { useState } from 'react'
-import styles from './Display.module.css'
-
-import type { Props } from '../types'
 import { Card, Select, Space, Typography } from 'antd'
 import set from 'lodash.set'
 import get from 'lodash.get'
 import { ContainerFieldType } from '@prisma/client'
+
+import styles from './Display.module.css'
+import type { Props } from '../types'
 
 const { Option } = Select
 const { Text } = Typography

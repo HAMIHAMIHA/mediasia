@@ -1,7 +1,7 @@
-import styles from './Title.module.css'
-
-import type { Props } from '../types'
 import Link from 'next/link'
+
+import styles from './Title.module.css'
+import type { Props } from '../types'
 
 const View = ({ value = {} }: Props) => {
     const { links } = value

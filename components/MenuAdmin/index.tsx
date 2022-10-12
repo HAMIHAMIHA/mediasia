@@ -27,7 +27,6 @@ import { useMutation, useQuery, UseQueryResult } from 'react-query'
 import { Container } from '@prisma/client'
 import { getContainers } from '@network/containers'
 import get from 'lodash.get'
-// import { useRouter } from 'next/router'
 
 const { Text } = Typography
 

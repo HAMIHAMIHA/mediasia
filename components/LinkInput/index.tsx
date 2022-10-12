@@ -1,15 +1,11 @@
 import { Slug } from '@prisma/client'
 import { AutoComplete, Typography } from 'antd'
-// import { useQuery, UseQueryResult } from 'react-query'
-// import { getContainers } from '../../network/containers'
-import { getSlugs } from '../../network/api'
-// import type { Container } from '@prisma/client'
-// import { useMemo } from 'react'
-// import { FullArticle } from 'types'
-import get from 'lodash.get'
 import { useQuery, UseQueryResult } from 'react-query'
+import get from 'lodash.get'
 import { useMemo } from 'react'
 import { SizeType } from 'antd/lib/config-provider/SizeContext'
+
+import { getSlugs } from '../../network/api'
 
 const { Text } = Typography
 

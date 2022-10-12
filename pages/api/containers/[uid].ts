@@ -1,4 +1,4 @@
-import { ContainerField, Metadata, Prisma, Section } from '@prisma/client'
+import { Metadata, Prisma, Section } from '@prisma/client'
 import { FullContainerEdit } from '@types'
 import checkAuth from '@utils/checkAuth'
 import get from 'lodash.get'
@@ -88,7 +88,7 @@ const PUT = async (req: NextApiRequest, res: NextApiResponse) => {
                 block: section.block,
                 elementId: section.elementId,
                 position: section.position,
-                content: section.content,
+                content: section.content as Prisma.InputJsonValue,
             },
         })
     }
@@ -111,7 +111,7 @@ const PUT = async (req: NextApiRequest, res: NextApiResponse) => {
                     block: section.block,
                     elementId: section.elementId,
                     position: section.position,
-                    content: section.content,
+                    content: section.content as Prisma.InputJsonValue,
                 },
             })
         }

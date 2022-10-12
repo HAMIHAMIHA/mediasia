@@ -2,7 +2,7 @@ import get from 'lodash.get'
 import checkAuth from '@utils/checkAuth'
 import { FullContainerEdit } from '../../../types'
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { ContainerFieldType, ContentField, Metadata, Section } from '@prisma/client'
+import { ContainerFieldType, ContentField, Metadata, Prisma, Section } from '@prisma/client'
 
 import { prisma } from '../../../utils/prisma'
 import getNameFieldFromType from '@utils/getNameFieldFromType'
@@ -115,7 +115,7 @@ const PUT = async (req: NextApiRequest, res: NextApiResponse) => {
                 block: section.block,
                 elementId: section.elementId,
                 position: section.position,
-                content: section.content,
+                content: section.content as Prisma.InputJsonValue,
             },
         })
     }

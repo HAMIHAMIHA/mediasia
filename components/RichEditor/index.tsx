@@ -31,6 +31,7 @@ const RichEditor = ({ defaultValue, onChange }: RichEditorProps) => {
             )
             handleOnChange(EditorState.createWithContent(state))
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     const handleOnChange = (e: EditorState) => {

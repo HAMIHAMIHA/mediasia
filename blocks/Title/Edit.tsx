@@ -1,9 +1,9 @@
-import styles from './Title.module.css'
-
-import type { Props } from '../types'
-import { Card } from 'antd'
-import StyledInput from '../../components/StyledInput'
 import set from 'lodash.set'
+import { Card } from 'antd'
+
+import styles from './Title.module.css'
+import type { Props } from '../types'
+import StyledInput from '../../components/StyledInput'
 
 const Edit = ({ value = {}, onChange, theme }: Props) => {
     const handleChange = (name: string, e: any) => {
