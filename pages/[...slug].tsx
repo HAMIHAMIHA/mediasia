@@ -6,7 +6,7 @@ import type { GetStaticPathsContext } from 'next'
 import { prisma } from '../utils/prisma'
 import CustomImage from '../components/CustomImage'
 import PageDisplay from '../components/PageDisplay'
-import { FullContentField, PageProps } from '../types'
+import { ContentFields, PageProps } from '../types'
 import getPagePropsFromUrl from '../utils/getPagePropsFromUrl'
 import { ContainerFieldType } from '@prisma/client'
 
@@ -37,7 +37,7 @@ const DefaultSectionsHome = (props: PageProps) => {
     return (
         <>
             <h1>{title}</h1>
-            {fields?.map((field: FullContentField, idx: number) => {
+            {fields?.map((field: ContentFields, idx: number) => {
                 switch (field.type) {
                     case ContainerFieldType.STRING:
                         return (

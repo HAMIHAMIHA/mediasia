@@ -1,10 +1,8 @@
 import type {
     User,
     Login,
-    // Page,
     Metadata,
     Section,
-    // Article,
     Element,
     Role,
     FormField,
@@ -16,7 +14,7 @@ import type {
     Content,
     Slug,
     ContentField,
-    Access,
+    ContainerFieldType,
 } from '@prisma/client'
 import { Prisma } from '@prisma/client'
 
@@ -40,39 +38,11 @@ export type UserCreation = Prisma.UserCreateInput & {
     password?: string
 }
 
-// export type FullArticle = Article & {
-//     coverId?: string
-//     cover?: Media
-//     page: Page
-//     sections?: FullSection[] | null
-// }
-
-// interface ArticleCreateInput extends Omit<Prisma.ArticleCreateInput, 'page'> {}
-
-// export type FullArticleEdit = ArticleCreateInput & {
-//     coverId?: string
-//     pageId?: string
-//     sections?: FullSection[] | null
-//     // page?: string | undefined
-// }
-
 export interface FormFieldCreateInput extends Omit<Prisma.FormFieldCreateInput, 'form'> {}
 
 export type FullFormEdit = Prisma.FormCreateInput & {
     fields?: FormFieldCreateInput[] | null
 }
-
-// export type FormFieldEdit = Prisma.FormCreateInput & {
-//     fields?: FormField[] | null
-// }
-
-// export type FullPage = Page & {
-//     metadatas?: Metadata[] | null
-//     sections?: FullSection[] | null
-//     articles?: FullArticle[] | null
-//     header?: Element | null
-//     footer?: Element | null
-// }
 
 export type FullSection = Section & {
     element: Element | null
@@ -113,6 +83,9 @@ export type FullContainerEdit = Prisma.ContainerCreateInput & {
     accesses?: string[] | null
 
     slugEdit?: (string | undefined)[]
+
+    containerTabError?: boolean
+    contentTabError?: boolean
 }
 
 export type FullContent = Content & {
@@ -139,27 +112,107 @@ export type Theme = {
     secondary: string
 }
 
-export type PageProps = {
+export type PageSection = {
+    form: {
+        id: string
+        fields: {
+            id: string
+            type: string
+            position: number
+            name: string | null
+            label: string
+            placeholder: string | null
+            required: boolean | null
+        }[]
+    } | null
+    content: Prisma.JsonValue
     id: string
-    appName: string
-    layout: LayoutProps
-    theme: Theme
-    type: 'container' | 'content'
+    block: string | null
+    position: number
+    element: {
+        content: Prisma.JsonValue
+        id: string
+        block: string
+    } | null
+}
+
+export type ContentFields = {
+    id: string
+    name: string
+    type: ContainerFieldType
+    multiple: boolean
+
+    dateValue: number | null
+    textValue: string | null
+    numberValue: number | null
+    boolValue: boolean | null
+    contentValue: {
+        id: string
+        title: string
+        slug: {
+            id: string
+            full: string
+        } | null
+    } | null
+    media: {
+        id: string
+        uri: string
+        alt: string | null
+    } | null
+
+    childs: {
+        id: string
+        name: string
+        type: ContainerFieldType
+        multiple: boolean
+
+        dateValue: number | null
+        textValue: string | null
+        numberValue: number | null
+        boolValue: boolean | null
+        contentValue: {
+            id: string
+            title: string
+            slug: {
+                id: string
+                full: string
+            } | null
+        } | null
+        media: {
+            id: string
+            uri: string
+            alt: string | null
+        } | null
+    }[]
+}
+
+export type ContainerPageContents = {
+    fields: ContentFields[]
+    id: string
     title: string
-    accesses: Access[]
-    metadatas: Metadata[]
-    fields: (ContentField & {
-        media: Media | null
-    })[]
-    sections: (Section & {
-        form: Form | null
-    })[]
-    contents?: (Content & {
-        slug: Slug[] | null
-        fields: (ContentField & {
-            media: Media | null
-        })[]
-    })[]
+    slug: {
+        id: string
+        full: string
+    } | null
+}
+
+export type PageProps = {
+    id: string | undefined
+    appName: string | undefined
+    metadatas: any[]
+    theme: {
+        background: string | null
+        primary: string | null
+        secondary: string | null
+    }
+    title: string | undefined
+    type: string
+    fields: ContentFields[]
+    contents: ContainerPageContents[]
+    headerSections: PageSection[]
+    sections: PageSection[]
+    footerSections: PageSection[]
+    updatedAt: number | null
 }
 
 export type LayoutProps = {

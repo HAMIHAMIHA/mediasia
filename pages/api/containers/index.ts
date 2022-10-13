@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { Metadata, Prisma } from '@prisma/client'
+import { Metadata, Prisma, Status } from '@prisma/client'
 import get from 'lodash.get'
 import { FullContainerEdit } from '../../../types'
 
@@ -15,7 +15,7 @@ const GET = async (req: NextApiRequest, res: NextApiResponse) => {
     const q = req.query.q as string | undefined
 
     let search: any = {
-        where: {},
+        where: { status: Status.AVAILABLE },
         include: {
             contents: true,
             slug: true,

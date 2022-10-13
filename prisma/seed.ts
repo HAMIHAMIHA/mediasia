@@ -16,7 +16,6 @@ async function main() {
             data: {
                 id: 'page',
                 title: 'Default Page',
-                contentHasSections: false,
                 published: true,
                 slug: {
                     create: {

@@ -1,4 +1,4 @@
-import { FormField, Prisma } from '@prisma/client'
+import { FormField, Prisma, Status } from '@prisma/client'
 import { FullFormEdit } from '../../../types'
 import get from 'lodash.get'
 import type { NextApiRequest, NextApiResponse } from 'next'
@@ -9,7 +9,7 @@ import checkAuth from '@utils/checkAuth'
 const GET = async (req: NextApiRequest, res: NextApiResponse) => {
     const q = req.query.q as string | undefined
 
-    let search: any = { where: {} }
+    let search: any = { where: { status: Status.AVAILABLE } }
 
     if (!!q) {
         const sliptedQ = q.split(' ')

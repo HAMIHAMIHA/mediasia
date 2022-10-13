@@ -2,7 +2,15 @@ import get from 'lodash.get'
 import checkAuth from '@utils/checkAuth'
 import { FullContainerEdit } from '../../../types'
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { ContainerFieldType, ContentField, Metadata, Prisma, Section } from '@prisma/client'
+import {
+    ContainerFieldType,
+    ContentField,
+    Metadata,
+    Prisma,
+    Section,
+    SectionType,
+    Status,
+} from '@prisma/client'
 
 import { prisma } from '../../../utils/prisma'
 import getNameFieldFromType from '@utils/getNameFieldFromType'
@@ -111,7 +119,7 @@ const PUT = async (req: NextApiRequest, res: NextApiResponse) => {
             data: {
                 contentId: id,
                 formId: section.formId,
-                type: 'page',
+                type: SectionType.PAGE,
                 block: section.block,
                 elementId: section.elementId,
                 position: section.position,
@@ -164,43 +172,16 @@ const PUT = async (req: NextApiRequest, res: NextApiResponse) => {
 const DELETE = async (req: NextApiRequest, res: NextApiResponse) => {
     const id = req.query.uid as string
 
-    // await prisma.metadata.deleteMany({
-    //     where: {
-    //         pageId: id,
-    //     },
-    // })
+    const container = await prisma.container.update({
+        where: {
+            id,
+        },
+        data: {
+            status: Status.DISCONTINUED,
+        },
+    })
 
-    // await prisma.access.deleteMany({
-    //     where: {
-    //         pageId: id,
-    //     },
-    // })
-
-    // await prisma.section.deleteMany({
-    //     where: {
-    //         pageId: id,
-    //     },
-    // })
-
-    // await prisma.article.deleteMany({
-    //     where: {
-    //         pageId: id,
-    //     },
-    // })
-
-    // await prisma.article.deleteMany({
-    //     where: {
-    //         pageId: id,
-    //     },
-    // })
-
-    const page = await prisma.container.delete({ where: { id } })
-
-    return res.status(200).json(page)
-}
-
-const ERROR = async (req: NextApiRequest, res: NextApiResponse) => {
-    return res.status(405).json({ error: 'Method not allowed' })
+    return res.status(200).json(container)
 }
 
 const pages = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -224,7 +205,7 @@ const pages = async (req: NextApiRequest, res: NextApiResponse) => {
         }
 
         default: {
-            return await ERROR(req, res)
+            return res.status(405).json({ error: 'Method not allowed' })
         }
     }
 }

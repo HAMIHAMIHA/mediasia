@@ -5,10 +5,10 @@ import Link from 'next/link'
 import get from 'lodash.get'
 import trim from 'lodash.trim'
 import { useRouter } from 'next/router'
-import { PlusOutlined } from '@ant-design/icons'
-import { useQuery, UseQueryResult } from 'react-query'
+import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons'
+import { useMutation, useQuery, useQueryClient, UseQueryResult } from 'react-query'
 import type { Container, Content, Slug } from '@prisma/client'
-import { Space, Button, Table, Popconfirm, Input, Breadcrumb, Badge } from 'antd'
+import { Space, Button, Table, Popconfirm, Input, Breadcrumb, Badge, message } from 'antd'
 
 import useDebounce from '../../../hooks/useDebounce'
 import { deleteContent, getContents } from '../../../network/contents'
@@ -71,7 +71,7 @@ const AdminElements = () => {
 
                         <CustomSelect.ListContainers width={180} value={type} onChange={setType} />
                     </Space>
-                    <Link href="/admin/contents/create">
+                    <Link href={`/admin/contents/create${!!type ? `?container=${type}` : ''}`}>
                         <a>
                             <Button type="primary" icon={<PlusOutlined />}>
                                 Create
@@ -135,31 +135,55 @@ const columns = [
         render: (e: Date) => moment(e).fromNow(),
     },
     {
-        width: 155,
+        width: 200,
         render: (e: Content) => (
             <Space>
-                <Button type="primary">
-                    <Link href={`/admin/contents/${e.id}`}>
-                        <a>Edit</a>
-                    </Link>
-                </Button>
+                <Link href={`/admin/contents/${e.id}`}>
+                    <a>
+                        <Button type="primary" icon={<EditOutlined />}>
+                            Edit
+                        </Button>
+                    </a>
+                </Link>
 
-                <Popconfirm
-                    placement="topRight"
-                    disabled={e.id === 'notfound' || e.id === 'signin'}
-                    title={'Are you sur to delete this container?'}
-                    onConfirm={() => deleteContent(e.id)}
-                    okText="Delete"
-                    cancelText="Cancel"
-                >
-                    <Button danger disabled={e.id === 'notfound' || e.id === 'signin'}>
-                        Delete
-                    </Button>
-                </Popconfirm>
+                <DeleteButton id={e.id} />
             </Space>
         ),
     },
 ]
+
+const DeleteButton = ({ id }: { id: string }) => {
+    const queryClient = useQueryClient()
+    const mutation = useMutation(() => deleteContent(id), {
+        onSuccess: () => {
+            queryClient.invalidateQueries('containers')
+            message.success('Content successfully removed')
+        },
+        onError: (err) => {
+            message.error('Error removing content')
+        },
+    })
+
+    return (
+        <Popconfirm
+            disabled={id === 'notfound' || id === 'signin'}
+            placement="topRight"
+            title={'Are you sur to delete this container?'}
+            onConfirm={() => mutation.mutate()}
+            okText="Delete"
+            cancelText="Cancel"
+        >
+            <Button
+                danger
+                disabled={id === 'notfound' || id === 'signin'}
+                icon={<DeleteOutlined />}
+                loading={mutation.isLoading}
+            >
+                Delete
+            </Button>
+        </Popconfirm>
+    )
+}
 
 AdminElements.requireAuth = true
 

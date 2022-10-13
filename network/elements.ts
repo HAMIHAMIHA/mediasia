@@ -30,7 +30,7 @@ export const editElement = (id: string, data: Prisma.ElementCreateInput): Promis
             .catch(reject)
     })
 
-export const getElements = (type?: string, q?: string): Promise<Element[]> =>
+export const getElements = (block?: string, q?: string): Promise<Element[]> =>
     new Promise((resolve, reject) => {
         INSTANCE({
             method: 'GET',
@@ -38,7 +38,7 @@ export const getElements = (type?: string, q?: string): Promise<Element[]> =>
             // headers: {
             //     'Content-Type': 'application/json',
             // },
-            params: { type, q },
+            params: { block, q },
         })
             .then(resolve)
             .catch(reject)
@@ -54,7 +54,7 @@ export const deleteElement = (id: string): Promise<void> =>
             .catch(reject)
     })
 
-export const getElementDetails = (id: string): Promise<Element> =>
+export const getElementDetails = (id: string): Promise<Prisma.ElementCreateInput> =>
     new Promise((resolve, reject) => {
         INSTANCE({
             method: 'GET',

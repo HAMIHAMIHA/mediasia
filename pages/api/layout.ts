@@ -1,3 +1,4 @@
+import { SectionType } from '@prisma/client'
 import checkAuth from '@utils/checkAuth'
 import type { NextApiRequest, NextApiResponse } from 'next'
 // import get from 'lodash.get'
@@ -6,19 +7,19 @@ import { prisma } from '../../utils/prisma'
 
 const GET = async (req: NextApiRequest, res: NextApiResponse) => {
     const header = await prisma.section.findMany({
-        where: { type: 'header' },
+        where: { type: SectionType.HEADER },
     })
 
     const topBody = await prisma.section.findMany({
-        where: { type: 'top-body' },
+        where: { type: SectionType.TOP_BODY },
     })
 
     const bottomBody = await prisma.section.findMany({
-        where: { type: 'bottom-body' },
+        where: { type: SectionType.BOTTOM_BODY },
     })
 
     const footer = await prisma.section.findMany({
-        where: { type: 'footer' },
+        where: { type: SectionType.FOOTER },
     })
 
     return res.status(200).json({ header, topBody, bottomBody, footer })
@@ -29,7 +30,7 @@ const POST = async (req: NextApiRequest, res: NextApiResponse) => {
 
     // delete existing sections
     await prisma.section.deleteMany({
-        where: { type: 'header' },
+        where: { type: SectionType.HEADER },
     })
 
     // create new sections
@@ -37,7 +38,7 @@ const POST = async (req: NextApiRequest, res: NextApiResponse) => {
         await prisma.section.create({
             data: {
                 formId: section.formId,
-                type: 'header',
+                type: SectionType.HEADER,
                 block: section.block,
                 elementId: section.elementId,
                 position: section.position,
@@ -48,7 +49,7 @@ const POST = async (req: NextApiRequest, res: NextApiResponse) => {
 
     // delete existing sections
     await prisma.section.deleteMany({
-        where: { type: 'top-body' },
+        where: { type: SectionType.TOP_BODY },
     })
 
     // create new sections
@@ -56,7 +57,7 @@ const POST = async (req: NextApiRequest, res: NextApiResponse) => {
         await prisma.section.create({
             data: {
                 formId: section.formId,
-                type: 'top-body',
+                type: SectionType.TOP_BODY,
                 block: section.block,
                 elementId: section.elementId,
                 position: section.position,
@@ -67,7 +68,7 @@ const POST = async (req: NextApiRequest, res: NextApiResponse) => {
 
     // delete existing sections
     await prisma.section.deleteMany({
-        where: { type: 'bottom-body' },
+        where: { type: SectionType.BOTTOM_BODY },
     })
 
     // create new sections
@@ -75,7 +76,7 @@ const POST = async (req: NextApiRequest, res: NextApiResponse) => {
         await prisma.section.create({
             data: {
                 formId: section.formId,
-                type: 'bottom-body',
+                type: SectionType.BOTTOM_BODY,
                 block: section.block,
                 elementId: section.elementId,
                 position: section.position,
@@ -86,7 +87,7 @@ const POST = async (req: NextApiRequest, res: NextApiResponse) => {
 
     // delete existing sections
     await prisma.section.deleteMany({
-        where: { type: 'footer' },
+        where: { type: SectionType.FOOTER },
     })
 
     // create new sections
@@ -94,7 +95,7 @@ const POST = async (req: NextApiRequest, res: NextApiResponse) => {
         await prisma.section.create({
             data: {
                 formId: section.formId,
-                type: 'footer',
+                type: SectionType.FOOTER,
                 block: section.block,
                 elementId: section.elementId,
                 position: section.position,

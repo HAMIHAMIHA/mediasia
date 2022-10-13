@@ -3,14 +3,15 @@ import { useQuery, UseQueryResult } from 'react-query'
 import Blocks from '../../blocks'
 import { Typography } from 'antd'
 import get from 'lodash.get'
-import type { Element } from '@prisma/client'
+import type { Prisma } from '@prisma/client'
 
 const { Text } = Typography
 
 const DisplayElementView = ({ id }: { id: string }) => {
-    const element: UseQueryResult<Element, Error> = useQuery<Element, Error>(['elements', { id }], () =>
-        getElementDetails(id)
-    )
+    const element: UseQueryResult<Prisma.ElementCreateInput, Error> = useQuery<
+        Prisma.ElementCreateInput,
+        Error
+    >(['elements', { id }], () => getElementDetails(id))
 
     if (element.isLoading) {
         return <Text>Loading...</Text>

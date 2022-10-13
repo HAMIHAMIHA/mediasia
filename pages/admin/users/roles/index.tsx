@@ -16,7 +16,7 @@ import { useQuery, UseQueryResult } from 'react-query'
 import { getRoles } from '../../../../network/roles'
 import get from 'lodash.get'
 import trim from 'lodash.trim'
-import { PlusOutlined } from '@ant-design/icons'
+import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons'
 import { useState } from 'react'
 import useDebounce from '../../../../hooks/useDebounce'
 import moment from 'moment'
@@ -92,36 +92,55 @@ const columns = [
         render: (e: Date) => moment(e).fromNow(),
     },
     {
-        width: 155,
+        width: 200,
         render: (e: Role) => (
             <Space>
-                <Button type="primary" disabled={e.id === 'super-admin'}>
-                    <Link href={`/admin/users/roles/${e.id}`}>
-                        <a>Edit</a>
-                    </Link>
-                </Button>
+                <Link href={`/admin/elements/${e.id}`}>
+                    <a>
+                        <Button type="primary" icon={<EditOutlined />}>
+                            Edit
+                        </Button>
+                    </a>
+                </Link>
 
-                <Popconfirm
-                    placement="topRight"
-                    title={'Are you sur to delete this page?'}
-                    disabled={e.id === 'super-admin' || e.id === 'admin' || e.id === 'user'}
-                    onConfirm={() => {}} //deletePage(e.id)}
-                    okText="Delete"
-                    cancelText="Cancel"
-                >
-                    <Button
-                        danger
-                        disabled={
-                            e.id === 'super-admin' || e.id === 'admin' || e.id === 'user'
-                        }
-                    >
-                        Delete
-                    </Button>
-                </Popconfirm>
+                <DeleteButton id={e.id} />
             </Space>
         ),
     },
 ]
+
+const DeleteButton = ({ id }: { id: string }) => {
+    // const queryClient = useQueryClient()
+    // const mutation = useMutation(() => {}, {
+    //     onSuccess: () => {
+    //         queryClient.invalidateQueries('elements')
+    //         message.success('Element successfully removed')
+    //     },
+    //     onError: (err) => {
+    //         message.error('Error removing element')
+    //     },
+    // })
+
+    return (
+        <Popconfirm
+            placement="topRight"
+            title={'Are you sur to delete this element?'}
+            disabled={id === 'super-admin' || id === 'admin' || id === 'user'}
+            // onConfirm={() => mutation.mutate()}
+            okText="Delete"
+            cancelText="Cancel"
+        >
+            <Button
+                danger
+                disabled={id === 'super-admin' || id === 'admin' || id === 'user'}
+                icon={<DeleteOutlined />}
+                //loading={mutation.isLoading}
+            >
+                Delete
+            </Button>
+        </Popconfirm>
+    )
+}
 
 AdminRoles.requireAuth = true
 

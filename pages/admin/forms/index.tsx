@@ -1,12 +1,12 @@
 import { useState } from 'react'
-import { Space, Button, Table, Popconfirm, Input } from 'antd'
+import { Space, Button, Table, Popconfirm, Input, message } from 'antd'
 import Link from 'next/link'
 import moment from 'moment'
 import get from 'lodash.get'
 import trim from 'lodash.trim'
 import type { Form } from '@prisma/client'
-import { useQuery, UseQueryResult } from 'react-query'
-import { PlusOutlined } from '@ant-design/icons'
+import { useMutation, useQuery, useQueryClient, UseQueryResult } from 'react-query'
+import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons'
 
 import useDebounce from '../../../hooks/useDebounce'
 import { getForms, deleteForm } from '../../../network/forms'
@@ -93,28 +93,49 @@ const columns = [
         render: (e: Date) => moment(e).fromNow(),
     },
     {
-        width: 155,
+        width: 200,
         render: (e: Form) => (
             <Space>
-                <Button type="primary">
-                    <Link href={`/admin/forms/${e.id}`}>
-                        <a>Edit</a>
-                    </Link>
-                </Button>
+                <Link href={`/admin/forms/${e.id}`}>
+                    <a>
+                        <Button type="primary" icon={<EditOutlined />}>
+                            Edit
+                        </Button>
+                    </a>
+                </Link>
 
-                <Popconfirm
-                    placement="topRight"
-                    title={'Are you sur to delete this page?'}
-                    onConfirm={() => deleteForm(e.id)}
-                    okText="Delete"
-                    cancelText="Cancel"
-                >
-                    <Button danger>Delete</Button>
-                </Popconfirm>
+                <DeleteButton id={e.id} />
             </Space>
         ),
     },
 ]
+
+const DeleteButton = ({ id }: { id: string }) => {
+    const queryClient = useQueryClient()
+    const mutation = useMutation(() => deleteForm(id), {
+        onSuccess: () => {
+            queryClient.invalidateQueries('forms')
+            message.success('Form successfully removed')
+        },
+        onError: (err) => {
+            message.error('Error removing form')
+        },
+    })
+
+    return (
+        <Popconfirm
+            placement="topRight"
+            title={'Are you sur to delete this form?'}
+            onConfirm={() => mutation.mutate()}
+            okText="Delete"
+            cancelText="Cancel"
+        >
+            <Button danger loading={mutation.isLoading} icon={<DeleteOutlined />}>
+                Delete
+            </Button>
+        </Popconfirm>
+    )
+}
 
 AdminPages.requireAuth = true
 

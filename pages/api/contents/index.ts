@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { Metadata, Prisma, ContentField, ContainerFieldType } from '@prisma/client'
+import { Metadata, Prisma, ContentField, ContainerFieldType, Status } from '@prisma/client'
 import get from 'lodash.get'
 
 import { prisma } from '../../../utils/prisma'
@@ -16,7 +16,7 @@ const GET = async (req: NextApiRequest, res: NextApiResponse) => {
     const q = req.query.q as string | undefined
 
     let search: any = {
-        where: {},
+        where: { status: Status.AVAILABLE },
         include: { container: true, slug: true },
         orderBy: {
             updatedAt: 'desc',

@@ -1,9 +1,9 @@
 import type { Element } from '@prisma/client'
-import { Space, Button, Table, Popconfirm, Input, Select } from 'antd'
-import { PlusOutlined } from '@ant-design/icons'
+import { Space, Button, Table, Popconfirm, Input, Select, message } from 'antd'
+import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons'
 import Link from 'next/link'
 import moment from 'moment'
-import { useQuery, UseQueryResult } from 'react-query'
+import { useMutation, useQuery, useQueryClient, UseQueryResult } from 'react-query'
 import { getElements, deleteElement } from '../../../network/elements'
 import get from 'lodash.get'
 import trim from 'lodash.trim'
@@ -16,11 +16,11 @@ const { Option } = Select
 
 const AdminElements = () => {
     const [q, setQ] = useState<string | undefined>()
-    const [type, setType] = useState<string | undefined>()
+    const [block, setBlock] = useState<string | undefined>()
     const debouncedQ = useDebounce<string | undefined>(q, 750)
     const elements: UseQueryResult<Element[], Error> = useQuery<Element[], Error>(
-        ['elements', { q: trim(debouncedQ)?.toLocaleLowerCase() || undefined, type }],
-        () => getElements(type, trim(debouncedQ)?.toLocaleLowerCase())
+        ['elements', { q: trim(debouncedQ)?.toLocaleLowerCase() || undefined, block }],
+        () => getElements(block, trim(debouncedQ)?.toLocaleLowerCase())
     )
 
     return (
@@ -50,8 +50,8 @@ const AdminElements = () => {
                         />
                         <Select
                             allowClear
-                            value={type}
-                            onChange={setType}
+                            value={block}
+                            onChange={setBlock}
                             placeholder="Select a block"
                             style={{ width: 180 }}
                         >
@@ -93,35 +93,56 @@ const columns = [
         title: 'Title',
         dataIndex: 'title',
     },
-    { title: 'Block', dataIndex: 'type' },
+    { title: 'Block', dataIndex: 'block' },
     {
         title: 'Last updated',
         dataIndex: 'updatedAt',
         render: (e: Date) => moment(e).fromNow(),
     },
     {
-        width: 155,
+        width: 200,
         render: (e: Element) => (
             <Space>
-                <Button type="primary">
-                    <Link href={`/admin/elements/${e.id}`}>
-                        <a>Edit</a>
-                    </Link>
-                </Button>
+                <Link href={`/admin/elements/${e.id}`}>
+                    <a>
+                        <Button type="primary" icon={<EditOutlined />}>
+                            Edit
+                        </Button>
+                    </a>
+                </Link>
 
-                <Popconfirm
-                    placement="topRight"
-                    title={'Are you sur to delete this page?'}
-                    onConfirm={() => deleteElement(e.id)}
-                    okText="Delete"
-                    cancelText="Cancel"
-                >
-                    <Button danger>Delete</Button>
-                </Popconfirm>
+                <DeleteButton id={e.id} />
             </Space>
         ),
     },
 ]
+
+const DeleteButton = ({ id }: { id: string }) => {
+    const queryClient = useQueryClient()
+    const mutation = useMutation(() => deleteElement(id), {
+        onSuccess: () => {
+            queryClient.invalidateQueries('elements')
+            message.success('Element successfully removed')
+        },
+        onError: (err) => {
+            message.error('Error removing element')
+        },
+    })
+
+    return (
+        <Popconfirm
+            placement="topRight"
+            title={'Are you sur to delete this element?'}
+            onConfirm={() => mutation.mutate()}
+            okText="Delete"
+            cancelText="Cancel"
+        >
+            <Button danger disabled={id === 'page'} icon={<DeleteOutlined />} loading={mutation.isLoading}>
+                Delete
+            </Button>
+        </Popconfirm>
+    )
+}
 
 AdminElements.requireAuth = true
 

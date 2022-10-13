@@ -39,20 +39,28 @@ model Metadata {
   contentLinked Content?   @relation(fields: [contentId], references: [id])
 }
 
+enum SectionType {
+  PAGE
+  HEADER
+  TOP_BODY
+  BOTTOM_BODY
+  FOOTER
+}
+
 model Section {
-  id                 String     @id @default(cuid()) // @map("_id")
-  type               String? // page header footer top-body bottom-body
+  id                 String      @id @default(cuid()) // @map("_id")
+  type               SectionType @default(PAGE)
   block              String?
   formId             String?
-  form               Form?      @relation(fields: [formId], references: [id])
+  form               Form?       @relation(fields: [formId], references: [id])
   containerId        String?
-  container          Container? @relation(fields: [containerId], references: [id], name: "sections")
+  container          Container?  @relation(fields: [containerId], references: [id], name: "sections")
   containerContentId String?
-  containerContent   Container? @relation(fields: [containerContentId], references: [id], name: "contentSections")
+  containerContent   Container?  @relation(fields: [containerContentId], references: [id], name: "contentSections")
   contentId          String?
-  contentLinked      Content?   @relation(fields: [contentId], references: [id])
+  contentLinked      Content?    @relation(fields: [contentId], references: [id])
   elementId          String?
-  element            Element?   @relation(fields: [elementId], references: [id])
+  element            Element?    @relation(fields: [elementId], references: [id])
   position           Int
   content            Json?
 }
@@ -62,7 +70,8 @@ model Element {
   title     String    @unique
   block     String
   section   Section[]
-  content   String?
+  content   Json?
+  status    Status    @default(AVAILABLE)
   updatedAt DateTime  @updatedAt
 }
 
@@ -73,7 +82,7 @@ model Media {
   name       String
   size       Int
   alt        String?
-  article    ContentField[]
+  usedIn     ContentField[]
   uploadTime DateTime       @default(now())
 }
 
@@ -128,6 +137,7 @@ model Form {
   messages  Message[]
   fields    FormField[]
   sections  Section[]
+  status    Status      @default(AVAILABLE)
   updatedAt DateTime    @updatedAt
 }
 
@@ -148,38 +158,44 @@ model Message {
   read      Boolean  @default(false)
   formId    String
   form      Form     @relation(fields: [formId], references: [id])
-  value     String
+  value     Json
   createdAt DateTime @default(now())
 }
 
+enum Status {
+  AVAILABLE
+  DISCONTINUED
+}
+
 model Container {
-  id                 String           @id @default(cuid()) // @map("_id")
-  title              String
-  metadatas          Metadata[]       @relation(name: "metadatas")
+  id                     String           @id @default(cuid()) // @map("_id")
+  title                  String
+  metadatas              Metadata[]       @relation(name: "metadatas")
   // slug               String?          @unique
-  accesses           Access[]
-  sections           Section[]        @relation(name: "sections")
-  contentHasSections Boolean
-  contentSections    Section[]        @relation(name: "contentSections")
-  fields             ContainerField[]
-  contents           Content[]
-  published          Boolean          @default(true)
-  updatedAt          DateTime         @updatedAt
-  slug               Slug?
-  contentFields      ContainerField[] @relation(name: "linkedContentFields")
+  accesses               Access[]
+  sections               Section[]        @relation(name: "sections")
+  disableContentSections Boolean          @default(false)
+  contentSections        Section[]        @relation(name: "contentSections")
+  fields                 ContainerField[]
+  contents               Content[]
+  published              Boolean          @default(true)
+  status                 Status           @default(AVAILABLE)
+  updatedAt              DateTime         @updatedAt
+  slug                   Slug?
+  contentFields          ContainerField[] @relation(name: "linkedContentFields")
 }
 
 model Content {
   id          String         @id @default(cuid()) // @map("_id")
   title       String
   metadatas   Metadata[]
-  // slug        String?
   accesses    Access[]
   fields      ContentField[] @relation(name: "contentLinked")
   sections    Section[]
   containerId String
   container   Container      @relation(fields: [containerId], references: [id])
   published   Boolean        @default(true)
+  status      Status         @default(AVAILABLE)
   updatedAt   DateTime       @updatedAt
   slug        Slug?
   fieldsValue ContentField[] @relation(name: "contentValue")
@@ -199,6 +215,7 @@ enum ContainerFieldType {
   OPTION
   RICHTEXT
   COLOR
+  LOCATION
 }
 
 model ContainerField {

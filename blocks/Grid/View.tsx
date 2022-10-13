@@ -14,7 +14,7 @@ const View = ({ value = {}, theme, page }: Props) => {
             <h1>{page?.title}</h1>
             <div className={styles.container}>
                 {page?.contents?.map((content, i) => {
-                    const url = get(content, 'slug.0.full', '/')
+                    const url = get(content, 'slug.full', '/')
                     const image = content.fields.find((e) => e.name === fields.image)?.media?.uri || ''
                     const title = content.fields.find((e) => e.name === fields.title)?.textValue || ''
                     const subtitle = content.fields.find((e) => e.name === fields.subtitle)?.dateValue || ''

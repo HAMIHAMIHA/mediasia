@@ -81,10 +81,6 @@ const POST = async (req: NextApiRequest, res: NextApiResponse) => {
     })
 }
 
-const ERROR = async (req: NextApiRequest, res: NextApiResponse) => {
-    return res.status(405).json({ error: 'Method not allowed' })
-}
-
 const users = async (req: NextApiRequest, res: NextApiResponse) => {
     const isAuth = await checkAuth(req.headers)
 
@@ -102,7 +98,7 @@ const users = async (req: NextApiRequest, res: NextApiResponse) => {
         }
 
         default: {
-            return await ERROR(req, res)
+            return res.status(405).json({ error: 'Method not allowed' })
         }
     }
 }

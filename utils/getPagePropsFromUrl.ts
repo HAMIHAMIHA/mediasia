@@ -1,72 +1,92 @@
-import { ContainerField, Content, ContentField } from '@prisma/client'
-import get from 'lodash.get'
+import { SectionType, Status } from '@prisma/client'
 import moment from 'moment'
 import { prisma } from '../utils/prisma'
-import getNameFieldFromType from './getNameFieldFromType'
+// import getNameFieldFromType from './getNameFieldFromType'
+import { ContainerPageContents, ContentFields, PageProps } from '../types'
 
 const sanitizeDate = (date: Date | string | undefined | null) => (!!date ? moment(date).valueOf() : null)
 
-const sanitizeAll = <T>(props: T) => {
-    // console.log('props in', props)
-    let newProps = {
-        ...props,
-        metadatas: [
-            ...get(props, 'metadatas', []),
-            ...get(props, 'container.fields', [])
-                .filter((e: ContainerField) => !!e.metadata)
-                .map((field: ContainerField) => {
-                    const values = get(props, 'fields', []).find((e: ContentField) => e.name === field.name)
-                    const valueName = getNameFieldFromType(values?.type)
-
-                    return {
-                        id: field.id,
-                        name: field.metadata,
-                        content: get(values, valueName, undefined),
-                    }
-                }),
-        ],
-        contents:
-            get(props, 'contents', null)?.map((content: Content) => ({
-                ...content,
-                updatedAt: sanitizeDate(content.updatedAt),
-                slug: [
-                    {
-                        ...get(content, 'slug', {}),
-                        updatedAt: sanitizeDate(get(content, 'slug.updatedAt', null)),
+const sectionSelect = {
+    select: {
+        id: true,
+        block: true,
+        position: true,
+        content: true,
+        element: {
+            select: {
+                id: true,
+                block: true,
+                content: true,
+            },
+        },
+        form: {
+            select: {
+                id: true,
+                fields: {
+                    select: {
+                        id: true,
+                        name: true,
+                        type: true,
+                        label: true,
+                        placeholder: true,
+                        position: true,
+                        required: true,
                     },
-                ],
-                fields: get(content, 'fields', [])?.map((field: ContentField) => ({
-                    ...field,
-                    dateValue: sanitizeDate(get(field, 'dateValue')),
-                    media: {
-                        ...get(field, 'media', {}),
-                        uploadTime: sanitizeDate(get(field, 'media.uploadTime')),
-                    },
-                })),
-            })) || null,
-        container: get(props, 'container', null)
-            ? {
-                  ...get(props, 'container', {}),
-                  updatedAt: sanitizeDate(get(props, 'container.updatedAt')),
-
-                  contentSections: null,
-                  fields: null,
-              }
-            : null,
-        fields:
-            get(props, 'fields', undefined)?.map((field: ContentField) => ({
-                ...field,
-                dateValue: sanitizeDate(get(field, 'dateValue')),
-                media: {
-                    ...get(field, 'media', {}),
-                    uploadTime: sanitizeDate(get(field, 'media.uploadTime')),
                 },
-            })) || null,
-        updatedAt: sanitizeDate(get(props, 'updatedAt')),
-    }
+            },
+        },
+    },
+}
 
-    // console.log('props out', newProps)
-    return newProps as T
+const contentFieldsSelect = {
+    id: true,
+    name: true,
+    type: true,
+    media: {
+        select: {
+            id: true,
+            uri: true,
+            alt: true,
+        },
+    },
+    textValue: true,
+    numberValue: true,
+    boolValue: true,
+    dateValue: true,
+    contentValue: {
+        select: {
+            id: true,
+            title: true,
+            slug: {
+                select: {
+                    id: true,
+                    full: true,
+                },
+            },
+        },
+    },
+    multiple: true,
+}
+
+const basicSelect = {
+    id: true,
+    title: true,
+    updatedAt: true,
+    published: true,
+    status: true,
+    metadatas: {
+        select: {
+            id: true,
+            name: true,
+            content: true,
+        },
+    },
+    accesses: {
+        select: {
+            id: true,
+            roleId: true,
+        },
+    },
 }
 
 const getPagePropsFromUrl = async (slug: string) => {
@@ -74,41 +94,134 @@ const getPagePropsFromUrl = async (slug: string) => {
 
     const releatedSlug = await prisma.slug.findUnique({
         where: { full: slug },
-        include: {
+        select: {
+            published: true,
             container: {
-                include: {
-                    metadatas: true,
-                    accesses: true,
-                    sections: { include: { form: true } },
-                    contentSections: { include: { form: true } },
+                select: {
+                    ...basicSelect,
+                    sections: sectionSelect,
                     contents: {
-                        include: {
-                            fields: {
-                                include: { media: true },
+                        where: { published: true, status: Status.AVAILABLE },
+                        select: {
+                            id: true,
+                            title: true,
+                            slug: {
+                                select: {
+                                    id: true,
+                                    full: true,
+                                },
                             },
-                            slug: true,
+                            fields: {
+                                select: {
+                                    ...contentFieldsSelect,
+                                    childs: {
+                                        select: {
+                                            ...contentFieldsSelect,
+                                        },
+                                    },
+                                },
+                            },
                         },
                     },
                 },
             },
             content: {
-                include: {
-                    metadatas: true,
-                    accesses: true,
-                    sections: { include: { form: true } },
-                    fields: { include: { media: true } },
-                    container: {
-                        include: {
-                            contentSections: {
-                                include: { form: true },
+                select: {
+                    ...basicSelect,
+                    fields: {
+                        select: {
+                            ...contentFieldsSelect,
+                            childs: {
+                                select: {
+                                    ...contentFieldsSelect,
+                                },
                             },
-                            fields: true,
+                        },
+                    },
+                    sections: sectionSelect,
+                    container: {
+                        select: {
+                            accesses: {
+                                select: {
+                                    id: true,
+                                    roleId: true,
+                                },
+                            },
+                            contentSections: sectionSelect,
                         },
                     },
                 },
             },
         },
     })
+
+    if (!releatedSlug || !releatedSlug?.published) {
+        return notFound
+    }
+
+    const type = !!releatedSlug?.container ? 'CONTAINER' : 'CONTENT'
+
+    let title: string | undefined = ''
+    let id: string | undefined = ''
+    let metadatas: any[] = []
+    let sections: any[] = []
+    let updatedAt: number | null = null
+    let contents: ContainerPageContents[] = []
+    let fields: ContentFields[] = []
+
+    if (type === 'CONTAINER') {
+        const { container } = releatedSlug
+
+        if (!container || !container.published || container.status === Status.DISCONTINUED) {
+            return notFound
+        }
+
+        id = container.id
+        title = container.title
+
+        contents = container.contents.map((content) => ({
+            ...content,
+            fields: content.fields.map((field) => ({
+                ...field,
+                dateValue: !!field.dateValue ? sanitizeDate(field.dateValue) : null,
+                childs: field.childs.map((child) => ({
+                    ...child,
+                    dateValue: !!field.dateValue ? sanitizeDate(field.dateValue) : null,
+                })),
+            })),
+        }))
+
+        sections = container.sections.sort((a, b) => a.position - b.position)
+        metadatas = container.metadatas
+
+        updatedAt = sanitizeDate(container.updatedAt)
+    } else {
+        const { content } = releatedSlug
+
+        if (!content || !content.published || content.status === Status.DISCONTINUED) {
+            return notFound
+        }
+
+        id = content.id
+        title = content.title
+
+        fields = content.fields.map((field) => ({
+            ...field,
+            dateValue: !!field.dateValue ? sanitizeDate(field.dateValue) : null,
+            childs: field.childs.map((child) => ({
+                ...child,
+                dateValue: !!field.dateValue ? sanitizeDate(field.dateValue) : null,
+            })),
+        }))
+
+        sections = [
+            ...content.container.contentSections.sort((a, b) => a.position - b.position),
+            ...content.sections.sort((a, b) => a.position - b.position),
+        ]
+        metadatas = content.metadatas
+
+        updatedAt = sanitizeDate(content.updatedAt)
+    }
 
     const appName = await prisma.setting.findUnique({
         where: { name: 'app_name' },
@@ -126,46 +239,49 @@ const getPagePropsFromUrl = async (slug: string) => {
         where: { name: 'secondary_color' },
     })
 
-    const header = await prisma.section.findMany({
-        where: { type: 'header' },
-        include: { form: true },
+    const theme = {
+        background: background_color?.value || null,
+        primary: primary_color?.value || null,
+        secondary: secondary_color?.value || null,
+    }
+
+    const headerSections = await prisma.section.findMany({
+        where: { type: SectionType.HEADER },
+        ...sectionSelect,
     })
 
     const topBody = await prisma.section.findMany({
-        where: { type: 'top-body' },
-        include: { form: true },
+        where: { type: SectionType.TOP_BODY },
+        ...sectionSelect,
     })
 
     const bottomBody = await prisma.section.findMany({
-        where: { type: 'bottom-body' },
-        include: { form: true },
+        where: { type: SectionType.BOTTOM_BODY },
+        ...sectionSelect,
     })
 
-    const footer = await prisma.section.findMany({
-        where: { type: 'footer' },
-        include: { form: true },
+    const footerSections = await prisma.section.findMany({
+        where: { type: SectionType.FOOTER },
+        ...sectionSelect,
     })
 
-    const props = sanitizeAll({
-        appName: appName?.value || '',
-        theme: {
-            background: background_color?.value || null,
-            primary: primary_color?.value || null,
-            secondary: secondary_color?.value || null,
-        },
-        layout: { header, topBody, bottomBody, footer },
-        type: !!releatedSlug?.container ? 'container' : 'content',
-        ...get(releatedSlug, 'container', {}),
-        ...get(releatedSlug, 'content', {}),
-        sections: !!releatedSlug?.container
-            ? get(releatedSlug, 'container.sections', {})
-            : releatedSlug?.content?.container?.contentHasSections
-            ? get(releatedSlug, 'content.container.contentSections', [])
-            : get(releatedSlug, 'content.sections', []),
-    })
-
-    if (!releatedSlug || !props.published) {
-        return notFound
+    const props: PageProps = {
+        id,
+        appName: appName?.value,
+        metadatas,
+        theme,
+        title,
+        type,
+        fields,
+        contents,
+        headerSections: headerSections.sort((a, b) => a.position - b.position),
+        sections: [
+            ...topBody.sort((a, b) => a.position - b.position),
+            ...sections,
+            ...bottomBody.sort((a, b) => a.position - b.position),
+        ],
+        footerSections: footerSections.sort((a, b) => a.position - b.position),
+        updatedAt,
     }
 
     const revalidate = await prisma.setting.findUnique({

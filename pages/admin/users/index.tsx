@@ -5,7 +5,7 @@ import Link from 'next/link'
 import Head from 'next/head'
 import get from 'lodash.get'
 import trim from 'lodash.trim'
-import { PlusOutlined } from '@ant-design/icons'
+import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons'
 import { useQuery, UseQueryResult } from 'react-query'
 
 import { getUsers } from '../../../network/users'
@@ -113,35 +113,55 @@ const columns = [
         render: (e: Login) => e?.email,
     },
     {
-        width: 155,
+        width: 200,
         render: (e: FullUser) => (
             <Space>
-                <Button type="primary">
-                    <Link href={`/admin/users/${e.id}`}>
-                        <a>Edit</a>
-                    </Link>
-                </Button>
+                <Link href={`/admin/elements/${e.id}`}>
+                    <a>
+                        <Button type="primary" icon={<EditOutlined />}>
+                            Edit
+                        </Button>
+                    </a>
+                </Link>
 
-                <Popconfirm
-                    placement="topRight"
-                    title={'ho la la'}
-                    disabled={e?.login?.role?.id === 'super-admin'}
-                    onConfirm={() => {
-                        fetch(`/api/users/${e.id}`, {
-                            method: 'DELETE',
-                        })
-                    }}
-                    okText="Yes"
-                    cancelText="No"
-                >
-                    <Button danger disabled={e?.login?.role?.id === 'super-admin'}>
-                        Delete
-                    </Button>
-                </Popconfirm>
+                <DeleteButton id={e.id} disabled={e.login.role.id === 'super-admin'} />
             </Space>
         ),
     },
 ]
+
+const DeleteButton = ({ id, disabled }: { id: string; disabled?: boolean }) => {
+    // const queryClient = useQueryClient()
+    // const mutation = useMutation(() => {}, {
+    //     onSuccess: () => {
+    //         queryClient.invalidateQueries('elements')
+    //         message.success('Element successfully removed')
+    //     },
+    //     onError: (err) => {
+    //         message.error('Error removing element')
+    //     },
+    // })
+
+    return (
+        <Popconfirm
+            placement="topRight"
+            title={'Are you sur to delete this element?'}
+            disabled={disabled}
+            // onConfirm={() => mutation.mutate()}
+            okText="Delete"
+            cancelText="Cancel"
+        >
+            <Button
+                danger
+                disabled={disabled}
+                icon={<DeleteOutlined />}
+                //loading={mutation.isLoading}
+            >
+                Delete
+            </Button>
+        </Popconfirm>
+    )
+}
 
 AdminUsers.requireAuth = true
 

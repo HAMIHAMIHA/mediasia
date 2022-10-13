@@ -2,7 +2,14 @@
 import type { Media } from '@prisma/client'
 
 interface Props {
-    img?: Media | null
+    img?:
+        | {
+              id: string
+              uri: string
+              alt: string | null
+          }
+        | Media
+        | null
     className?: string
     children?: React.ReactNode
 }

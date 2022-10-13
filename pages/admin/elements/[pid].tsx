@@ -19,21 +19,13 @@ const initialValues: Prisma.ElementCreateInput = {
 const validate = (values: Prisma.ElementCreateInput) => {
     let errors: any = {}
 
-    // if (!values.title) {
-    //     errors.title = 'Required'
-    // }
+    if (!values.title) {
+        errors.title = 'Required'
+    }
 
-    // const splittedSlug = values.slug.split('/')
-    // for (const slug of splittedSlug) {
-    //     if (!slug) {
-    //         errors.slug = 'Forbiden slug'
-    //         break
-    //     }
-    // }
-
-    // if (!values.slug) {
-    //     errors.slug = 'Required'
-    // }
+    if (!values.block) {
+        errors.block = 'Required'
+    }
 
     return errors
 }
@@ -43,12 +35,14 @@ const Admin = () => {
     const { pid } = router.query
     const queryClient = useQueryClient()
 
-    const { values, /*errors,*/ handleSubmit, handleChange, setValues } =
-        useFormik<Prisma.ElementCreateInput>({
-            initialValues,
-            validate,
-            onSubmit: async (values) => mutation.mutate({ pid: pid as string, values }),
-        })
+    const { values, errors, handleSubmit, handleChange, setValues } = useFormik<Prisma.ElementCreateInput>({
+        initialValues,
+        validate,
+        validateOnBlur: false,
+        validateOnMount: false,
+        validateOnChange: false,
+        onSubmit: async (values) => mutation.mutate({ pid: pid as string, values }),
+    })
 
     const element: UseQueryResult<Prisma.ElementCreateInput, Error> = useQuery<
         Prisma.ElementCreateInput,
@@ -71,7 +65,7 @@ const Admin = () => {
             onError: (err) => {
                 message.error('An error occured, while creating or updating the element')
                 queryClient.invalidateQueries('elements')
-                router.push('/admin/elements')
+                // router.push('/admin/elements')
             },
         }
     )
@@ -123,6 +117,7 @@ const Admin = () => {
                                         style={{ width: 240 }}
                                         value={get(values, 'title', '')}
                                         onChange={(e) => onHandleChange('title', e.target.value)}
+                                        status={errors.title ? 'error' : undefined}
                                     />
                                 </Space>
                             </Space>
@@ -136,6 +131,7 @@ const Admin = () => {
                                         value={values.block}
                                         onChange={(e) => onHandleChange('block', e)}
                                         style={{ width: 240 }}
+                                        status={errors.block ? 'error' : undefined}
                                     >
                                         {Object.keys(Blocks).map((key) => (
                                             <Select.Option key={key} value={key}>

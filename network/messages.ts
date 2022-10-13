@@ -2,11 +2,7 @@ import INSTANCE from './api'
 import type { Message } from '@prisma/client'
 import { FullMessage } from '@types'
 
-export const getMessages = (
-    page: number,
-    formId?: string,
-    read?: boolean
-): Promise<FullMessage[]> =>
+export const getMessages = (page: number, formId?: string, read?: boolean): Promise<FullMessage[]> =>
     new Promise((resolve, reject) => {
         INSTANCE({
             method: 'GET',
@@ -22,7 +18,7 @@ export const sendMessage = (formId: string, content: {}): Promise<Message> =>
         INSTANCE({
             method: 'POST',
             url: `/api/messages`,
-            data: { formId, content: JSON.stringify(content) },
+            data: { formId, content },
         })
             .then(resolve)
             .catch(reject)

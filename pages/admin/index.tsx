@@ -1,5 +1,5 @@
 import UploadButton from '../../components/UploadButton'
-import { Space, Avatar, InputNumber, Input, Button, Typography, Popover, Slider } from 'antd'
+import { Space, Avatar, InputNumber, Input, Typography, Slider } from 'antd'
 import { useQuery /*, UseQueryResult*/ } from 'react-query'
 import { Setting } from '@prisma/client'
 import { useEffect, useState } from 'react'
@@ -7,8 +7,7 @@ import { getSettings, editSetting } from '../../network/settings'
 import get from 'lodash.get'
 import useDebounce from '../../hooks/useDebounce'
 import Head from 'next/head'
-import { ChromePicker } from 'react-color'
-import { BgColorsOutlined } from '@ant-design/icons'
+import ColorButton from '@components/ColorButton'
 
 const { Text } = Typography
 
@@ -128,84 +127,30 @@ const Admin = () => {
                 <Space direction="vertical">
                     <Space className="color-picker">
                         <Text>Background color: </Text>
-                        <Popover
-                            placement="right"
-                            trigger="click"
-                            content={
-                                <ChromePicker
-                                    color={get(settings, 'background_color', undefined)}
-                                    onChange={(e) =>
-                                        setSettings((prev: any) => ({ ...prev, background_color: e.hex }))
-                                    }
-                                />
-                            }
-                        >
-                            <Button
-                                type="primary"
-                                style={{
-                                    backgroundColor: get(settings, 'background_color', undefined),
-                                    borderColor: '#000',
-                                }}
-                                icon={<BgColorsOutlined />}
-                            >
-                                {get(settings, 'background_color', undefined)?.toLocaleUpperCase() ||
-                                    'Pick color'}
-                            </Button>
-                        </Popover>
+                        <ColorButton
+                            value={get(settings, 'background_color', undefined)}
+                            onChange={(e) => {
+                                setSettings((prev: any) => ({ ...prev, background_color: e }))
+                            }}
+                        />
                     </Space>
                     <Space>
                         <Text>Primary color: </Text>
-                        <Popover
-                            placement="right"
-                            trigger="click"
-                            content={
-                                <ChromePicker
-                                    color={get(settings, 'primary_color', undefined)}
-                                    onChange={(e) =>
-                                        setSettings((prev: any) => ({ ...prev, primary_color: e.hex }))
-                                    }
-                                />
-                            }
-                        >
-                            <Button
-                                type="primary"
-                                style={{
-                                    backgroundColor: get(settings, 'primary_color', undefined),
-                                    borderColor: '#000',
-                                }}
-                                icon={<BgColorsOutlined />}
-                            >
-                                {get(settings, 'primary_color', undefined)?.toLocaleUpperCase() ||
-                                    'Pick color'}
-                            </Button>
-                        </Popover>
+                        <ColorButton
+                            value={get(settings, 'primary_color', undefined)}
+                            onChange={(e) => {
+                                setSettings((prev: any) => ({ ...prev, primary_color: e }))
+                            }}
+                        />
                     </Space>
                     <Space>
                         <Text>Secondary color: </Text>
-                        <Popover
-                            placement="right"
-                            trigger="click"
-                            content={
-                                <ChromePicker
-                                    color={get(settings, 'secondary_color', undefined)}
-                                    onChange={(e) =>
-                                        setSettings((prev: any) => ({ ...prev, secondary_color: e.hex }))
-                                    }
-                                />
-                            }
-                        >
-                            <Button
-                                type="primary"
-                                style={{
-                                    backgroundColor: get(settings, 'secondary_color', undefined),
-                                    borderColor: '#000',
-                                }}
-                                icon={<BgColorsOutlined />}
-                            >
-                                {get(settings, 'secondary_color', undefined)?.toLocaleUpperCase() ||
-                                    'Pick color'}
-                            </Button>
-                        </Popover>
+                        <ColorButton
+                            value={get(settings, 'secondary_color', undefined)}
+                            onChange={(e) => {
+                                setSettings((prev: any) => ({ ...prev, secondary_color: e }))
+                            }}
+                        />
                     </Space>
                 </Space>
             </Space>

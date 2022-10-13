@@ -15,9 +15,10 @@ import { Editor, EditorState, RichUtils, getDefaultKeyBinding, convertFromHTML, 
 interface RichEditorProps {
     defaultValue: string | undefined
     onChange(e: string): void
+    error?: boolean
 }
 
-const RichEditor = ({ defaultValue, onChange }: RichEditorProps) => {
+const RichEditor = ({ defaultValue, onChange, error }: RichEditorProps) => {
     const ref = useRef<any>()
     const [editorState, setEditorState] = useState(EditorState.createEmpty())
     const focus = () => ref?.current?.editor?.focus()
@@ -70,7 +71,12 @@ const RichEditor = ({ defaultValue, onChange }: RichEditorProps) => {
     return (
         <Card
             bodyStyle={{ padding: 0 }}
-            style={{ resize: 'horizontal', minWidth: 480, maxWidth: 980, borderColor: '#d9d9d9' }}
+            style={{
+                resize: 'horizontal',
+                minWidth: 480,
+                maxWidth: 980,
+                borderColor: error ? '#ff4d4f' : '#d9d9d9',
+            }}
             title={
                 <Space direction="vertical">
                     <BlockStyleControls editorState={editorState} onToggle={toggleBlockType} />

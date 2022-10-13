@@ -23,7 +23,7 @@ interface CustomSelectProps {
     size?: 'small' | 'middle' | 'large'
     multi?: boolean
     filterId?: string
-    status?: 'error' | undefined
+    status?: '' | 'error' | 'warning' | undefined
 }
 
 const ListContainers = ({ value, onChange, width = 240, disabled, status }: CustomSelectProps) => {
@@ -64,6 +64,7 @@ const ListContents = ({
     size,
     multi,
     filterId,
+    status,
 }: CustomSelectProps) => {
     const contents: UseQueryResult<Content[], Error> = useQuery<Content[], Error>(
         ['contents', { type: filterId }],
@@ -81,6 +82,7 @@ const ListContents = ({
             style={{
                 width,
             }}
+            status={status}
             placeholder="Select a content"
             loading={contents.isLoading}
         >

@@ -114,12 +114,16 @@ function MenuAdmin() {
                     type: 'group',
                     label: 'Contents',
                     children: get(containers, 'data', []).map((container: Container, idx: number) => ({
-                        key: `3-${idx}`,
-                        label: container.title,
+                        key: `3-${container.id}`,
+                        label: (
+                            <Link href={`/admin/containers/${container.id}`}>
+                                <a>{container.title}</a>
+                            </Link>
+                        ),
                         icon: <FileTextOutlined />,
                         children: [
                             {
-                                key: `3-${idx}-1`,
+                                key: `3-${container.id}-1`,
                                 label: (
                                     <Link
                                         href={{
@@ -133,7 +137,7 @@ function MenuAdmin() {
                                 icon: <FileOutlined />,
                             },
                             {
-                                key: `3-${idx}-2`,
+                                key: `3-${container.id}-2`,
                                 label: (
                                     <Link
                                         href={{

@@ -11,7 +11,7 @@ interface PageDisplayProps {
 }
 
 const PageDisplay = ({ pageProps, onEmpty, noTitle = false }: PageDisplayProps) => {
-    const { id, type, title, appName, theme, sections, metadatas, layout } = pageProps
+    const { id, type, title, appName, theme, sections, metadatas, headerSections, footerSections } = pageProps
 
     return (
         <>
@@ -26,26 +26,20 @@ const PageDisplay = ({ pageProps, onEmpty, noTitle = false }: PageDisplayProps) 
             <EditPageButton redirectTo={`/admin/${type === 'container' ? 'containers' : 'contents'}/${id}`} />
 
             <header>
-                {layout?.header?.map((section) => (
+                {headerSections?.map((section) => (
                     <SectionBlock key={section.id} section={section} page={pageProps} theme={theme} />
                 ))}
             </header>
 
             <main>
-                {layout?.topBody?.map((section) => (
-                    <SectionBlock key={section.id} section={section} page={pageProps} theme={theme} />
-                ))}
                 {!sections?.length && onEmpty}
                 {sections?.map((section) => (
-                    <SectionBlock key={section.id} section={section} page={pageProps} theme={theme} />
-                ))}
-                {layout?.bottomBody?.map((section) => (
                     <SectionBlock key={section.id} section={section} page={pageProps} theme={theme} />
                 ))}
             </main>
 
             <footer>
-                {layout?.footer?.map((section) => (
+                {footerSections?.map((section) => (
                     <SectionBlock key={section.id} section={section} page={pageProps} theme={theme} />
                 ))}
             </footer>

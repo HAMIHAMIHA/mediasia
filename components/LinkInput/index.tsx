@@ -1,7 +1,6 @@
 import { Slug } from '@prisma/client'
 import { AutoComplete, Typography } from 'antd'
 import { useQuery, UseQueryResult } from 'react-query'
-import get from 'lodash.get'
 import { useMemo } from 'react'
 import { SizeType } from 'antd/lib/config-provider/SizeContext'
 
@@ -17,9 +16,10 @@ interface Props {
     onBlur?: () => void
     onPressEnter?: () => void
     placeholder?: string
+    status?: '' | 'error' | 'warning' | undefined
 }
 
-const LinkInput = ({ value, onChange, width = 300, ...rest }: Props) => {
+const LinkInput = ({ value, onChange, width = 300, status, ...rest }: Props) => {
     const slugs: UseQueryResult<Slug[], Error> = useQuery<Slug[], Error>(['slugs'], () => getSlugs(), {
         refetchOnMount: false,
     })
@@ -40,17 +40,15 @@ const LinkInput = ({ value, onChange, width = 300, ...rest }: Props) => {
         return [...pagesOptions]
     }, [slugs])
 
-    const isError = !!value && get(value, '0', '') !== '/' ? 'error' : ''
-
     return (
         <AutoComplete
             {...rest}
-            status={isError}
             value={value}
             options={options}
             style={{ width }}
             onSelect={(value: string) => onChange(value)}
             onChange={onChange}
+            status={status}
             allowClear
             // filterOption={(inputValue, option) =>
             //     option!.searchLabel.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1

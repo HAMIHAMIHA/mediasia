@@ -13,11 +13,6 @@ const Edit = ({ value = {}, onChange, theme, fields }: Props) => {
     const handleChange = (name: string, e: any) => {
         const newValue = { ...value }
 
-        console.log('typeof value', typeof value)
-        console.log('value', value)
-        console.log('newValue', { ...value })
-        console.log('e', typeof value, value, newValue, e)
-
         set(newValue, name, e)
         if (!!onChange) onChange(newValue)
     }

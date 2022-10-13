@@ -68,7 +68,6 @@ const AdminImages = () => {
                     scroll={{ y: 'calc(100vh - 205px)' }}
                     expandable={{
                         expandedRowRender: (message: FullMessage) => {
-                            const values = JSON.parse(message.value)
                             const cols: TableColumnsType<any> | undefined = []
 
                             message.form?.fields?.forEach((field, idx) =>
@@ -82,7 +81,12 @@ const AdminImages = () => {
 
                             return (
                                 <>
-                                    <Table columns={cols} bordered dataSource={[values]} pagination={false} />
+                                    <Table
+                                        columns={cols}
+                                        bordered
+                                        dataSource={[message.value]}
+                                        pagination={false}
+                                    />
                                 </>
                             )
                         },

@@ -1,3 +1,4 @@
+import { Status } from '@prisma/client'
 import checkAuth from '@utils/checkAuth'
 import type { NextApiRequest, NextApiResponse } from 'next'
 // import type { Page, Metadata, Section, element } from '@prisma/client'
@@ -6,13 +7,13 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { prisma } from '../../../utils/prisma'
 
 const GET = async (req: NextApiRequest, res: NextApiResponse) => {
-    const type = req.query.type as string | undefined
+    const block = req.query.block as string | undefined
     const q = req.query.q as string | undefined
 
-    let search: any = { where: {} }
+    let search: any = { where: { status: Status.AVAILABLE } }
 
-    if (!!type) {
-        search.where.type = type
+    if (!!block) {
+        search.where.block = block
     }
 
     if (!!q) {

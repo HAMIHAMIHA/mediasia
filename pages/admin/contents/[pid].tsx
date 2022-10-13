@@ -14,7 +14,6 @@ import {
     Divider,
     Tooltip,
     Select,
-    Popover,
 } from 'antd'
 import get from 'lodash.get'
 import { editContent, getContentDetails, postContent } from '../../../network/contents'
@@ -22,7 +21,7 @@ import { getContainerDetails } from '../../../network/containers'
 import { Prisma, Content, ContainerField /*, ContentField*/, Media, ContainerFieldType } from '@prisma/client'
 import { useMutation, useQuery, UseQueryResult, useQueryClient } from 'react-query'
 import Head from 'next/head'
-import { FullContainerEdit, FullSectionEdit } from '@types'
+import { FileType, FullContainerEdit, FullSectionEdit } from '@types'
 import CustomSelect from '@components/CustomSelect'
 import LinkInput from '@components/LinkInput'
 import MediaModal from '@components/MediaModal'
@@ -36,13 +35,12 @@ import {
     QuestionCircleOutlined,
     CloseOutlined,
     CloseCircleFilled,
-    BgColorsOutlined,
     MinusOutlined,
 } from '@ant-design/icons'
 import { SizeType } from 'antd/lib/config-provider/SizeContext'
 import getNameFieldFromType from '../../../utils/getNameFieldFromType'
-import { ChromePicker } from 'react-color'
 import RichEditor from '@components/RichEditor'
+import ColorButton from '@components/ColorButton'
 
 const { Text } = Typography
 const { Option } = Select
@@ -53,69 +51,87 @@ const initialValues: MyType = {
     published: true,
 }
 
-const validate = (values: MyType) => {
-    let errors: any = {}
-
-    if (!values.title) {
-        errors.title = 'Required'
-    }
-
-    if (!values.slug) {
-        errors.slug = 'Required'
-    }
-
-    if (!values.containerId) {
-        errors.containerId = 'Required'
-    }
-
-    // const splittedSlug = values.slug.split('/')
-    // for (const slug of splittedSlug) {
-    //     if (!slug) {
-    //         errors.slug = 'Forbiden slug'
-    //         break
-    //     }
-    // }
-
-    // if (!values.slug) {
-    //     errors.slug = 'Required'
-    // }
-
-    return errors
-}
-
 const Admin = () => {
     const router = useRouter()
     const { pid } = router.query
     const queryClient = useQueryClient()
+
+    const validate = (values: MyType) => {
+        let errors: any = {}
+
+        if (!values.title) {
+            errors.title = 'Required'
+        }
+
+        if (!values.slug) {
+            errors.slug = 'Required'
+        }
+
+        if (!values.containerId) {
+            errors.containerId = 'Required'
+        }
+
+        container?.data?.fields?.forEach((field: any, idx: number) => {
+            const value = get(
+                values,
+                `fieldsValue.${field.name}.${getNameFieldFromType(field?.type)}`,
+                undefined
+            )
+
+            if (field.multiple) {
+                if (
+                    field.required &&
+                    (!Array.isArray(value) ||
+                        !value?.length) /*|| value?.findIndex((e) => !e && e !== 0) !== -1*/
+                ) {
+                    set(errors, `fields.${field.name}`, 'Required')
+                } else if (value?.length < field.min) {
+                    set(errors, `fields.${field.name}`, 'Missing items')
+                } else if (value?.length > field.max) {
+                    set(errors, `fields.${field.name}`, 'Too many items')
+                }
+            } else {
+                if (field.required && !value && value !== 0) {
+                    set(errors, `fields.${field.name}`, 'Required')
+                }
+            }
+        })
+
+        return errors
+    }
 
     const { values, errors, handleSubmit, handleChange, setValues } = useFormik<MyType>({
         initialValues: { ...initialValues, containerId: router.query.container },
         validate,
         validateOnBlur: false,
         validateOnChange: false,
+        validateOnMount: false,
         onSubmit: async (values) => {
-            const fields = Object.keys(values.fieldsValue).map((key: string) => {
-                let mediaId = undefined
+            let fields = []
+            if (!!values.fieldsValue) {
+                fields = Object.keys(values.fieldsValue).map((key: string) => {
+                    let mediaId = undefined
 
-                if (
-                    values.fieldsValue[key].type === ContainerFieldType.IMAGE ||
-                    values.fieldsValue[key].type === ContainerFieldType.VIDEO ||
-                    values.fieldsValue[key].type === ContainerFieldType.FILE
-                ) {
-                    if (values.fieldsValue[key].multiple) {
-                        mediaId = values.fieldsValue[key].media.map((media: Media) => media.id)
-                    } else {
-                        mediaId = values.fieldsValue[key].media.id
+                    if (
+                        values.fieldsValue[key].type === ContainerFieldType.IMAGE ||
+                        values.fieldsValue[key].type === ContainerFieldType.VIDEO ||
+                        values.fieldsValue[key].type === ContainerFieldType.FILE
+                    ) {
+                        if (values.fieldsValue[key].multiple) {
+                            mediaId = values.fieldsValue[key].media.map((media: Media) => media.id)
+                        } else {
+                            mediaId = values.fieldsValue[key].media.id
+                        }
                     }
-                }
 
-                return {
-                    name: key,
-                    ...values.fieldsValue[key],
-                    mediaId,
-                    media: undefined,
-                }
-            })
+                    return {
+                        name: key,
+                        ...values.fieldsValue[key],
+                        mediaId,
+                        media: undefined,
+                    }
+                })
+            }
 
             const slug = encodeURI(get(values, 'slug', ''))
 
@@ -323,13 +339,14 @@ const Admin = () => {
                                             values={get(values, 'fieldsValue', {})}
                                             fields={get(container, 'data.fields', [])}
                                             onChange={(e) => onHandleChange('fieldsValue', e)}
+                                            errors={errors.fields}
                                         />
                                     </Card>
                                 )}
 
-                                {!container?.data?.contentHasSections && (
+                                {!container?.data?.disableContentSections && (
                                     <>
-                                        <Divider orientation="left">Layout</Divider>
+                                        <Divider orientation="left">Custom layout</Divider>
 
                                         <SectionManager
                                             values={get(values, 'sections', []) as FullSectionEdit[]}
@@ -354,9 +371,10 @@ interface ContentFieldsManagerProps {
     values: {}
     onChange: (e: {}) => void
     fields: ContainerField[]
+    errors: any
 }
 
-const ContentFieldsManager = ({ values, fields, onChange }: ContentFieldsManagerProps) => {
+const ContentFieldsManager = ({ values, fields, onChange, errors }: ContentFieldsManagerProps) => {
     const onHandleChange = (name: string, type: string, value: any, multi?: boolean) => {
         const newValue = { ...values }
         const valueName = getNameFieldFromType(type)
@@ -368,138 +386,180 @@ const ContentFieldsManager = ({ values, fields, onChange }: ContentFieldsManager
     return (
         <Space direction="vertical">
             {fields.map((field, idx) => {
+                const Label = (
+                    <Text>
+                        {field.label}
+                        {field.required && <Text type="danger">{` *`}</Text>}
+                        {field.multiple && (
+                            <Text type="secondary">{` (min: ${field.min}, max: ${field.max})`}</Text>
+                        )}
+                    </Text>
+                )
+
                 switch (field.type) {
                     case ContainerFieldType.STRING:
                         return (
                             <Space key={idx} direction="vertical">
-                                <Text>{field.label}</Text>
-                                {field.multiple ? (
-                                    <CustomMultipleWrapper
-                                        values={get(values, `${field.name}.textValue`, [])}
-                                        onChange={(e) => onHandleChange(field.name, field.type, e, true)}
-                                        onClear={() =>
-                                            onHandleChange(field.name, field.type, undefined, true)
-                                        }
-                                    />
-                                ) : (
-                                    <Input
-                                        style={{ width: 480 }}
-                                        value={get(values, `${field.name}.textValue`, '')}
-                                        onChange={(e) =>
-                                            onHandleChange(field.name, field.type, e.target.value)
-                                        }
-                                    />
-                                )}
+                                {Label}
+                                <Space>
+                                    {field.multiple ? (
+                                        <CustomMultipleWrapper
+                                            values={get(values, `${field.name}.textValue`, [])}
+                                            onChange={(e) => onHandleChange(field.name, field.type, e, true)}
+                                            onClear={() =>
+                                                onHandleChange(field.name, field.type, undefined, true)
+                                            }
+                                            error={!!errors?.[field.name]}
+                                        />
+                                    ) : (
+                                        <Input
+                                            style={{ width: 480 }}
+                                            value={get(values, `${field.name}.textValue`, '')}
+                                            onChange={(e) =>
+                                                onHandleChange(field.name, field.type, e.target.value)
+                                            }
+                                            status={!!errors?.[field.name] ? 'error' : undefined}
+                                        />
+                                    )}
+                                    <Text type="danger">{errors?.[field.name]}</Text>
+                                </Space>
                             </Space>
                         )
 
                     case ContainerFieldType.OPTION:
                         return (
                             <Space key={idx} direction="vertical">
-                                <Text>{field.label}</Text>
-                                {field.multiple ? (
-                                    <Select
-                                        mode="multiple"
-                                        allowClear
-                                        style={{ width: 480 }}
-                                        value={get(values, `${field.name}.textValue`, [])}
-                                        onChange={(e) => onHandleChange(field.name, field.type, e, true)}
-                                    >
-                                        {(get(field, 'options', []) as any[])?.map(
-                                            (option: any, jdx: number) => (
-                                                <Option key={option.value} value={option.value}>
-                                                    {option.label}
-                                                </Option>
-                                            )
-                                        )}
-                                    </Select>
-                                ) : (
-                                    <Select
-                                        style={{ width: 480 }}
-                                        value={get(values, `${field.name}.textValue`, '')}
-                                        onChange={(e) => onHandleChange(field.name, field.type, e)}
-                                    >
-                                        {(get(field, 'options', []) as any[])?.map(
-                                            (option: any, jdx: number) => (
-                                                <Option key={option.value} value={option.value}>
-                                                    {option.label}
-                                                </Option>
-                                            )
-                                        )}
-                                    </Select>
-                                )}
+                                {Label}
+                                <Space>
+                                    {field.multiple ? (
+                                        <Select
+                                            mode="multiple"
+                                            allowClear
+                                            style={{ width: 480 }}
+                                            status={errors?.[field.name] ? 'error' : undefined}
+                                            value={get(values, `${field.name}.textValue`, [])}
+                                            onChange={(e) => onHandleChange(field.name, field.type, e, true)}
+                                        >
+                                            {(get(field, 'options', []) as any[])?.map(
+                                                (option: any, jdx: number) => (
+                                                    <Option key={option.value} value={option.value}>
+                                                        {option.label}
+                                                    </Option>
+                                                )
+                                            )}
+                                        </Select>
+                                    ) : (
+                                        <Select
+                                            style={{ width: 480 }}
+                                            allowClear
+                                            status={errors?.[field.name] ? 'error' : undefined}
+                                            value={get(values, `${field.name}.textValue`, '')}
+                                            onChange={(e) => onHandleChange(field.name, field.type, e)}
+                                        >
+                                            {(get(field, 'options', []) as any[])?.map(
+                                                (option: any, jdx: number) => (
+                                                    <Option key={option.value} value={option.value}>
+                                                        {option.label}
+                                                    </Option>
+                                                )
+                                            )}
+                                        </Select>
+                                    )}
+                                    <Text type="danger">{errors?.[field.name]}</Text>
+                                </Space>
                             </Space>
                         )
 
                     case ContainerFieldType.PARAGRAPH:
                         return (
                             <Space key={idx} direction="vertical">
-                                <Text>{field.label}</Text>
-                                <Input.TextArea
-                                    style={{ width: 480 }}
-                                    value={get(values, `${field.name}.textValue`, '')}
-                                    onChange={(e) => onHandleChange(field.name, field.type, e.target.value)}
-                                />
+                                {Label}
+                                <Space>
+                                    <Input.TextArea
+                                        style={{ width: 480 }}
+                                        status={errors?.[field.name] ? 'error' : undefined}
+                                        value={get(values, `${field.name}.textValue`, '')}
+                                        onChange={(e) =>
+                                            onHandleChange(field.name, field.type, e.target.value)
+                                        }
+                                    />
+                                    <Text type="danger">{errors?.[field.name]}</Text>
+                                </Space>
                             </Space>
                         )
 
                     case ContainerFieldType.NUMBER:
                         return (
                             <Space key={idx} direction="vertical">
-                                <Text>{field.label}</Text>
-                                {field.multiple ? (
-                                    <CustomMultipleWrapper
-                                        type={ContainerFieldType.NUMBER}
-                                        values={get(values, `${field.name}.numberValue`, [])}
-                                        onChange={(e) => onHandleChange(field.name, field.type, e, true)}
-                                        onClear={() =>
-                                            onHandleChange(field.name, field.type, undefined, true)
-                                        }
-                                    />
-                                ) : (
-                                    <InputNumber
-                                        style={{ width: 480 }}
-                                        value={get(values, `${field.name}.numberValue`, undefined)}
-                                        onChange={(e) => onHandleChange(field.name, field.type, e)}
-                                    />
-                                )}
+                                {Label}
+                                <Space>
+                                    {field.multiple ? (
+                                        <CustomMultipleWrapper
+                                            type={ContainerFieldType.NUMBER}
+                                            values={get(values, `${field.name}.numberValue`, [])}
+                                            onChange={(e) => onHandleChange(field.name, field.type, e, true)}
+                                            onClear={() =>
+                                                onHandleChange(field.name, field.type, undefined, true)
+                                            }
+                                            error={!!errors?.[field.name]}
+                                        />
+                                    ) : (
+                                        <InputNumber
+                                            style={{ width: 480 }}
+                                            value={get(values, `${field.name}.numberValue`, undefined)}
+                                            onChange={(e) => onHandleChange(field.name, field.type, e)}
+                                            status={errors?.[field.name] ? 'error' : undefined}
+                                        />
+                                    )}
+                                    <Text type="danger">{errors?.[field.name]}</Text>
+                                </Space>
                             </Space>
                         )
 
                     case ContainerFieldType.BOOLEAN:
                         return (
                             <Space key={idx} direction="vertical">
-                                <Text>{field.label}</Text>
-                                <Radio.Group
-                                    value={get(values, `${field.name}.boolValue`, undefined)}
-                                    onChange={(e) => onHandleChange(field.name, field.type, e.target.value)}
-                                >
-                                    <Radio value={true}>True</Radio>
-                                    <Radio value={false}>False</Radio>
-                                </Radio.Group>
+                                {Label}
+                                <Space>
+                                    <Radio.Group
+                                        value={get(values, `${field.name}.boolValue`, undefined)}
+                                        onChange={(e) =>
+                                            onHandleChange(field.name, field.type, e.target.value)
+                                        }
+                                    >
+                                        <Radio value={true}>True</Radio>
+                                        <Radio value={false}>False</Radio>
+                                    </Radio.Group>
+                                    <Text type="danger">{errors?.[field.name]}</Text>
+                                </Space>
                             </Space>
                         )
 
                     case ContainerFieldType.DATE:
                         return (
                             <Space key={idx} direction="vertical">
-                                <Text>{field.label}</Text>
-                                {field.multiple ? (
-                                    <CustomMultipleWrapper
-                                        type={ContainerFieldType.DATE}
-                                        values={get(values, `${field.name}.dateValue`, [])}
-                                        onChange={(e) => onHandleChange(field.name, field.type, e, true)}
-                                        onClear={() =>
-                                            onHandleChange(field.name, field.type, undefined, true)
-                                        }
-                                    />
-                                ) : (
-                                    <DatePicker
-                                        style={{ width: 480 }}
-                                        value={get(values, `${field.name}.dateValue`, undefined)}
-                                        onChange={(e) => onHandleChange(field.name, field.type, e)}
-                                    />
-                                )}
+                                {Label}
+                                <Space>
+                                    {field.multiple ? (
+                                        <CustomMultipleWrapper
+                                            type={ContainerFieldType.DATE}
+                                            values={get(values, `${field.name}.dateValue`, [])}
+                                            onChange={(e) => onHandleChange(field.name, field.type, e, true)}
+                                            onClear={() =>
+                                                onHandleChange(field.name, field.type, undefined, true)
+                                            }
+                                            error={!!errors?.[field.name]}
+                                        />
+                                    ) : (
+                                        <DatePicker
+                                            style={{ width: 480 }}
+                                            value={get(values, `${field.name}.dateValue`, undefined)}
+                                            onChange={(e) => onHandleChange(field.name, field.type, e)}
+                                            status={errors?.[field.name] ? 'error' : undefined}
+                                        />
+                                    )}
+                                    <Text type="danger">{errors?.[field.name]}</Text>
+                                </Space>
                             </Space>
                         )
 
@@ -508,122 +568,118 @@ const ContentFieldsManager = ({ values, fields, onChange }: ContentFieldsManager
                     case ContainerFieldType.VIDEO:
                         return (
                             <Space key={idx} direction="vertical">
-                                <Text>{field.label}</Text>
-                                {field.multiple ? (
-                                    <MultipleFiles
-                                        value={get(values, `${field.name}.media`, [])}
-                                        onChange={(e) => onHandleChange(field.name, field.type, e, true)}
-                                    />
-                                ) : (
-                                    <MediaModal
-                                        type={field.type}
-                                        size="small"
-                                        value={get(values, `${field.name}.media`, '')}
-                                        onMediaSelected={(e) => onHandleChange(field.name, field.type, e)}
-                                    />
-                                )}
+                                {Label}
+                                <Space>
+                                    {field.multiple ? (
+                                        <MultipleFiles
+                                            type={field.type}
+                                            value={get(values, `${field.name}.media`, [])}
+                                            onChange={(e) => onHandleChange(field.name, field.type, e, true)}
+                                            error={!!errors?.[field.name]}
+                                        />
+                                    ) : (
+                                        <MediaModal
+                                            type={field.type}
+                                            size="small"
+                                            value={get(values, `${field.name}.media`, '')}
+                                            onMediaSelected={(e) => onHandleChange(field.name, field.type, e)}
+                                        />
+                                    )}
+                                    <Text type="danger">{errors?.[field.name]}</Text>
+                                </Space>
                             </Space>
                         )
 
                     case ContainerFieldType.LINK:
                         return (
                             <Space key={idx} direction="vertical">
-                                <Text>{field.label}</Text>
-                                {field.multiple ? (
-                                    <CustomMultipleWrapper
-                                        type={ContainerFieldType.LINK}
-                                        values={get(values, `${field.name}.textValue`, [])}
-                                        onChange={(e) => onHandleChange(field.name, field.type, e, true)}
-                                        onClear={() =>
-                                            onHandleChange(field.name, field.type, undefined, true)
-                                        }
-                                    />
-                                ) : (
-                                    <LinkInput
-                                        width={480}
-                                        value={get(values, `${field.name}.textValue`, '')}
-                                        onChange={(e) => onHandleChange(field.name, field.type, e)}
-                                    />
-                                )}
+                                {Label}
+                                <Space>
+                                    {field.multiple ? (
+                                        <CustomMultipleWrapper
+                                            type={ContainerFieldType.LINK}
+                                            values={get(values, `${field.name}.textValue`, [])}
+                                            onChange={(e) => onHandleChange(field.name, field.type, e, true)}
+                                            onClear={() =>
+                                                onHandleChange(field.name, field.type, undefined, true)
+                                            }
+                                            error={!!errors?.[field.name]}
+                                        />
+                                    ) : (
+                                        <LinkInput
+                                            width={480}
+                                            value={get(values, `${field.name}.textValue`, '')}
+                                            onChange={(e) => onHandleChange(field.name, field.type, e)}
+                                            status={errors?.[field.name] ? 'error' : undefined}
+                                        />
+                                    )}
+                                    <Text type="danger">{errors?.[field.name]}</Text>
+                                </Space>
                             </Space>
                         )
 
                     case ContainerFieldType.CONTENT:
                         return (
                             <Space key={idx} direction="vertical">
-                                <Text>{field.label}</Text>
-                                {field.multiple ? (
-                                    <CustomSelect.ListContents
-                                        multi
-                                        width={480}
-                                        filterId={field.linkedContainerId || undefined}
-                                        value={get(values, `${field.name}.contentValueId`, [])}
-                                        onChange={(e) => onHandleChange(field.name, field.type, e, true)}
-                                    />
-                                ) : (
-                                    <CustomSelect.ListContents
-                                        width={480}
-                                        filterId={field.linkedContainerId || undefined}
-                                        value={get(values, `${field.name}.contentValueId`, undefined)}
-                                        onChange={(e) => onHandleChange(field.name, field.type, e)}
-                                    />
-                                )}
+                                {Label}
+                                <Space>
+                                    {field.multiple ? (
+                                        <CustomSelect.ListContents
+                                            multi
+                                            width={480}
+                                            filterId={field.linkedContainerId || undefined}
+                                            value={get(values, `${field.name}.contentValueId`, [])}
+                                            onChange={(e) => onHandleChange(field.name, field.type, e, true)}
+                                            status={errors?.[field.name] ? 'error' : undefined}
+                                        />
+                                    ) : (
+                                        <CustomSelect.ListContents
+                                            width={480}
+                                            filterId={field.linkedContainerId || undefined}
+                                            value={get(values, `${field.name}.contentValueId`, undefined)}
+                                            onChange={(e) => onHandleChange(field.name, field.type, e)}
+                                            status={errors?.[field.name] ? 'error' : undefined}
+                                        />
+                                    )}
+                                    <Text type="danger">{errors?.[field.name]}</Text>
+                                </Space>
                             </Space>
                         )
 
                     case ContainerFieldType.COLOR:
                         return (
                             <Space key={idx} direction="vertical">
-                                <Text>{field.label}</Text>
-                                {field.multiple ? (
-                                    <MultipleColor
-                                        values={get(values, `${field.name}.textValue`, [])}
-                                        onChange={(e) => onHandleChange(field.name, field.type, e, true)}
-                                    />
-                                ) : (
-                                    <Popover
-                                        placement="right"
-                                        trigger="click"
-                                        content={
-                                            <ChromePicker
-                                                color={get(values, `${field.name}.textValue`, undefined)}
-                                                onChange={(e) =>
-                                                    onHandleChange(field.name, field.type, e.hex)
-                                                }
-                                            />
-                                        }
-                                    >
-                                        <Button
-                                            type="primary"
-                                            style={{
-                                                backgroundColor: get(
-                                                    values,
-                                                    `${field.name}.textValue`,
-                                                    undefined
-                                                ),
-                                                borderColor: '#000',
-                                            }}
-                                            icon={<BgColorsOutlined />}
-                                        >
-                                            {get(
-                                                values,
-                                                `${field.name}.textValue`,
-                                                undefined
-                                            )?.toLocaleUpperCase() || 'Pick color'}
-                                        </Button>
-                                    </Popover>
-                                )}
+                                {Label}
+                                <Space>
+                                    {field.multiple ? (
+                                        <MultipleColor
+                                            values={get(values, `${field.name}.textValue`, [])}
+                                            onChange={(e) => onHandleChange(field.name, field.type, e, true)}
+                                            error={!!errors?.[field.name]}
+                                        />
+                                    ) : (
+                                        <ColorButton
+                                            value={get(values, `${field.name}.textValue`, undefined)}
+                                            onChange={(e) => onHandleChange(field.name, field.type, e)}
+                                        />
+                                    )}
+                                    <Text type="danger">{errors?.[field.name]}</Text>
+                                </Space>
                             </Space>
                         )
 
                     case ContainerFieldType.RICHTEXT:
                         return (
                             <Space key={idx} direction="vertical">
-                                <Text>{field.label}</Text>
-                                <RichEditor
-                                    defaultValue={get(values, `${field.name}.textValue`, undefined)}
-                                    onChange={(e) => onHandleChange(field.name, field.type, e)}
-                                />
+                                {Label}
+                                <Space>
+                                    <RichEditor
+                                        defaultValue={get(values, `${field.name}.textValue`, undefined)}
+                                        onChange={(e) => onHandleChange(field.name, field.type, e)}
+                                        error={!!errors?.[field.name]}
+                                    />
+                                    <Text type="danger">{errors?.[field.name]}</Text>
+                                </Space>
                             </Space>
                         )
 
@@ -642,9 +698,11 @@ export default Admin
 const MultipleColor = ({
     values = [],
     onChange,
+    error,
 }: {
     values: string[]
     onChange(list: (string | undefined)[] | undefined): void
+    error?: boolean
 }) => {
     if (!Array.isArray(values)) {
         values = [values]
@@ -655,38 +713,21 @@ const MultipleColor = ({
             className="ant-select ant-select-multiple ant-select-allow-clear ant-select-show-search"
             style={{ width: 480 }}
         >
-            <div className="ant-select-selector">
+            <div className="ant-select-selector" style={{ borderColor: error ? '#ff4d4f' : undefined }}>
                 <div
                     className="ant-select-selection-overflow"
                     style={{ paddingTop: !values?.length ? undefined : 1.5 }}
                 >
                     {values?.map((e: string, idx: number) => (
                         <Space key={idx} size={5} style={{ marginRight: 5, marginBottom: 5 }}>
-                            <Popover
-                                placement="right"
-                                trigger="click"
-                                content={
-                                    <ChromePicker
-                                        onChange={(e) => {
-                                            const newValues = [...values]
-                                            newValues[idx] = e.hex
-                                            onChange(newValues)
-                                        }}
-                                        color={e}
-                                    />
-                                }
-                            >
-                                <Button
-                                    type="primary"
-                                    style={{
-                                        backgroundColor: e,
-                                        borderColor: '#000',
-                                    }}
-                                    icon={<BgColorsOutlined />}
-                                >
-                                    {e?.toLocaleUpperCase() || 'Pick color'}
-                                </Button>
-                            </Popover>
+                            <ColorButton
+                                value={e}
+                                onChange={(e) => {
+                                    const newValues = [...values]
+                                    newValues[idx] = e
+                                    onChange(newValues)
+                                }}
+                            />
                             <Button
                                 type="primary"
                                 danger
@@ -729,9 +770,13 @@ const MultipleColor = ({
 const MultipleFiles = ({
     value = [],
     onChange,
+    type,
+    error,
 }: {
     value: Media[]
     onChange(list: (Media | undefined)[] | undefined): void
+    type?: FileType
+    error?: boolean
 }) => {
     if (!Array.isArray(value)) {
         value = [value]
@@ -742,7 +787,7 @@ const MultipleFiles = ({
             className="ant-select ant-select-multiple ant-select-allow-clear ant-select-show-search"
             style={{ width: 480 }}
         >
-            <div className="ant-select-selector">
+            <div className="ant-select-selector" style={{ borderColor: error ? '#ff4d4f' : undefined }}>
                 <div
                     className="ant-select-selection-overflow"
                     style={{ paddingTop: !value?.length ? undefined : 1.5 }}
@@ -751,6 +796,7 @@ const MultipleFiles = ({
                         {value?.map((e, idx) => (
                             <MediaModal
                                 key={idx}
+                                type={type}
                                 size="small"
                                 value={e}
                                 onMediaSelected={(e) => {
@@ -769,6 +815,7 @@ const MultipleFiles = ({
                         ))}
                         <MediaModal
                             primary={false}
+                            type={type}
                             size="small"
                             label="Add new"
                             icon={<PlusOutlined />}
@@ -821,11 +868,13 @@ const CustomMultipleWrapper = ({
     type,
     onClear,
     onChange,
+    error,
 }: {
     values: any[]
     type?: ContainerFieldType
     onClear(): void
     onChange(e: any): void
+    error?: boolean
 }) => {
     if (!Array.isArray(values)) {
         values = [values]
@@ -836,7 +885,7 @@ const CustomMultipleWrapper = ({
             className="ant-select ant-select-multiple ant-select-allow-clear ant-select-show-search"
             style={{ width: 480 }}
         >
-            <div className="ant-select-selector">
+            <div className="ant-select-selector" style={{ borderColor: error ? '#ff4d4f' : undefined }}>
                 <div className="ant-select-selection-overflow">
                     {values?.map((e, i) => (
                         <CustomInputTag
@@ -881,7 +930,7 @@ const CustomInputTag = ({
     onClose,
 }: {
     text: string
-    type?: string
+    type?: ContainerFieldType
     onChange(e: string): void
     onClose(): void
 }) => {
@@ -910,18 +959,24 @@ const CustomInputTag = ({
         style: { width: 125 },
     }
 
+    const MatchingInput = () => {
+        switch (type) {
+            case ContainerFieldType.NUMBER:
+                return <InputNumber {...props} onChange={(e) => setValue(e)} />
+            case ContainerFieldType.DATE:
+                return <DatePicker {...props} format="DD/MM/YYYY" onChange={(e) => setValue(e)} />
+            case ContainerFieldType.LINK:
+                return <LinkInput {...props} onChange={(e) => setValue(e)} />
+
+            default:
+                return <Input allowClear {...props} onChange={(e) => setValue(e.target.value)} />
+        }
+    }
+
     if (inputVisible) {
         return (
             <div className="ant-select-selection-overflow-item" style={{ opacity: 1, marginRight: 5 }}>
-                {type === 'number' ? (
-                    <InputNumber {...props} onChange={(e) => setValue(e)} />
-                ) : type === 'date' ? (
-                    <DatePicker {...props} format="DD/MM/YYYY" onChange={(e) => setValue(e)} />
-                ) : type === 'link' ? (
-                    <LinkInput {...props} onChange={(e) => setValue(e)} />
-                ) : (
-                    <Input allowClear {...props} onChange={(e) => setValue(e.target.value)} />
-                )}
+                <MatchingInput />
             </div>
         )
     }
@@ -929,19 +984,19 @@ const CustomInputTag = ({
     const isLongTag = typeof text === 'number' ? false : text?.length > 20
 
     return (
-        <div
-            className="ant-select-selection-overflow-item"
-            style={{ opacity: 1 }}
-            onClick={() => {
-                setValue(text)
-                setInputVisible(true)
-            }}
-        >
+        <div className="ant-select-selection-overflow-item" style={{ opacity: 1 }}>
             <span className="ant-select-selection-item" title={text}>
-                <span className="ant-select-selection-item-content">
-                    {isLongTag && type === 'string'
+                <span
+                    className="ant-select-selection-item-content"
+                    style={{ cursor: 'text' }}
+                    onClick={() => {
+                        setValue(text)
+                        setInputVisible(true)
+                    }}
+                >
+                    {isLongTag && type === ContainerFieldType.STRING
                         ? `${text.slice(0, 20)}...`
-                        : type === 'date'
+                        : type === ContainerFieldType.DATE
                         ? moment(text).format('DD/MM/YYYY')
                         : text}
                 </span>
@@ -960,7 +1015,7 @@ const CustomInputTag = ({
     )
 }
 
-const AddInputTag = ({ type, onCreate }: { type?: string; onCreate(value: any): void }) => {
+const AddInputTag = ({ type, onCreate }: { type?: ContainerFieldType; onCreate(value: any): void }) => {
     const [inputVisible, setInputVisible] = useState(false)
     const [value, setValue] = useState<any>()
 
@@ -985,18 +1040,24 @@ const AddInputTag = ({ type, onCreate }: { type?: string; onCreate(value: any): 
         style: { width: 125 },
     }
 
+    const MatchingInput = () => {
+        switch (type) {
+            case ContainerFieldType.NUMBER:
+                return <InputNumber {...props} onChange={(e) => setValue(e)} />
+            case ContainerFieldType.DATE:
+                return <DatePicker {...props} format="DD/MM/YYYY" onChange={(e) => setValue(e)} />
+            case ContainerFieldType.LINK:
+                return <LinkInput {...props} width={115} onChange={(e) => setValue(e)} />
+
+            default:
+                return <Input allowClear {...props} onChange={(e) => setValue(e.target.value)} />
+        }
+    }
+
     if (inputVisible) {
         return (
             <div className="ant-select-selection-overflow-item" style={{ opacity: 1, marginRight: 5 }}>
-                {type === 'number' ? (
-                    <InputNumber {...props} onChange={(e) => setValue(e)} />
-                ) : type === 'date' ? (
-                    <DatePicker {...props} format="DD/MM/YYYY" onChange={(e) => setValue(e)} />
-                ) : type === 'link' ? (
-                    <LinkInput {...props} width={115} onChange={(e) => setValue(e)} />
-                ) : (
-                    <Input allowClear {...props} onChange={(e) => setValue(e.target.value)} />
-                )}
+                <MatchingInput />
             </div>
         )
     }

@@ -13,7 +13,7 @@ import { getMedias, deleteMedia, editImageAlt } from '../../network/medias'
 import moment from 'moment'
 import useDebounce from '../../hooks/useDebounce'
 import Head from 'next/head'
-import { FileOutlined, PictureOutlined, VideoCameraOutlined } from '@ant-design/icons'
+import { DeleteOutlined, FileOutlined, PictureOutlined, VideoCameraOutlined } from '@ant-design/icons'
 
 const AdminImages = () => {
     const queryClient = useQueryClient()
@@ -64,17 +64,23 @@ const AdminImages = () => {
 
     const columns = useMemo(() => {
         const action = {
-            width: 95,
+            width: 115,
             render: (e: Media) => (
                 <Space>
                     <Popconfirm
                         placement="topRight"
-                        title={'Are you sur to delete this image?'}
+                        title={'Are you sur to delete this file?'}
                         onConfirm={() => deleteFile(e.id)}
                         okText="Delete"
                         cancelText="Cancel"
                     >
-                        <Button danger>Delete</Button>
+                        <Button
+                            danger
+                            icon={<DeleteOutlined />}
+                            // loading={mutation.isLoading}
+                        >
+                            Delete
+                        </Button>
                     </Popconfirm>
                 </Space>
             ),

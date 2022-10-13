@@ -64,19 +64,18 @@ const PUT = async (req: NextApiRequest, res: NextApiResponse) => {
 const DELETE = async (req: NextApiRequest, res: NextApiResponse) => {
     const id = req.query.uid as string
 
-    await prisma.login.delete({
-        where: { userId: id },
-    })
+    const login = await prisma.login.findUnique({ where: { userId: id } })
 
-    await prisma.user.delete({
-        where: { id },
-    })
+    if (!login || login.roleId === 'super-admin') {
+        return res.status(405).json('Method not allowed')
+    }
+
+    await prisma.login.delete({ where: { userId: id } })
+
+    await prisma.session.deleteMany({ where: { loginId: login.id } })
+    await prisma.user.delete({ where: { id } })
 
     return res.status(200).json('User deleted')
-}
-
-const ERROR = async (req: NextApiRequest, res: NextApiResponse) => {
-    return res.status(405).json({ error: 'Method not allowed' })
 }
 
 const pages = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -100,7 +99,7 @@ const pages = async (req: NextApiRequest, res: NextApiResponse) => {
         }
 
         default: {
-            return await ERROR(req, res)
+            return res.status(405).json({ error: 'Method not allowed' })
         }
     }
 }
