@@ -1,7 +1,6 @@
-import { Slug } from '@prisma/client'
-import { AutoComplete, Dropdown, Input, Menu, Typography } from 'antd'
+import { Dropdown, Input, Menu, Typography } from 'antd'
 import { useQuery, UseQueryResult } from 'react-query'
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { SizeType } from 'antd/lib/config-provider/SizeContext'
 
 import { getSlugs } from '../../network/api'
@@ -99,6 +98,7 @@ const LinkInput = ({ value, onChange, width = 300, status, ...rest }: Props) => 
             })) || []
 
         return newS
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [slugs?.data])
 
     return (

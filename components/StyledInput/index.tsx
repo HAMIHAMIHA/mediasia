@@ -44,8 +44,7 @@ const Span = ({ value, onChange, className, style }: Props<string>) => (
 )
 
 const P = ({ value, onChange, className, style }: Props<string>) => {
-    console.log('value', value, value.split('\n').length)
-    const nbOfLines = value.split('\n').length || 1
+    const nbOfLines = value?.split('\n').length || 1
 
     return (
         <p

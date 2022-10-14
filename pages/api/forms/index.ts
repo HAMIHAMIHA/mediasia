@@ -1,4 +1,4 @@
-import { FormField, Prisma, Status } from '@prisma/client'
+import { Prisma, Status } from '@prisma/client'
 import { FullFormEdit } from '../../../types'
 import get from 'lodash.get'
 import type { NextApiRequest, NextApiResponse } from 'next'
@@ -46,7 +46,7 @@ const GET = async (req: NextApiRequest, res: NextApiResponse) => {
 const POST = async (req: NextApiRequest, res: NextApiResponse) => {
     const newFormContent = req.body as FullFormEdit
 
-    const fields: FormField[] = get(req, 'body.fields', [])
+    const fields: Prisma.FormFieldCreateInput[] = get(req, 'body.fields', [])
     delete newFormContent.fields
 
     const article = await prisma.form.create({

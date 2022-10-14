@@ -5,6 +5,7 @@ import { useFormik } from 'formik'
 import { useMutation } from 'react-query'
 import get from 'lodash.get'
 import { sendMessage } from '../../network/messages'
+import { FormFieldType } from '@prisma/client'
 
 const View = ({ section }: Props) => {
     const { values, errors, handleChange, handleSubmit, setValues } = useFormik({
@@ -14,7 +15,11 @@ const View = ({ section }: Props) => {
 
             {
                 section?.form?.fields?.forEach((field) => {
-                    if (field.type !== 'submit' && field.required && !get(values, field.name!, undefined)) {
+                    if (
+                        field.type !== FormFieldType.BUTTON &&
+                        field.required &&
+                        !get(values, field.name!, undefined)
+                    ) {
                         errors[field.name!] = 'Required'
                     }
                 })
@@ -47,7 +52,7 @@ const View = ({ section }: Props) => {
                         ?.sort((a, b) => a.position - b.position)
                         .map((field) => {
                             switch (field.type) {
-                                case 'input':
+                                case FormFieldType.TEXT:
                                     return (
                                         <div className={styles.inputWrap}>
                                             <label className={styles.label}>{field.label}</label>
@@ -62,7 +67,7 @@ const View = ({ section }: Props) => {
                                             )}
                                         </div>
                                     )
-                                case 'text-area':
+                                case FormFieldType.PARAGRAPH:
                                     return (
                                         <div className={styles.inputWrap}>
                                             <label className={styles.label}>{field.label}</label>
@@ -77,7 +82,7 @@ const View = ({ section }: Props) => {
                                             )}
                                         </div>
                                     )
-                                case 'submit':
+                                case FormFieldType.BUTTON:
                                     return (
                                         <div key={field.name} className={styles.submit}>
                                             <button className={styles.button} type="submit">

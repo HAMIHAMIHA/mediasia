@@ -2,7 +2,6 @@ import set from 'lodash.set'
 
 import styles from './SimpleImage.module.css'
 import type { Props } from '../types'
-import StyledInput from '../../components/StyledInput'
 import EditPanel from '../../components/EditPanel'
 import MediaModal from '@components/MediaModal'
 import CustomImage from '@components/CustomImage'

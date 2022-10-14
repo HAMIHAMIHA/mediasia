@@ -1,9 +1,6 @@
 import { useState } from 'react'
-// import type { Page } from '@prisma/client'
-import { Space, Table, Badge, TableColumnsType, Select } from 'antd'
-// import Link from 'next/link'
-// import moment from 'moment'
-import type { Form } from '@prisma/client'
+import { Space, Table, Badge, Select } from 'antd'
+import { Form, FormFieldType } from '@prisma/client'
 import { useQuery, UseQueryResult, useQueryClient } from 'react-query'
 import get from 'lodash.get'
 
@@ -68,23 +65,19 @@ const AdminImages = () => {
                     scroll={{ y: 'calc(100vh - 205px)' }}
                     expandable={{
                         expandedRowRender: (message: FullMessage) => {
-                            const cols: TableColumnsType<any> | undefined = []
-
-                            message.form?.fields?.forEach((field, idx) =>
-                                field.type === 'submit'
-                                    ? null
-                                    : cols.push({
-                                          title: field.label,
-                                          dataIndex: field.name || '',
-                                      })
-                            )
+                            const cols = message.form?.fields
+                                ?.filter((e) => e.type !== FormFieldType.BUTTON)
+                                .map((field) => ({
+                                    title: field.label,
+                                    dataIndex: field.name || '',
+                                }))
 
                             return (
                                 <>
                                     <Table
                                         columns={cols}
                                         bordered
-                                        dataSource={[message.value]}
+                                        dataSource={[new Object(message.value)]}
                                         pagination={false}
                                     />
                                 </>

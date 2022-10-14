@@ -1,4 +1,3 @@
-import { Slug } from '@prisma/client'
 import { LayoutProps, Theme } from '../types'
 
 const axios = require('axios')
