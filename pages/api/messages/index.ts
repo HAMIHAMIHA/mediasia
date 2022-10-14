@@ -1,9 +1,8 @@
-import checkAuth from '@utils/checkAuth'
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { MESSAGE_PAGE_SIZE } from '../../../utils/contants'
-// import get from 'lodash.get'
 
 import { prisma } from '../../../utils/prisma'
+import checkAuth from '../../../utils/checkAuth'
+import { MESSAGE_PAGE_SIZE } from '../../../utils/contants'
 
 const GET = async (req: NextApiRequest, res: NextApiResponse) => {
     let page = 0

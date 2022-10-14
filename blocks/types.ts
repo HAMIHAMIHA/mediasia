@@ -11,8 +11,8 @@ export interface Block {
 
 export interface Props {
     value: any
-    onChange?: (value: any | undefined) => void
-    theme: {
+    onChange?(value?: any): void
+    theme?: {
         background: string
         primary: string
         secondary: string

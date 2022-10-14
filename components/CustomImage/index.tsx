@@ -4,9 +4,9 @@ import type { Media } from '@prisma/client'
 interface Props {
     img?:
         | {
-              id: string
+              id?: string
               uri: string
-              alt: string | null
+              alt?: string | null
           }
         | Media
         | null
@@ -19,7 +19,12 @@ interface Props {
 // }
 
 const CustomImage = ({ img, className }: Props) => {
-    const imageURL = `/api/uploads/${img?.uri}`
+    const imageURL =
+        img?.uri?.indexOf('http://') === 0 ||
+        img?.uri?.indexOf('https://') === 0 ||
+        img?.uri?.indexOf('www.') === 0
+            ? img?.uri
+            : `/api/uploads/images/${img?.uri}`
 
     // eslint-disable-next-line @next/next/no-img-element
     return <img src={imageURL} alt={img?.alt || ''} className={className} />
@@ -37,7 +42,12 @@ const CustomImage = ({ img, className }: Props) => {
 }
 
 const Background = ({ img, className, children }: Props) => {
-    const imageURL = `/api/uploads/images/${img?.uri}`
+    const imageURL =
+        img?.uri?.indexOf('http://') === 0 ||
+        img?.uri?.indexOf('https://') === 0 ||
+        img?.uri?.indexOf('www.') === 0
+            ? img?.uri
+            : `/api/uploads/images/${img?.uri}`
 
     return (
         <>

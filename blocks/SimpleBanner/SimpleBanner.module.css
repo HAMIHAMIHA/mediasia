@@ -1,0 +1,33 @@
+.wrapper {
+    display: flex;
+    /* justify-content: space-around; */
+    align-items: center;
+
+    padding: 5px 10px;
+}
+
+.wrapper.reverse {
+    flex-direction: row-reverse;
+}
+
+.wrapper .info {
+    flex: 1;
+}
+
+.wrapper .info h2 {
+    color: var(--secondary-color);
+}
+
+.wrapper .info p {
+    height: fit-content;
+}
+
+.wrapper .imgWrap {
+    flex: 1;
+}
+
+.wrapper .image {
+    object-fit: contain;
+    width: 25rem;
+    height: 20rem;
+}
