@@ -47,11 +47,13 @@ export type FullFormEdit = Prisma.FormCreateInput & {
 export type FullSection = Section & {
     element: Element | null
     form: FullForm | null
+    tempId?: string
 }
 
 export type FullSectionEdit = Prisma.SectionCreateInput & {
     elementId?: string
     formId?: string
+    tempId?: string
 }
 
 export type FullMessage = Message & {

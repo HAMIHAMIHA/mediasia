@@ -21,7 +21,7 @@ import { getContainerDetails } from '../../../network/containers'
 import { Prisma, Content, ContainerField /*, ContentField*/, Media, ContainerFieldType } from '@prisma/client'
 import { useMutation, useQuery, UseQueryResult, useQueryClient } from 'react-query'
 import Head from 'next/head'
-import { FileType, FullContainerEdit, FullSectionEdit } from '@types'
+import { FileType, FullContainerEdit, FullSection, FullSectionEdit } from '@types'
 import CustomSelect from '@components/CustomSelect'
 import LinkInput from '@components/LinkInput'
 import MediaModal from '@components/MediaModal'
@@ -36,6 +36,7 @@ import {
     CloseOutlined,
     CloseCircleFilled,
     MinusOutlined,
+    CopyOutlined,
 } from '@ant-design/icons'
 import { SizeType } from 'antd/lib/config-provider/SizeContext'
 import getNameFieldFromType from '../../../utils/getNameFieldFromType'
@@ -133,11 +134,28 @@ const Admin = () => {
                 })
             }
 
+            let i = 0
+            const sections: FullSection[] = []
+
+            if (!!values.sections) {
+                for (const section of values.sections) {
+                    if (!!section.block || !!section.elementId) {
+                        sections.push({
+                            ...section,
+                            position: i,
+                            tempId: undefined,
+                        })
+
+                        i = i + 1
+                    }
+                }
+            }
+
             const slug = encodeURI(get(values, 'slug', ''))
 
             mutation.mutate({
                 pid: pid as string,
-                values: { ...values, fields, fieldsValue: undefined, slug },
+                values: { ...values, sections, fields, fieldsValue: undefined, slug },
             })
         },
     })
@@ -268,7 +286,31 @@ const Admin = () => {
                     }}
                 >
                     <Space direction="vertical" style={{ width: '100%' }}>
-                        <Card title="Description">
+                        <Card
+                            title="Description"
+                            extra={
+                                pid !== 'create' ? (
+                                    <Button
+                                        icon={<CopyOutlined />}
+                                        onClick={() => {
+                                            console.log('values', values)
+                                            setValues({
+                                                ...values,
+                                                id: undefined,
+                                                title: undefined,
+                                                slug: undefined,
+                                                status: undefined,
+                                                updatedAt: undefined,
+                                            })
+
+                                            router.push('/admin/containers/create')
+                                        }}
+                                    >
+                                        Create a copy
+                                    </Button>
+                                ) : null
+                            }
+                        >
                             <Space direction="vertical">
                                 <Space size="large">
                                     <Space direction="vertical">

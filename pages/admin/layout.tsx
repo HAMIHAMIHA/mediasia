@@ -28,6 +28,7 @@ const Layout = () => {
                         header.push({
                             ...section,
                             position: i,
+                            tempId: undefined,
                         })
 
                         i = i + 1
@@ -44,6 +45,7 @@ const Layout = () => {
                         topBody.push({
                             ...section,
                             position: i,
+                            tempId: undefined,
                         })
 
                         i = i + 1
@@ -60,6 +62,7 @@ const Layout = () => {
                         bottomBody.push({
                             ...section,
                             position: i,
+                            tempId: undefined,
                         })
 
                         i = i + 1
@@ -76,6 +79,7 @@ const Layout = () => {
                         footer.push({
                             ...section,
                             position: i,
+                            tempId: undefined,
                         })
 
                         i = i + 1

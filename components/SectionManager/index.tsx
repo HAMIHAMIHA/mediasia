@@ -10,6 +10,9 @@ import { getTheme } from '../../network/api'
 import get from 'lodash.get'
 import { ContainerField } from '@prisma/client'
 
+import autoAnimate from '@formkit/auto-animate'
+import { useEffect, useRef } from 'react'
+
 const { Text } = Typography
 
 interface SectionManagerProps {
@@ -27,6 +30,7 @@ const SectionManager = ({ values, onChange, fields }: SectionManagerProps) => {
             {
                 block: null,
                 position: values.length,
+                tempId: `${new Date().valueOf()}`,
             },
         ])
     }
@@ -63,83 +67,91 @@ const SectionManager = ({ values, onChange, fields }: SectionManagerProps) => {
         onChange(newValue)
     }
 
+    const parent = useRef(null)
+
+    useEffect(() => {
+        parent.current && autoAnimate(parent.current)
+    }, [parent])
+
     return (
         <Space direction="vertical" style={{ width: '100%' }}>
-            {values.map((section, idx) => (
-                <div key={idx} style={{ display: 'flex', gap: 8 }}>
-                    <Space direction="vertical" size={1}>
-                        <Button
-                            disabled={idx === 0}
-                            onClick={() => SectionUp(idx)}
-                            type="primary"
-                            // shape="circle"
-                            icon={<CaretUpOutlined />}
-                        />
-                        <Button
-                            disabled={idx === values?.length - 1}
-                            onClick={() => SectionDown(idx)}
-                            type="primary"
-                            // shape="circle"
-                            icon={<CaretDownOutlined />}
-                        />
-                    </Space>
-                    <Card
-                        bodyStyle={{ padding: 0 }}
-                        title={
-                            <Space>
-                                <Text
-                                    style={{
-                                        fontSize: 14,
-                                        fontWeight: 'normal',
-                                    }}
-                                >
-                                    Block:
-                                </Text>
-                                <CustomSelect.ListSections
-                                    section={section.block || undefined}
-                                    element={section.elementId || undefined}
-                                    onSectionChange={(e) => onHandleChange(`${idx}.block`, e)}
-                                    onElementChange={(e) => onHandleChange(`${idx}.elementId`, e)}
-                                />
-                                <Divider type="vertical" />
-                                <Text
-                                    style={{
-                                        fontSize: 14,
-                                        fontWeight: 'normal',
-                                    }}
-                                >
-                                    Form:
-                                </Text>
-                                <CustomSelect.ListForms
-                                    value={section.formId}
-                                    onChange={(e) => onHandleChange(`${idx}.formId`, e)}
-                                />
-                            </Space>
-                        }
-                        extra={
+            <div ref={parent} style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                {values.map((section, idx) => (
+                    <div key={section.id || section.tempId} style={{ display: 'flex', gap: 8 }}>
+                        <Space direction="vertical" size={1}>
                             <Button
+                                disabled={idx === 0}
+                                onClick={() => SectionUp(idx)}
                                 type="primary"
-                                onClick={() => removeSection(idx)}
-                                danger
                                 // shape="circle"
-                                icon={<CloseOutlined />}
+                                icon={<CaretUpOutlined />}
                             />
-                        }
-                        style={{ flex: 1 }}
-                    >
-                        {!!section.block && (
-                            <GetEditComponent
-                                block={section.block}
-                                theme={get(theme, 'data', { background: '', primary: '', secondary: '' })}
-                                value={section.content}
-                                onChange={(e) => onHandleChange(`${idx}.content`, e)}
-                                fields={fields}
+                            <Button
+                                disabled={idx === values?.length - 1}
+                                onClick={() => SectionDown(idx)}
+                                type="primary"
+                                // shape="circle"
+                                icon={<CaretDownOutlined />}
                             />
-                        )}
-                        {!!section.elementId && <DisplayElementView id={section.elementId} />}
-                    </Card>
-                </div>
-            ))}
+                        </Space>
+                        <Card
+                            bodyStyle={{ padding: 0 }}
+                            title={
+                                <Space>
+                                    <Text
+                                        style={{
+                                            fontSize: 14,
+                                            fontWeight: 'normal',
+                                        }}
+                                    >
+                                        Block:
+                                    </Text>
+                                    <CustomSelect.ListSections
+                                        section={section.block || undefined}
+                                        element={section.elementId || undefined}
+                                        onSectionChange={(e) => onHandleChange(`${idx}.block`, e)}
+                                        onElementChange={(e) => onHandleChange(`${idx}.elementId`, e)}
+                                    />
+                                    <Divider type="vertical" />
+                                    <Text
+                                        style={{
+                                            fontSize: 14,
+                                            fontWeight: 'normal',
+                                        }}
+                                    >
+                                        Form:
+                                    </Text>
+                                    <CustomSelect.ListForms
+                                        value={section.formId}
+                                        onChange={(e) => onHandleChange(`${idx}.formId`, e)}
+                                    />
+                                </Space>
+                            }
+                            extra={
+                                <Button
+                                    type="primary"
+                                    onClick={() => removeSection(idx)}
+                                    danger
+                                    // shape="circle"
+                                    icon={<CloseOutlined />}
+                                />
+                            }
+                            style={{ flex: 1 }}
+                        >
+                            {!!section.block && (
+                                <GetEditComponent
+                                    block={section.block}
+                                    theme={get(theme, 'data', { background: '', primary: '', secondary: '' })}
+                                    value={section.content}
+                                    onChange={(e) => onHandleChange(`${idx}.content`, e)}
+                                    fields={fields}
+                                />
+                            )}
+                            {!!section.elementId && <DisplayElementView id={section.elementId} />}
+                        </Card>
+                    </div>
+                ))}
+            </div>
             <div
                 style={{
                     display: 'flex',
