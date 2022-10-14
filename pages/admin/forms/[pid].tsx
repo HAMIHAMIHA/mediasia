@@ -15,10 +15,13 @@ import { useMutation, useQuery, UseQueryResult, useQueryClient } from 'react-que
 import type { FormFieldCreateInput, FullFormEdit } from '../../../types'
 import Head from 'next/head'
 import { editForm, getFormDetails, postForm } from '../../../network/forms'
+import autoAnimate from '@formkit/auto-animate'
+import { useEffect, useRef } from 'react'
+import set from 'lodash.set'
 
 const { Title, Text } = Typography
 
-const initialField: FormFieldCreateInput = {
+const initialField: FormFieldCreateInput & { tempId?: string } = {
     name: '',
     type: FormFieldType.TEXT,
     label: '',
@@ -42,8 +45,34 @@ const validate = (values: FullFormEdit) => {
     }
 
     if (!Object.keys(errors).length && (!values.fields || !values.fields.length)) {
-        errors.fields = 'Required'
+        errors.noField = true
         message.error('Please add field')
+    } else {
+        values?.fields?.forEach((field, idx) => {
+            if (field.type !== FormFieldType.BUTTON) {
+                if (!field.name) {
+                    set(errors, `fields.${idx}.name`, 'Required')
+                }
+
+                if (!field.label) {
+                    set(errors, `fields.${idx}.label`, 'Required')
+                }
+            }
+
+            if (field.type === FormFieldType.OPTION || field.type === FormFieldType.CHECKBOX) {
+                const options = field.options as { label: string; value: string }[]
+
+                options.forEach((opt, jdx) => {
+                    if (!opt.label) {
+                        set(errors, `fields.${idx}.options.${jdx}.label`, 'Required')
+                    }
+
+                    if (!opt.value) {
+                        set(errors, `fields.${idx}.options.${jdx}.value`, 'Required')
+                    }
+                })
+            }
+        })
     }
 
     return errors
@@ -61,19 +90,11 @@ const Admin = () => {
         validateOnMount: false,
         validateOnChange: false,
         onSubmit: async (values) => {
-            let i = 0
-            const fields: FormFieldCreateInput[] = []
-
-            if (!!values.fields) {
-                for (const field of values.fields) {
-                    fields.push({
-                        ...field,
-                        position: i,
-                    })
-
-                    i = i + 1
-                }
-            }
+            const fields = values?.fields?.map((field, i) => ({
+                ...field,
+                position: i,
+                tempId: undefined,
+            }))
 
             mutation.mutate({
                 pid: pid as string,
@@ -126,6 +147,7 @@ const Admin = () => {
                     {
                         ...initialField,
                         position: get(values, 'fields', []).length,
+                        tempId: `${new Date().valueOf()}`,
                     },
                 ],
             },
@@ -156,6 +178,12 @@ const Admin = () => {
 
         handleChange({ target: { name: 'fields', value: newValue } })
     }
+
+    const parent = useRef(null)
+
+    useEffect(() => {
+        parent.current && autoAnimate(parent.current)
+    }, [parent])
 
     if (form.isLoading || !pid) {
         return (
@@ -233,273 +261,302 @@ const Admin = () => {
                             </Space>
                         </Card>
 
-                        <Title level={5} style={{ marginLeft: 55 }}>
+                        <Title level={4} style={{ marginLeft: 55 }}>
                             Fields
                         </Title>
                         <Space direction="vertical" style={{ width: '100%' }}>
-                            {get(values, 'fields', []).map((field, idx) => (
-                                <div key={idx} style={{ display: 'flex', gap: 8 }}>
-                                    <Space direction="vertical" size={1}>
-                                        <Button
-                                            disabled={idx === 0}
-                                            onClick={() => FieldUp(idx)}
-                                            type="primary"
-                                            // shape="circle"
-                                            icon={<CaretUpOutlined />}
-                                        />
-                                        <Button
-                                            disabled={idx === get(values, 'fields', []).length - 1}
-                                            onClick={() => FieldDown(idx)}
-                                            type="primary"
-                                            // shape="circle"
-                                            icon={<CaretDownOutlined />}
-                                        />
-                                    </Space>
-                                    <Card
-                                        // bodyStyle={{ padding: 0 }}
-                                        title={`Field ${idx + 1}`}
-                                        extra={
-                                            <Button
-                                                type="primary"
-                                                onClick={() => removeField(idx)}
-                                                danger
-                                                // shape="circle"
-                                                icon={<CloseOutlined />}
-                                            />
-                                        }
-                                        style={{ flex: 1 }}
-                                    >
-                                        <Space direction="vertical" style={{ width: '100%' }}>
-                                            <Space align="start">
-                                                <Space direction="vertical">
-                                                    <Text>Type :</Text>
-                                                    <Select
-                                                        id="type"
-                                                        style={{ width: 240 }}
-                                                        value={field.type}
-                                                        onChange={(e) => {
-                                                            if (
-                                                                e === FormFieldType.OPTION ||
-                                                                e === FormFieldType.CHECKBOX
-                                                            ) {
-                                                                onHandleChange(`fields.${idx}.options`, [
-                                                                    { label: '', value: '' },
-                                                                ])
-                                                            } else {
-                                                                onHandleChange(
-                                                                    `fields.${idx}.options`,
-                                                                    undefined
-                                                                )
-                                                            }
-                                                            onHandleChange(`fields.${idx}.type`, e)
-                                                        }}
-                                                    >
-                                                        {/* TEXT EMAIL PASSWORD PARAGRAPH OPTION CHECKBOX RADIO BUTTON */}
+                            <div ref={parent} style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                                {get(values, 'fields', []).map(
+                                    (field: FormFieldCreateInput & { tempId?: string }, idx) => (
+                                        <div
+                                            key={field.id || field.tempId}
+                                            style={{ display: 'flex', gap: 8 }}
+                                        >
+                                            <Space direction="vertical" size={1}>
+                                                <Button
+                                                    disabled={idx === 0}
+                                                    onClick={() => FieldUp(idx)}
+                                                    type="primary"
+                                                    // shape="circle"
+                                                    icon={<CaretUpOutlined />}
+                                                />
+                                                <Button
+                                                    disabled={idx === get(values, 'fields', []).length - 1}
+                                                    onClick={() => FieldDown(idx)}
+                                                    type="primary"
+                                                    // shape="circle"
+                                                    icon={<CaretDownOutlined />}
+                                                />
+                                            </Space>
+                                            <Card
+                                                // bodyStyle={{ padding: 0 }}
+                                                title={`Field ${idx + 1}`}
+                                                extra={
+                                                    <Button
+                                                        type="primary"
+                                                        onClick={() => removeField(idx)}
+                                                        danger
+                                                        // shape="circle"
+                                                        icon={<CloseOutlined />}
+                                                    />
+                                                }
+                                                style={{ flex: 1 }}
+                                            >
+                                                <Space direction="vertical" style={{ width: '100%' }}>
+                                                    <Space align="start">
+                                                        <Space direction="vertical">
+                                                            <Text>Type :</Text>
+                                                            <Select
+                                                                id="type"
+                                                                style={{ width: 240 }}
+                                                                value={field.type}
+                                                                onChange={(e) => {
+                                                                    if (
+                                                                        e === FormFieldType.OPTION ||
+                                                                        e === FormFieldType.CHECKBOX
+                                                                    ) {
+                                                                        onHandleChange(
+                                                                            `fields.${idx}.options`,
+                                                                            [{ label: '', value: '' }]
+                                                                        )
+                                                                    } else {
+                                                                        onHandleChange(
+                                                                            `fields.${idx}.options`,
+                                                                            undefined
+                                                                        )
+                                                                    }
+                                                                    onHandleChange(`fields.${idx}.type`, e)
+                                                                }}
+                                                            >
+                                                                {/* TEXT EMAIL PASSWORD PARAGRAPH OPTION CHECKBOX RADIO BUTTON */}
 
-                                                        <Select.Option value={FormFieldType.TEXT}>
-                                                            Text
-                                                        </Select.Option>
-                                                        <Select.Option value={FormFieldType.EMAIL}>
-                                                            Email
-                                                        </Select.Option>
-                                                        <Select.Option value={FormFieldType.PASSWORD}>
-                                                            Password
-                                                        </Select.Option>
-                                                        <Select.Option value={FormFieldType.PARAGRAPH}>
-                                                            Paragraph
-                                                        </Select.Option>
-                                                        <Select.Option value={FormFieldType.OPTION}>
-                                                            Option
-                                                        </Select.Option>
-                                                        <Select.Option value={FormFieldType.CHECKBOX}>
-                                                            Checkbox
-                                                        </Select.Option>
-                                                        <Select.Option value={FormFieldType.RADIO}>
-                                                            Radio
-                                                        </Select.Option>
-                                                        <Select.Option value={FormFieldType.BUTTON}>
-                                                            Button
-                                                        </Select.Option>
-                                                    </Select>
-                                                </Space>
+                                                                <Select.Option value={FormFieldType.TEXT}>
+                                                                    Text
+                                                                </Select.Option>
+                                                                <Select.Option value={FormFieldType.EMAIL}>
+                                                                    Email
+                                                                </Select.Option>
+                                                                <Select.Option value={FormFieldType.PASSWORD}>
+                                                                    Password
+                                                                </Select.Option>
+                                                                <Select.Option
+                                                                    value={FormFieldType.PARAGRAPH}
+                                                                >
+                                                                    Paragraph
+                                                                </Select.Option>
+                                                                <Select.Option value={FormFieldType.OPTION}>
+                                                                    Option
+                                                                </Select.Option>
+                                                                <Select.Option value={FormFieldType.CHECKBOX}>
+                                                                    Checkbox
+                                                                </Select.Option>
+                                                                <Select.Option value={FormFieldType.RADIO}>
+                                                                    Radio
+                                                                </Select.Option>
+                                                                <Select.Option value={FormFieldType.BUTTON}>
+                                                                    Button
+                                                                </Select.Option>
+                                                            </Select>
+                                                        </Space>
 
-                                                {(field.type === FormFieldType.OPTION ||
-                                                    field.type === FormFieldType.CHECKBOX) && (
-                                                    <Space direction="vertical">
-                                                        <Text>Options</Text>
-                                                        <>
-                                                            {(
-                                                                (get(
-                                                                    values,
-                                                                    `fields.${idx}.options`,
-                                                                    []
-                                                                ) as any[]) || []
-                                                            )?.map((option: any, jdx: number) => (
-                                                                <Space key={jdx}>
-                                                                    <Input
-                                                                        size="small"
-                                                                        style={{ width: 150 }}
-                                                                        value={option.label}
-                                                                        onChange={(e) =>
-                                                                            onHandleChange(
-                                                                                `fields.${idx}.options.${jdx}.label`,
-                                                                                e.target.value
-                                                                            )
-                                                                        }
-                                                                        placeholder="Label"
-                                                                        // status={
-                                                                        //     errors?.[idx]?.options?.[jdx]
-                                                                        //         ?.label
-                                                                        //         ? 'error'
-                                                                        //         : undefined
-                                                                        // }
-                                                                    />
-                                                                    <Input
-                                                                        size="small"
-                                                                        style={{ width: 150 }}
-                                                                        value={option.value}
-                                                                        onChange={(e) =>
-                                                                            onHandleChange(
-                                                                                `fields.${idx}.options.${jdx}.value`,
-                                                                                e.target.value
-                                                                            )
-                                                                        }
-                                                                        placeholder="Value"
-                                                                        // status={
-                                                                        //     errors?.[idx]?.options?.[jdx]
-                                                                        //         ?.value
-                                                                        //         ? 'error'
-                                                                        //         : undefined
-                                                                        // }
-                                                                    />
-                                                                    <Button
-                                                                        size="small"
-                                                                        disabled={
-                                                                            (
-                                                                                get(
+                                                        {(field.type === FormFieldType.OPTION ||
+                                                            field.type === FormFieldType.CHECKBOX) && (
+                                                            <Space direction="vertical">
+                                                                <Text>Options</Text>
+                                                                <>
+                                                                    {(
+                                                                        (get(
+                                                                            values,
+                                                                            `fields.${idx}.options`,
+                                                                            []
+                                                                        ) as any[]) || []
+                                                                    )?.map((option: any, jdx: number) => (
+                                                                        <Space key={jdx}>
+                                                                            <Input
+                                                                                size="small"
+                                                                                style={{ width: 150 }}
+                                                                                value={option.label}
+                                                                                onChange={(e) =>
+                                                                                    onHandleChange(
+                                                                                        `fields.${idx}.options.${jdx}.label`,
+                                                                                        e.target.value
+                                                                                    )
+                                                                                }
+                                                                                placeholder="Label"
+                                                                                status={
+                                                                                    get(
+                                                                                        errors,
+                                                                                        `fields.${idx}.options.${jdx}.label`
+                                                                                    )
+                                                                                        ? 'error'
+                                                                                        : undefined
+                                                                                }
+                                                                            />
+                                                                            <Input
+                                                                                size="small"
+                                                                                style={{ width: 150 }}
+                                                                                value={option.value}
+                                                                                onChange={(e) =>
+                                                                                    onHandleChange(
+                                                                                        `fields.${idx}.options.${jdx}.value`,
+                                                                                        e.target.value
+                                                                                    )
+                                                                                }
+                                                                                placeholder="Value"
+                                                                                status={
+                                                                                    get(
+                                                                                        errors,
+                                                                                        `fields.${idx}.options.${jdx}.value`
+                                                                                    )
+                                                                                        ? 'error'
+                                                                                        : undefined
+                                                                                }
+                                                                            />
+                                                                            <Button
+                                                                                size="small"
+                                                                                disabled={
+                                                                                    (
+                                                                                        get(
+                                                                                            values,
+                                                                                            `fields.${idx}.options`,
+                                                                                            []
+                                                                                        ) as any[]
+                                                                                    ).length === 1
+                                                                                }
+                                                                                onClick={() => {
+                                                                                    const copyOpts = [
+                                                                                        ...(get(
+                                                                                            values,
+                                                                                            `fields.${idx}.options`,
+                                                                                            []
+                                                                                        ) as any[]),
+                                                                                    ]
+                                                                                    copyOpts.splice(jdx, 1)
+
+                                                                                    onHandleChange(
+                                                                                        `fields.${idx}.options`,
+                                                                                        copyOpts
+                                                                                    )
+                                                                                }}
+                                                                                type="primary"
+                                                                                danger
+                                                                                icon={<MinusOutlined />}
+                                                                            />
+                                                                        </Space>
+                                                                    ))}
+                                                                </>
+                                                                <Button
+                                                                    size="small"
+                                                                    onClick={() =>
+                                                                        onHandleChange(
+                                                                            `fields.${idx}.options`,
+                                                                            [
+                                                                                ...((get(
                                                                                     values,
                                                                                     `fields.${idx}.options`,
                                                                                     []
-                                                                                ) as any[]
-                                                                            ).length === 1
-                                                                        }
-                                                                        onClick={() => {
-                                                                            const copyOpts = [
-                                                                                ...(get(
-                                                                                    values,
-                                                                                    `fields.${idx}.options`,
-                                                                                    []
-                                                                                ) as any[]),
+                                                                                ) as any[]) || []),
+                                                                                { label: '', value: '' },
                                                                             ]
-                                                                            copyOpts.splice(jdx, 1)
+                                                                        )
+                                                                    }
+                                                                    type="primary"
+                                                                    icon={<PlusOutlined />}
+                                                                />
+                                                            </Space>
+                                                        )}
+                                                    </Space>
+                                                    <Divider />
+                                                    <Space>
+                                                        <Space direction="vertical">
+                                                            <Text>Label :</Text>
+                                                            <Input
+                                                                id="label"
+                                                                style={{ width: 240 }}
+                                                                value={field.label}
+                                                                onChange={(e) => {
+                                                                    onHandleChange(
+                                                                        `fields.${idx}.label`,
+                                                                        e.target.value
+                                                                    )
 
+                                                                    if (pid === 'create') {
+                                                                        onHandleChange(
+                                                                            `fields.${idx}.name`,
+                                                                            camelcase(e.target.value)
+                                                                        )
+                                                                    }
+                                                                }}
+                                                                status={
+                                                                    get(errors, `fields.${idx}.label`)
+                                                                        ? 'error'
+                                                                        : undefined
+                                                                }
+                                                            />
+                                                        </Space>
+
+                                                        {field.type !== FormFieldType.BUTTON && (
+                                                            <>
+                                                                <Space direction="vertical">
+                                                                    <Text>Name :</Text>
+                                                                    <Input
+                                                                        id="name"
+                                                                        style={{ width: 240 }}
+                                                                        value={field.name || ''}
+                                                                        onChange={(e) =>
                                                                             onHandleChange(
-                                                                                `fields.${idx}.options`,
-                                                                                copyOpts
+                                                                                `fields.${idx}.name`,
+                                                                                camelcase(e.target.value)
                                                                             )
-                                                                        }}
-                                                                        type="primary"
-                                                                        danger
-                                                                        icon={<MinusOutlined />}
+                                                                        }
+                                                                        status={
+                                                                            get(errors, `fields.${idx}.name`)
+                                                                                ? 'error'
+                                                                                : undefined
+                                                                        }
                                                                     />
                                                                 </Space>
-                                                            ))}
-                                                        </>
-                                                        <Button
-                                                            size="small"
-                                                            onClick={() =>
-                                                                onHandleChange(`fields.${idx}.options`, [
-                                                                    ...((get(
-                                                                        values,
-                                                                        `fields.${idx}.options`,
-                                                                        []
-                                                                    ) as any[]) || []),
-                                                                    { label: '', value: '' },
-                                                                ])
-                                                            }
-                                                            type="primary"
-                                                            icon={<PlusOutlined />}
-                                                        />
+                                                                <Space direction="vertical">
+                                                                    <Text>Placeholder :</Text>
+                                                                    <Input
+                                                                        id="placeholder"
+                                                                        style={{ width: 240 }}
+                                                                        value={field.placeholder || ''}
+                                                                        onChange={(e) =>
+                                                                            onHandleChange(
+                                                                                `fields.${idx}.placeholder`,
+                                                                                e.target.value
+                                                                            )
+                                                                        }
+                                                                    />
+                                                                </Space>
+                                                                <Space direction="vertical">
+                                                                    <Text>Required :</Text>
+                                                                    <Radio.Group
+                                                                        id="status"
+                                                                        value={field.required}
+                                                                        onChange={(e) =>
+                                                                            onHandleChange(
+                                                                                `fields.${idx}.required`,
+                                                                                e.target.value
+                                                                            )
+                                                                        }
+                                                                    >
+                                                                        <Radio value={true}>Required</Radio>
+                                                                        <Radio value={false}>
+                                                                            Not required
+                                                                        </Radio>
+                                                                    </Radio.Group>
+                                                                </Space>
+                                                            </>
+                                                        )}
                                                     </Space>
-                                                )}
-                                            </Space>
-                                            <Divider />
-                                            <Space size="large">
-                                                <Space direction="vertical">
-                                                    <Text>Label :</Text>
-                                                    <Input
-                                                        id="label"
-                                                        style={{ width: 240 }}
-                                                        value={field.label}
-                                                        onChange={(e) => {
-                                                            onHandleChange(
-                                                                `fields.${idx}.label`,
-                                                                e.target.value
-                                                            )
-
-                                                            if (pid === 'create') {
-                                                                onHandleChange(
-                                                                    `fields.${idx}.name`,
-                                                                    camelcase(e.target.value)
-                                                                )
-                                                            }
-                                                        }}
-                                                    />
                                                 </Space>
-
-                                                {field.type !== FormFieldType.BUTTON && (
-                                                    <>
-                                                        <Space direction="vertical">
-                                                            <Text>Name :</Text>
-                                                            <Input
-                                                                id="name"
-                                                                style={{ width: 240 }}
-                                                                value={field.name || ''}
-                                                                onChange={(e) =>
-                                                                    onHandleChange(
-                                                                        `fields.${idx}.name`,
-                                                                        camelcase(e.target.value)
-                                                                    )
-                                                                }
-                                                            />
-                                                        </Space>
-                                                        <Space direction="vertical">
-                                                            <Text>Placeholder :</Text>
-                                                            <Input
-                                                                id="placeholder"
-                                                                style={{ width: 240 }}
-                                                                value={field.placeholder || ''}
-                                                                onChange={(e) =>
-                                                                    onHandleChange(
-                                                                        `fields.${idx}.placeholder`,
-                                                                        e.target.value
-                                                                    )
-                                                                }
-                                                            />
-                                                        </Space>
-                                                        <Space direction="vertical">
-                                                            <Text>Required :</Text>
-                                                            <Radio.Group
-                                                                id="status"
-                                                                value={field.required}
-                                                                onChange={(e) =>
-                                                                    onHandleChange(
-                                                                        `fields.${idx}.required`,
-                                                                        e.target.value
-                                                                    )
-                                                                }
-                                                            >
-                                                                <Radio value={true}>Required</Radio>
-                                                                <Radio value={false}>Not required</Radio>
-                                                            </Radio.Group>
-                                                        </Space>
-                                                    </>
-                                                )}
-                                            </Space>
-                                        </Space>
-                                    </Card>
-                                </div>
-                            ))}
+                                            </Card>
+                                        </div>
+                                    )
+                                )}
+                            </div>
                             <div
                                 style={{
                                     display: 'flex',
