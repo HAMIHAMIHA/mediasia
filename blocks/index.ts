@@ -7,6 +7,7 @@ import SimpleTitle from './SimpleTitle'
 import SimpleImage from './SimpleImage'
 import SimpleBanner from './SimpleBanner'
 import SimpleButton from './SimpleButton'
+import SimpleForm from './SimpleForm'
 
 const blocks = {
     Title,
@@ -18,6 +19,7 @@ const blocks = {
     SimpleImage,
     SimpleBanner,
     SimpleButton,
+    SimpleForm,
 }
 
 export default blocks

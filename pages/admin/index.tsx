@@ -8,7 +8,6 @@ import get from 'lodash.get'
 import useDebounce from '../../hooks/useDebounce'
 import Head from 'next/head'
 import ColorButton from '@components/ColorButton'
-
 const { Text } = Typography
 
 const Admin = () => {

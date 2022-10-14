@@ -3,11 +3,17 @@ import { getServerSideSitemap } from 'next-sitemap'
 import { GetServerSideProps } from 'next'
 
 import { prisma } from '../../utils/prisma'
+import { Status } from '@prisma/client'
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
     const slugs = await prisma.slug.findMany({
         where: {
             published: true,
+            full: { not: 'not-found' },
+            OR: [
+                { container: { status: { not: Status.DISCONTINUED } } },
+                { content: { status: { not: Status.DISCONTINUED } } },
+            ],
         },
     })
 

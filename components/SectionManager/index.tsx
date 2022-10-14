@@ -162,7 +162,7 @@ const SectionManager = ({ values, onChange, fields }: SectionManagerProps) => {
                     type="primary"
                     // shape="round"
                     icon={<PlusOutlined />}
-                    // size="small"
+                    size="large"
                     onClick={addSection}
                 >
                     Add section

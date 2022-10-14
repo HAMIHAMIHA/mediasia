@@ -17,7 +17,6 @@ const GET = async (req: NextApiRequest, res: NextApiResponse) => {
     let search: any = {
         where: { status: Status.AVAILABLE },
         include: {
-            contents: true,
             slug: true,
         },
         orderBy: {

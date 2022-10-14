@@ -1,7 +1,7 @@
 import { Slug } from '@prisma/client'
-import { AutoComplete, Typography } from 'antd'
+import { AutoComplete, Dropdown, Input, Menu, Typography } from 'antd'
 import { useQuery, UseQueryResult } from 'react-query'
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { SizeType } from 'antd/lib/config-provider/SizeContext'
 
 import { getSlugs } from '../../network/api'
@@ -19,110 +19,100 @@ interface Props {
     status?: '' | 'error' | 'warning' | undefined
 }
 
+// const LinkInput = ({ value, onChange, width = 300, status, ...rest }: Props) => {
+//     const slugs: UseQueryResult<Slug[], Error> = useQuery<Slug[], Error>(['slugs'], () => getSlugs(), {
+//         refetchOnMount: false,
+//     })
+
+//     const options = useMemo(() => {
+//         const pagesOptions =
+//             slugs?.data?.map((slug: any) => ({
+//                 value: `/${slug.full}`,
+//                 searchLabel: slug?.content?.title || slug?.container?.title,
+//                 label: (
+//                     <>
+//                         <Text>{slug?.content?.title || slug?.container?.title}</Text>
+//                         <Text type="secondary">{` (/${slug.full})`}</Text>
+//                     </>
+//                 ),
+//             })) || []
+
+//         return [...pagesOptions]
+//     }, [slugs])
+
+//     return (
+//         <AutoComplete
+//             {...rest}
+//             value={value}
+//             options={options}
+//             style={{ width }}
+//             onSelect={(value: string) => onChange(value)}
+//             onChange={onChange}
+//             status={status}
+//             allowClear
+//             // filterOption={(inputValue, option) =>
+//             //     option!.searchLabel.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
+//             // }
+//         />
+//     )
+// }
+
+type NewSlug = {
+    container: {
+        title: string
+    } | null
+    full: string
+    childs: {
+        content: {
+            title: string
+        } | null
+        full: string
+    }[]
+}
+
 const LinkInput = ({ value, onChange, width = 300, status, ...rest }: Props) => {
-    const slugs: UseQueryResult<Slug[], Error> = useQuery<Slug[], Error>(['slugs'], () => getSlugs(), {
+    const slugs: UseQueryResult<NewSlug[], Error> = useQuery<NewSlug[], Error>(['slugs'], () => getSlugs(), {
         refetchOnMount: false,
     })
 
     const options = useMemo(() => {
-        const pagesOptions =
-            slugs?.data?.map((slug: any) => ({
-                value: `/${slug.full}`,
-                searchLabel: slug?.content?.title || slug?.container?.title,
+        const newS =
+            slugs?.data?.map((slug) => ({
                 label: (
-                    <>
-                        <Text>{slug?.content?.title || slug?.container?.title}</Text>
+                    <Text onClick={() => onChange(`/${slug.full}`)}>
+                        {slug?.container?.title}
                         <Text type="secondary">{` (/${slug.full})`}</Text>
-                    </>
+                    </Text>
                 ),
+                key: slug.full || '/',
+                children: slug.childs
+                    ? slug.childs.map((child) => ({
+                          label: (
+                              <Text onClick={() => onChange(`/${child.full}`)}>
+                                  {child?.content?.title}
+                                  <Text type="secondary">{` (/${child.full})`}</Text>
+                              </Text>
+                          ),
+                          key: child.full || '/',
+                      }))
+                    : undefined,
             })) || []
 
-        return [...pagesOptions]
-    }, [slugs])
+        return newS
+    }, [slugs?.data])
 
     return (
-        <AutoComplete
-            {...rest}
-            value={value}
-            options={options}
-            style={{ width }}
-            onSelect={(value: string) => onChange(value)}
-            onChange={onChange}
-            status={status}
-            allowClear
-            // filterOption={(inputValue, option) =>
-            //     option!.searchLabel.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
-            // }
-        />
+        <Dropdown overlay={<Menu items={options} />}>
+            <Input
+                {...rest}
+                style={{ width: 280 }}
+                value={value}
+                onChange={(e) => onChange(e.target.value)}
+                allowClear
+                status={status}
+            />
+        </Dropdown>
     )
 }
-
-// import { Cascader } from 'antd'
-// import type { DefaultOptionType } from 'antd/es/cascader'
-// import React from 'react'
-
-// interface Option {
-//     value: string
-//     label: string
-//     children?: Option[]
-//     disabled?: boolean
-// }
-
-// const options: Option[] = [
-//     {
-//         value: 'zhejiang',
-//         label: 'Zhejiang',
-//         children: [
-//             {
-//                 value: 'hangzhou',
-//                 label: 'Hangzhou',
-//                 children: [
-//                     {
-//                         value: 'xihu',
-//                         label: 'West Lake',
-//                     },
-//                     {
-//                         value: 'xiasha',
-//                         label: 'Xia Sha',
-//                         disabled: true,
-//                     },
-//                 ],
-//             },
-//         ],
-//     },
-//     {
-//         value: 'jiangsu',
-//         label: 'Jiangsu',
-//         children: [
-//             {
-//                 value: 'nanjing',
-//                 label: 'Nanjing',
-//                 children: [
-//                     {
-//                         value: 'zhonghuamen',
-//                         label: 'Zhong Hua men',
-//                     },
-//                 ],
-//             },
-//         ],
-//     },
-// ]
-
-// const onChange = (value: string[], selectedOptions: Option[]) => {
-//     console.log(value, selectedOptions)
-// }
-
-// const filter = (inputValue: string, path: DefaultOptionType[]) =>
-//     path.some((option) => (option.label as string).toLowerCase().indexOf(inputValue.toLowerCase()) > -1)
-
-// const App: React.FC = () => (
-//     <Cascader
-//         options={options}
-//         onChange={onChange}
-//         placeholder="Please select"
-//         showSearch={{ filter }}
-//         onSearch={(value) => console.log(value)}
-//     />
-// )
 
 export default LinkInput

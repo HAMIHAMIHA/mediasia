@@ -66,11 +66,24 @@ export const getTheme = (): Promise<Theme> =>
             .catch(reject)
     })
 
-export const getSlugs = (): Promise<Slug[]> =>
+export const getSlugs = (): Promise<
+    {
+        container: {
+            title: string
+        } | null
+        full: string
+        childs: {
+            content: {
+                title: string
+            } | null
+            full: string
+        }[]
+    }[]
+> =>
     new Promise((resolve, reject) => {
         INSTANCE({
             method: 'GET',
-            url: `/api/slugs`,
+            url: `/api/slugss`,
         })
             .then(resolve)
             .catch(reject)

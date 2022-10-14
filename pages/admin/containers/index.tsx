@@ -103,7 +103,7 @@ const columns = [
         render: (e: Date) => moment(e).fromNow(),
     },
     {
-        title: 'Last updated',
+        title: 'Publication',
         dataIndex: 'published',
         render: (published: boolean) => (
             <Badge

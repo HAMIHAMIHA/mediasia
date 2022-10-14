@@ -141,16 +141,28 @@ model Form {
   updatedAt DateTime    @updatedAt
 }
 
+enum FormFieldType {
+  TEXT
+  EMAIL
+  PASSWORD
+  PARAGRAPH
+  OPTION
+  CHECKBOX
+  RADIO
+  BUTTON
+}
+
 model FormField {
-  id          String   @id @default(cuid()) // @map("_id")
+  id          String        @id @default(cuid()) // @map("_id")
   formId      String
-  form        Form     @relation(fields: [formId], references: [id])
+  form        Form          @relation(fields: [formId], references: [id])
   name        String?
-  type        String
+  type        FormFieldType
   label       String
   placeholder String?
   position    Int
-  required    Boolean? @default(false)
+  options     Json?
+  required    Boolean?      @default(false)
 }
 
 model Message {
