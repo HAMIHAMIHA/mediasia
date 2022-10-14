@@ -158,7 +158,7 @@ const Admin = () => {
                     let newValues
                     if (e.multiple) {
                         newValues = get(e, `childs`, []).map((c: any) =>
-                            e.type === 'date' ? c[valueName] : c[valueName]
+                            e.type === 'date' ? moment(c[valueName]) : c[valueName]
                         )
                     } else {
                         if (e.type === 'date') {
@@ -536,6 +536,13 @@ const ContentFieldsManager = ({ values, fields, onChange, errors }: ContentField
                         )
 
                     case ContainerFieldType.DATE:
+                        let value = get(values, `${field.name}.dateValue`, undefined)
+                        if (field.multiple) {
+                            value?.map((e: string) => moment(e))
+                        } else {
+                            value = moment(value)
+                        }
+
                         return (
                             <Space key={idx} direction="vertical">
                                 {Label}
@@ -543,7 +550,7 @@ const ContentFieldsManager = ({ values, fields, onChange, errors }: ContentField
                                     {field.multiple ? (
                                         <CustomMultipleWrapper
                                             type={ContainerFieldType.DATE}
-                                            values={get(values, `${field.name}.dateValue`, [])}
+                                            values={value}
                                             onChange={(e) => onHandleChange(field.name, field.type, e, true)}
                                             onClear={() =>
                                                 onHandleChange(field.name, field.type, undefined, true)
@@ -553,7 +560,7 @@ const ContentFieldsManager = ({ values, fields, onChange, errors }: ContentField
                                     ) : (
                                         <DatePicker
                                             style={{ width: 480 }}
-                                            value={get(values, `${field.name}.dateValue`, undefined)}
+                                            value={value}
                                             onChange={(e) => onHandleChange(field.name, field.type, e)}
                                             status={errors?.[field.name] ? 'error' : undefined}
                                         />

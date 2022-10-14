@@ -23,7 +23,7 @@ const PageDisplay = ({ pageProps, onEmpty, noTitle = false }: PageDisplayProps) 
                 ))}
             </Head>
 
-            <EditPageButton redirectTo={`/admin/${type === 'container' ? 'containers' : 'contents'}/${id}`} />
+            <EditPageButton redirectTo={`/admin/${type === 'CONTAINER' ? 'containers' : 'contents'}/${id}`} />
 
             <header>
                 {headerSections?.map((section) => (
