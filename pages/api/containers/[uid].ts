@@ -89,7 +89,7 @@ const PUT = async (req: NextApiRequest, res: NextApiResponse) => {
                 block: section.block,
                 elementId: section.elementId,
                 position: section.position,
-                content: section.content as Prisma.InputJsonValue,
+                content: section?.content || undefined,
             },
         })
     }
@@ -111,7 +111,7 @@ const PUT = async (req: NextApiRequest, res: NextApiResponse) => {
                 block: section.block,
                 elementId: section.elementId,
                 position: section.position,
-                content: section.content as Prisma.InputJsonValue,
+                content: section?.content || undefined,
             },
         })
     }

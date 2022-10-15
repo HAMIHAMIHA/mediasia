@@ -1,5 +1,5 @@
 import { ContainerField } from '@prisma/client'
-import { FullSection, PageProps } from '../types'
+import { FullFormEdit, FullSection, PageProps } from '../types'
 
 export interface Block {
     name: string
@@ -20,4 +20,15 @@ export interface Props {
     section?: FullSection
     page?: PageProps
     fields?: ContainerField[]
+    form?: FullFormEdit | undefined
+    formAction?:
+        | {
+              values: any
+              errors: any
+              handleChange(name: string, value: any): void
+              handleSubmit(): void
+              loading: boolean
+              success: boolean
+          }
+        | undefined
 }

@@ -293,7 +293,6 @@ const Admin = () => {
                                     <Button
                                         icon={<CopyOutlined />}
                                         onClick={() => {
-                                            console.log('values', values)
                                             setValues({
                                                 ...values,
                                                 id: undefined,

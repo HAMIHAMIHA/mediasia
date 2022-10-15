@@ -1,5 +1,6 @@
 //import Image, { ImageLoaderProps } from 'next/image'
 import type { Media } from '@prisma/client'
+import { CSSProperties } from 'react'
 
 interface Props {
     img?:
@@ -12,13 +13,14 @@ interface Props {
         | null
     className?: string
     children?: React.ReactNode
+    style?: CSSProperties | undefined
 }
 
 // const myLoader = ({ src, width, quality }: ImageLoaderProps) => {
 //     return `${process.env.UPLOADS_IMAGES_DIR}/${src}?w=${width}&q=${quality || 75}`
 // }
 
-const CustomImage = ({ img, className }: Props) => {
+const CustomImage = ({ img, className, style }: Props) => {
     const imageURL =
         img?.uri?.indexOf('http://') === 0 ||
         img?.uri?.indexOf('https://') === 0 ||
@@ -27,7 +29,7 @@ const CustomImage = ({ img, className }: Props) => {
             : `/api/uploads/images/${img?.uri}`
 
     // eslint-disable-next-line @next/next/no-img-element
-    return <img src={imageURL} alt={img?.alt || ''} className={className} />
+    return <img src={imageURL} alt={img?.alt || ''} className={className} style={style} />
     // return (
     //     <Image
     //         className={className}

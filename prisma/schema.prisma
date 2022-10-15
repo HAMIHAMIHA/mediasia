@@ -143,6 +143,7 @@ model Form {
 
 enum FormFieldType {
   TEXT
+  NUMBER
   EMAIL
   PASSWORD
   PARAGRAPH
@@ -150,6 +151,7 @@ enum FormFieldType {
   CHECKBOX
   RADIO
   BUTTON
+  TITLE
 }
 
 model FormField {
@@ -162,7 +164,15 @@ model FormField {
   placeholder String?
   position    Int
   options     Json?
-  required    Boolean?      @default(false)
+
+  min Float?
+  max Float?
+
+  defaultText     String?
+  defaultNumber   Float?
+  defaultMultiple Json?
+
+  required Boolean? @default(false)
 }
 
 model Message {
@@ -198,19 +208,19 @@ model Container {
 }
 
 model Content {
-  id          String         @id @default(cuid()) // @map("_id")
-  title       String
-  metadatas   Metadata[]
-  accesses    Access[]
-  fields      ContentField[] @relation(name: "contentLinked")
-  sections    Section[]
-  containerId String
-  container   Container      @relation(fields: [containerId], references: [id])
-  published   Boolean        @default(true)
-  status      Status         @default(AVAILABLE)
-  updatedAt   DateTime       @updatedAt
-  slug        Slug?
-  fieldsValue ContentField[] @relation(name: "contentValue")
+  id               String         @id @default(cuid()) // @map("_id")
+  title            String
+  metadatas        Metadata[]
+  accesses         Access[]
+  fields           ContentField[] @relation(name: "contentLinked")
+  sections         Section[]
+  containerId      String
+  container        Container      @relation(fields: [containerId], references: [id])
+  published        Boolean        @default(true)
+  status           Status         @default(AVAILABLE)
+  updatedAt        DateTime       @updatedAt
+  slug             Slug?
+  linkedFieldValue ContentField[] @relation(name: "contentValue")
 }
 
 enum ContainerFieldType {
@@ -256,7 +266,7 @@ model ContentField {
   mediaId     String?
   media       Media?             @relation(fields: [mediaId], references: [id])
   textValue   String?
-  numberValue Int?
+  numberValue Float?
   boolValue   Boolean?
   dateValue   DateTime?
 

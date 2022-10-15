@@ -3,7 +3,7 @@ import Edit from './Edit'
 import type { Block } from '../types'
 
 const Title: Block = {
-    name: 'Simple From',
+    name: 'Simple Form',
     View,
     Edit,
 }

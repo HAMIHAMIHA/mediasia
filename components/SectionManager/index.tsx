@@ -145,6 +145,7 @@ const SectionManager = ({ values, onChange, fields }: SectionManagerProps) => {
                                     value={section.content}
                                     onChange={(e) => onHandleChange(`${idx}.content`, e)}
                                     fields={fields}
+                                    formId={section.formId}
                                 />
                             )}
                             {!!section.elementId && <DisplayElementView id={section.elementId} />}

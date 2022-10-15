@@ -216,7 +216,7 @@ function MenuAdmin() {
                 {
                     key: '2',
                     label: (
-                        <Link href="messages">
+                        <Link href="/admin/messages">
                             <a>Messages</a>
                         </Link>
                     ),

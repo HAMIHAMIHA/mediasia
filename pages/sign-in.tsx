@@ -19,10 +19,6 @@ const DefaultSignInForm = () => {
         password: string
     }>({
         initialValues: { email: '', password: '' },
-        // validate: (values) => ({}),
-        // onSubmit: async (values) => {
-        //     console.log(values)
-        // },
         onSubmit: async (values) => signIn!.mutate(values),
     })
 

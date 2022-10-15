@@ -16,7 +16,7 @@ const PageDisplay = ({ pageProps, onEmpty, noTitle = false }: PageDisplayProps) 
     return (
         <>
             <Head>
-                <link rel="icon" href="api/uploads/favicon.ico" />
+                <link rel="icon" href="/api/uploads/favicon.ico" />
                 <title>{noTitle ? appName : `${appName} | ${title}`}</title>
                 {metadatas?.map((meta) => (
                     <meta key={meta.id} name={meta.name} content={meta.content} />

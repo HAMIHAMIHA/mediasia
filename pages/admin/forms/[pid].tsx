@@ -1,6 +1,19 @@
 import { useRouter } from 'next/router'
 import { useFormik } from 'formik'
-import { Spin, Card, Input, Space, Button, Divider, message, Typography, Radio, Select, Switch } from 'antd'
+import {
+    Spin,
+    Card,
+    Input,
+    Space,
+    Button,
+    Divider,
+    message,
+    Typography,
+    Radio,
+    Select,
+    Switch,
+    InputNumber,
+} from 'antd'
 import {
     PlusOutlined,
     CaretUpOutlined,
@@ -49,7 +62,7 @@ const validate = (values: FullFormEdit) => {
         message.error('Please add field')
     } else {
         values?.fields?.forEach((field, idx) => {
-            if (field.type !== FormFieldType.BUTTON) {
+            if (field.type !== FormFieldType.BUTTON && field.type !== FormFieldType.TITLE) {
                 if (!field.name) {
                     set(errors, `fields.${idx}.name`, 'Required')
                 }
@@ -313,13 +326,43 @@ const Admin = () => {
                                                                 onChange={(e) => {
                                                                     if (
                                                                         e === FormFieldType.OPTION ||
-                                                                        e === FormFieldType.CHECKBOX
+                                                                        e === FormFieldType.CHECKBOX ||
+                                                                        e === FormFieldType.RADIO
                                                                     ) {
+                                                                        onHandleChange(
+                                                                            `fields.${idx}.defaultText`,
+                                                                            undefined
+                                                                        )
+                                                                        onHandleChange(
+                                                                            `fields.${idx}.defaultNumber`,
+                                                                            undefined
+                                                                        )
                                                                         onHandleChange(
                                                                             `fields.${idx}.options`,
                                                                             [{ label: '', value: '' }]
                                                                         )
+                                                                    } else if (e === FormFieldType.NUMBER) {
+                                                                        onHandleChange(
+                                                                            `fields.${idx}.defaultText`,
+                                                                            undefined
+                                                                        )
+                                                                        onHandleChange(
+                                                                            `fields.${idx}.defaultMultiple`,
+                                                                            undefined
+                                                                        )
+                                                                        onHandleChange(
+                                                                            `fields.${idx}.options`,
+                                                                            undefined
+                                                                        )
                                                                     } else {
+                                                                        onHandleChange(
+                                                                            `fields.${idx}.defaultNumber`,
+                                                                            undefined
+                                                                        )
+                                                                        onHandleChange(
+                                                                            `fields.${idx}.defaultMultiple`,
+                                                                            undefined
+                                                                        )
                                                                         onHandleChange(
                                                                             `fields.${idx}.options`,
                                                                             undefined
@@ -332,6 +375,12 @@ const Admin = () => {
 
                                                                 <Select.Option value={FormFieldType.TEXT}>
                                                                     Text
+                                                                </Select.Option>
+                                                                <Select.Option value={FormFieldType.TITLE}>
+                                                                    Title
+                                                                </Select.Option>
+                                                                <Select.Option value={FormFieldType.NUMBER}>
+                                                                    Number
                                                                 </Select.Option>
                                                                 <Select.Option value={FormFieldType.EMAIL}>
                                                                     Email
@@ -360,9 +409,10 @@ const Admin = () => {
                                                         </Space>
 
                                                         {(field.type === FormFieldType.OPTION ||
-                                                            field.type === FormFieldType.CHECKBOX) && (
+                                                            field.type === FormFieldType.CHECKBOX ||
+                                                            field.type === FormFieldType.RADIO) && (
                                                             <Space direction="vertical">
-                                                                <Text>Options</Text>
+                                                                <Text>Options :</Text>
                                                                 <>
                                                                     {(
                                                                         (get(
@@ -465,6 +515,132 @@ const Admin = () => {
                                                                 />
                                                             </Space>
                                                         )}
+
+                                                        {field.type === FormFieldType.NUMBER && (
+                                                            <>
+                                                                <Space direction="vertical">
+                                                                    <Text>Min :</Text>
+                                                                    <InputNumber
+                                                                        style={{
+                                                                            width: 65,
+                                                                        }}
+                                                                        value={field.min}
+                                                                        onChange={(e) =>
+                                                                            onHandleChange(
+                                                                                `fields.${idx}.min`,
+                                                                                e
+                                                                            )
+                                                                        }
+                                                                        max={field.max || undefined}
+                                                                    />
+                                                                </Space>
+                                                                <Space direction="vertical">
+                                                                    <Text>Max :</Text>
+                                                                    <InputNumber
+                                                                        style={{
+                                                                            width: 65,
+                                                                        }}
+                                                                        value={field.max}
+                                                                        onChange={(e) =>
+                                                                            onHandleChange(
+                                                                                `fields.${idx}.max`,
+                                                                                e
+                                                                            )
+                                                                        }
+                                                                        min={field.min || undefined}
+                                                                    />
+                                                                </Space>
+                                                            </>
+                                                        )}
+
+                                                        {field.type !== FormFieldType.BUTTON &&
+                                                            field.type !== FormFieldType.TITLE && (
+                                                                <Space direction="vertical">
+                                                                    <Text>Default :</Text>
+                                                                    {field.type === FormFieldType.NUMBER ? (
+                                                                        <InputNumber
+                                                                            style={{ width: 240 }}
+                                                                            value={field.defaultNumber}
+                                                                            onChange={(e) =>
+                                                                                onHandleChange(
+                                                                                    `fields.${idx}.defaultNumber`,
+                                                                                    e
+                                                                                )
+                                                                            }
+                                                                        />
+                                                                    ) : field.type ===
+                                                                      FormFieldType.CHECKBOX ? (
+                                                                        <Select
+                                                                            mode="multiple"
+                                                                            style={{ width: 240 }}
+                                                                            value={
+                                                                                field.defaultMultiple || []
+                                                                            }
+                                                                            onChange={(e) =>
+                                                                                onHandleChange(
+                                                                                    `fields.${idx}.defaultMultiple`,
+                                                                                    e
+                                                                                )
+                                                                            }
+                                                                        >
+                                                                            {(
+                                                                                get(
+                                                                                    values,
+                                                                                    `fields.${idx}.options`,
+                                                                                    []
+                                                                                ) as any[]
+                                                                            )?.map((opt, idx) => (
+                                                                                <Select.Option
+                                                                                    key={opt.value || idx}
+                                                                                    value={opt.value}
+                                                                                >
+                                                                                    {opt.label}
+                                                                                </Select.Option>
+                                                                            ))}
+                                                                        </Select>
+                                                                    ) : field.type === FormFieldType.RADIO ||
+                                                                      field.type === FormFieldType.OPTION ? (
+                                                                        <Select
+                                                                            style={{ width: 240 }}
+                                                                            value={field.defaultNumber}
+                                                                            onChange={(e) =>
+                                                                                onHandleChange(
+                                                                                    `fields.${idx}.defaultNumber`,
+                                                                                    e
+                                                                                )
+                                                                            }
+                                                                        >
+                                                                            {(
+                                                                                get(
+                                                                                    values,
+                                                                                    `fields.${idx}.options`,
+                                                                                    []
+                                                                                ) as any[]
+                                                                            )?.map((opt, idx) => (
+                                                                                <Select.Option
+                                                                                    key={opt.value || idx}
+                                                                                    value={opt.value}
+                                                                                >
+                                                                                    {opt.label}
+                                                                                </Select.Option>
+                                                                            ))}
+                                                                        </Select>
+                                                                    ) : (
+                                                                        <Input
+                                                                            style={{ width: 240 }}
+                                                                            value={
+                                                                                field.defaultText || undefined
+                                                                            }
+                                                                            onChange={(e) =>
+                                                                                onHandleChange(
+                                                                                    `fields.${idx}.defaultText`,
+                                                                                    e.target.value
+                                                                                )
+                                                                            }
+                                                                        />
+                                                                    )}
+                                                                </Space>
+                                                            )}
                                                     </Space>
                                                     <Divider />
                                                     <Space>
@@ -495,61 +671,67 @@ const Admin = () => {
                                                             />
                                                         </Space>
 
-                                                        {field.type !== FormFieldType.BUTTON && (
-                                                            <>
-                                                                <Space direction="vertical">
-                                                                    <Text>Name :</Text>
-                                                                    <Input
-                                                                        id="name"
-                                                                        style={{ width: 240 }}
-                                                                        value={field.name || ''}
-                                                                        onChange={(e) =>
-                                                                            onHandleChange(
-                                                                                `fields.${idx}.name`,
-                                                                                camelcase(e.target.value)
-                                                                            )
-                                                                        }
-                                                                        status={
-                                                                            get(errors, `fields.${idx}.name`)
-                                                                                ? 'error'
-                                                                                : undefined
-                                                                        }
-                                                                    />
-                                                                </Space>
-                                                                <Space direction="vertical">
-                                                                    <Text>Placeholder :</Text>
-                                                                    <Input
-                                                                        id="placeholder"
-                                                                        style={{ width: 240 }}
-                                                                        value={field.placeholder || ''}
-                                                                        onChange={(e) =>
-                                                                            onHandleChange(
-                                                                                `fields.${idx}.placeholder`,
-                                                                                e.target.value
-                                                                            )
-                                                                        }
-                                                                    />
-                                                                </Space>
-                                                                <Space direction="vertical">
-                                                                    <Text>Required :</Text>
-                                                                    <Radio.Group
-                                                                        id="status"
-                                                                        value={field.required}
-                                                                        onChange={(e) =>
-                                                                            onHandleChange(
-                                                                                `fields.${idx}.required`,
-                                                                                e.target.value
-                                                                            )
-                                                                        }
-                                                                    >
-                                                                        <Radio value={true}>Required</Radio>
-                                                                        <Radio value={false}>
-                                                                            Not required
-                                                                        </Radio>
-                                                                    </Radio.Group>
-                                                                </Space>
-                                                            </>
-                                                        )}
+                                                        {field.type !== FormFieldType.BUTTON &&
+                                                            field.type !== FormFieldType.TITLE && (
+                                                                <>
+                                                                    <Space direction="vertical">
+                                                                        <Text>Name :</Text>
+                                                                        <Input
+                                                                            id="name"
+                                                                            style={{ width: 240 }}
+                                                                            value={field.name || ''}
+                                                                            onChange={(e) =>
+                                                                                onHandleChange(
+                                                                                    `fields.${idx}.name`,
+                                                                                    camelcase(e.target.value)
+                                                                                )
+                                                                            }
+                                                                            status={
+                                                                                get(
+                                                                                    errors,
+                                                                                    `fields.${idx}.name`
+                                                                                )
+                                                                                    ? 'error'
+                                                                                    : undefined
+                                                                            }
+                                                                        />
+                                                                    </Space>
+                                                                    <Space direction="vertical">
+                                                                        <Text>Placeholder :</Text>
+                                                                        <Input
+                                                                            id="placeholder"
+                                                                            style={{ width: 240 }}
+                                                                            value={field.placeholder || ''}
+                                                                            onChange={(e) =>
+                                                                                onHandleChange(
+                                                                                    `fields.${idx}.placeholder`,
+                                                                                    e.target.value
+                                                                                )
+                                                                            }
+                                                                        />
+                                                                    </Space>
+                                                                    <Space direction="vertical">
+                                                                        <Text>Required :</Text>
+                                                                        <Radio.Group
+                                                                            id="status"
+                                                                            value={field.required}
+                                                                            onChange={(e) =>
+                                                                                onHandleChange(
+                                                                                    `fields.${idx}.required`,
+                                                                                    e.target.value
+                                                                                )
+                                                                            }
+                                                                        >
+                                                                            <Radio value={true}>
+                                                                                Required
+                                                                            </Radio>
+                                                                            <Radio value={false}>
+                                                                                Not required
+                                                                            </Radio>
+                                                                        </Radio.Group>
+                                                                    </Space>
+                                                                </>
+                                                            )}
                                                     </Space>
                                                 </Space>
                                             </Card>

@@ -15,6 +15,7 @@ import type {
     Slug,
     ContentField,
     ContainerFieldType,
+    FormFieldType,
 } from '@prisma/client'
 import { Prisma } from '@prisma/client'
 
@@ -119,20 +120,27 @@ export type PageSection = {
         id: string
         fields: {
             id: string
-            type: string
+            type: FormFieldType
             position: number
             name: string | null
             label: string
             placeholder: string | null
             required: boolean | null
+
+            options: { label: string; value: string }[] | Prisma.JsonValue
+            min: number | null
+            max: number | null
+            defaultText: string | null
+            defaultNumber: number | null
+            defaultMultiple: string[] | Prisma.JsonValue
         }[]
     } | null
-    content: Prisma.JsonValue
+    content: any
     id: string
     block: string | null
     position: number
     element: {
-        content: Prisma.JsonValue
+        content: {} | Prisma.JsonValue
         id: string
         block: string
     } | null
@@ -160,6 +168,8 @@ export type ContentFields = {
         id: string
         uri: string
         alt: string | null
+        name: string
+        mimeType: string
     } | null
 
     childs: {
@@ -184,6 +194,8 @@ export type ContentFields = {
             id: string
             uri: string
             alt: string | null
+            name: string
+            mimeType: string
         } | null
     }[]
 }
@@ -214,6 +226,15 @@ export type PageProps = {
     headerSections: PageSection[]
     sections: PageSection[]
     footerSections: PageSection[]
+    linkedContents: any | null
+    container: {
+        id: string
+        title: string
+        slug: {
+            id: string
+            full: string
+        } | null
+    } | null
     updatedAt: number | null
 }
 

@@ -66,7 +66,9 @@ const AdminImages = () => {
                     expandable={{
                         expandedRowRender: (message: FullMessage) => {
                             const cols = message.form?.fields
-                                ?.filter((e) => e.type !== FormFieldType.BUTTON)
+                                ?.filter(
+                                    (e) => e.type !== FormFieldType.BUTTON && e.type !== FormFieldType.TITLE
+                                )
                                 .map((field) => ({
                                     title: field.label,
                                     dataIndex: field.name || '',

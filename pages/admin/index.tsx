@@ -87,7 +87,7 @@ const Admin = () => {
                 <Space direction="vertical">
                     <Text>Fav Icon: </Text>
                     <Space>
-                        <Avatar src="api/uploads/favicon.ico" shape="square" size="large" />
+                        <Avatar src="/api/uploads/favicon.ico" shape="square" size="large" />
                         <UploadButton.Favicon />
                     </Space>
                 </Space>

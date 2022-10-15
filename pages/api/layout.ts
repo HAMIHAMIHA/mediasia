@@ -42,7 +42,7 @@ const POST = async (req: NextApiRequest, res: NextApiResponse) => {
                 block: section.block,
                 elementId: section.elementId,
                 position: section.position,
-                content: section.content,
+                content: section.content || undefined,
             },
         })
     }
@@ -61,7 +61,7 @@ const POST = async (req: NextApiRequest, res: NextApiResponse) => {
                 block: section.block,
                 elementId: section.elementId,
                 position: section.position,
-                content: section.content,
+                content: section.content || undefined,
             },
         })
     }
@@ -80,7 +80,7 @@ const POST = async (req: NextApiRequest, res: NextApiResponse) => {
                 block: section.block,
                 elementId: section.elementId,
                 position: section.position,
-                content: section.content,
+                content: section.content || undefined,
             },
         })
     }
@@ -99,7 +99,7 @@ const POST = async (req: NextApiRequest, res: NextApiResponse) => {
                 block: section.block,
                 elementId: section.elementId,
                 position: section.position,
-                content: section.content,
+                content: section.content || undefined,
             },
         })
     }

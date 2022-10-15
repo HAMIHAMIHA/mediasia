@@ -44,7 +44,14 @@ const PUT = async (req: NextApiRequest, res: NextApiResponse) => {
                 label: field.label,
                 placeholder: field.placeholder,
                 position: field.position,
-                required: true,
+                options: field?.options || undefined,
+                required: field.required,
+
+                defaultText: field.defaultText,
+                defaultMultiple: field?.defaultMultiple || undefined,
+                defaultNumber: field.defaultNumber,
+                min: field.min,
+                max: field.max,
             },
         })
     }
