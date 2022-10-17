@@ -8,32 +8,42 @@ import CustomImage from '../components/CustomImage'
 import PageDisplay from '../components/PageDisplay'
 import { ContentFields, PageProps } from '../types'
 import getPagePropsFromUrl from '../utils/getPagePropsFromUrl'
-import { ContainerFieldType } from '@prisma/client'
-import { Space } from 'antd'
+import { ContainerFieldType, Status } from '@prisma/client'
+import { Button, Card, Space, Typography, Image, Tag, List, Descriptions } from 'antd'
 import { Fragment } from 'react'
+import { CaretLeftOutlined } from '@ant-design/icons'
+
+const { Title, Text } = Typography
 
 const Pages = (props: PageProps) => (
     <PageDisplay pageProps={props} onEmpty={<DefaultSectionsHome {...props} />} noTitle />
 )
 
 const DefaultSectionsHome = (props: PageProps) => {
-    console.log('props', props)
     const { type, title, contents, fields, linkedContents, container } = props
 
     if (type === 'CONTAINER') {
         return (
-            <>
-                <h1>{title}</h1>
-                <ul>
-                    {contents?.map((content) => (
-                        <li key={content.id}>
-                            <Link href={get(content, 'slug.full', '')}>
-                                <a>{content.title}</a>
-                            </Link>
-                        </li>
-                    ))}
-                </ul>
-            </>
+            <Space direction="vertical" style={{ padding: 8, width: '100%' }}>
+                <Title>{title}</Title>
+                <div style={{ backgroundColor: '#fff' }}>
+                    <List
+                        size="small"
+                        header={<Text strong>Contents</Text>}
+                        bordered
+                        dataSource={contents}
+                        renderItem={(content) => (
+                            <List.Item>
+                                <Link href={get(content, 'slug.full', '')}>
+                                    <a>
+                                        <Button type="link">{content.title}</Button>
+                                    </a>
+                                </Link>
+                            </List.Item>
+                        )}
+                    />
+                </div>
+            </Space>
         )
     }
 
@@ -41,21 +51,23 @@ const DefaultSectionsHome = (props: PageProps) => {
         switch (field.type) {
             case ContainerFieldType.STRING:
             case ContainerFieldType.OPTION:
-                return <span>{field.textValue}</span>
+                return <Text>{field.textValue}</Text>
 
             case ContainerFieldType.DATE:
-                return <span>{moment(field.dateValue).format('MMMM Do YYYY')}</span>
+                return <Text>{moment(field.dateValue).format('MMMM Do YYYY')}</Text>
 
             case ContainerFieldType.BOOLEAN:
-                return <span>{field.boolValue ? 'Yes' : 'No'}</span>
+                return <Text>{field.boolValue ? 'Yes' : 'No'}</Text>
 
             case ContainerFieldType.NUMBER:
-                return <span>{field.numberValue}</span>
+                return <Text>{field.numberValue}</Text>
 
             case ContainerFieldType.LINK:
                 return (
                     <Link href={field.textValue || '#'}>
-                        <a>{field.textValue || '#'}</a>
+                        <a>
+                            <Button type="link">{field.textValue || '#'}</Button>
+                        </a>
                     </Link>
                 )
 
@@ -64,16 +76,19 @@ const DefaultSectionsHome = (props: PageProps) => {
 
             case ContainerFieldType.IMAGE:
                 return (
-                    <CustomImage
-                        img={field?.media}
-                        style={{ maxHeight: '15rem', maxWidth: '15rem', objectFit: 'contain' }}
+                    <Image
+                        width={200}
+                        src={`/api/uploads/images/${field?.media?.uri}`}
+                        alt={field?.media?.alt || ''}
                     />
                 )
 
             case ContainerFieldType.FILE:
                 return (
                     <Link href={`/api/uploads/files/${field?.media?.uri}`} target="_blank">
-                        <a>{field?.media?.name}</a>
+                        <a>
+                            <Button type="link">{field?.media?.name}</Button>
+                        </a>
                     </Link>
                 )
 
@@ -91,25 +106,16 @@ const DefaultSectionsHome = (props: PageProps) => {
             case ContainerFieldType.CONTENT:
                 return (
                     <Link href={field.contentValue?.slug?.full || '#'}>
-                        <a>{field.contentValue?.title}</a>
+                        <a>
+                            <Button type="link">{field.contentValue?.title}</Button>
+                        </a>
                     </Link>
                 )
 
             case ContainerFieldType.RICHTEXT:
                 return <div dangerouslySetInnerHTML={{ __html: field.textValue || '' }} />
-
             case ContainerFieldType.COLOR:
-                return (
-                    <div
-                        style={{
-                            height: '2rem',
-                            width: '2rem',
-                            borderRadius: '1rem',
-                            border: 'solid 1px #000',
-                            backgroundColor: field.textValue || undefined,
-                        }}
-                    />
-                )
+                return <Tag color={field.textValue || ''}>{field.textValue}</Tag>
 
             case ContainerFieldType.LOCATION:
                 return <div />
@@ -117,16 +123,41 @@ const DefaultSectionsHome = (props: PageProps) => {
     }
 
     return (
-        <>
+        <Space direction="vertical" style={{ padding: 8, width: '100%' }}>
             <Link href={container?.slug?.full || '/'}>
-                <a>Back to {container?.title}</a>
+                <a>
+                    <Button
+                        type="dashed"
+                        icon={<CaretLeftOutlined />}
+                    >{`Back to ${container?.title}`}</Button>
+                </a>
             </Link>
-            <h1>{title}</h1>
-            <Space direction="vertical">
+            <Title>{title}</Title>
+
+            <div style={{ backgroundColor: '#fff' }}>
+                <Descriptions bordered>
+                    {fields?.map((field: ContentFields) => (
+                        <Descriptions.Item key={field.id} label={`${field.name}:`}>
+                            {field.multiple ? (
+                                <Space style={{ width: '100%' }}>
+                                    {field.childs.map((child) => (
+                                        <DisplayField key={child.id} field={child as ContentFields} />
+                                    ))}
+                                </Space>
+                            ) : (
+                                <DisplayField field={field} />
+                            )}
+                        </Descriptions.Item>
+                    ))}
+                </Descriptions>
+            </div>
+
+            {/* <Space direction="vertical" style={{ width: '100%' }}>
                 {fields?.map((field: ContentFields) => (
-                    <Space key={field.id}>
+                    <Space key={field.id} style={{ width: '100%' }} align="start">
+                        <Text strong>{`${field.name}:`}</Text>
                         {field.multiple ? (
-                            <Space>
+                            <Space style={{ width: '100%' }}>
                                 {field.childs.map((child) => (
                                     <DisplayField key={child.id} field={child as ContentFields} />
                                 ))}
@@ -136,22 +167,34 @@ const DefaultSectionsHome = (props: PageProps) => {
                         )}
                     </Space>
                 ))}
-            </Space>
-            <h2>Linked content</h2>
-            {linkedContents &&
-                Object.keys(linkedContents).map((key, idx) => {
-                    return (
-                        <Fragment key={key}>
-                            <h3>{key}</h3>
-                            {linkedContents[key].map((cont: any) => (
-                                <Link key={cont.id} href={cont.slug.full}>
-                                    <a>{cont.title}</a>
-                                </Link>
-                            ))}
-                        </Fragment>
-                    )
-                })}
-        </>
+            </Space> */}
+            {!!(linkedContents && Object.keys(linkedContents).length) && (
+                <>
+                    <Title level={3}>Linked content</Title>
+                    {Object.keys(linkedContents).map((key, idx) => {
+                        return (
+                            <div key={key} style={{ backgroundColor: '#fff' }}>
+                                <List
+                                    size="small"
+                                    header={<Text strong>{key}</Text>}
+                                    bordered
+                                    dataSource={linkedContents[key]}
+                                    renderItem={(content: any) => (
+                                        <List.Item>
+                                            <Link key={content.id} href={content.slug.full}>
+                                                <a>
+                                                    <Button type="link">{content.title}</Button>
+                                                </a>
+                                            </Link>
+                                        </List.Item>
+                                    )}
+                                />
+                            </div>
+                        )
+                    })}
+                </>
+            )}
+        </Space>
     )
 }
 
@@ -165,14 +208,16 @@ interface NewGetStaticPathsContext extends GetStaticPathsContext {
 export async function getStaticProps(context: NewGetStaticPathsContext) {
     const { slug } = context.params
 
-    console.log('kkkk -1', slug)
-
     return await getPagePropsFromUrl(slug.join('/'))
 }
 
 export async function getStaticPaths(context: GetStaticPathsContext) {
     const slugs = await prisma.slug.findMany({
-        where: { published: true, AND: [{ NOT: { full: '' } }, { NOT: { full: 'sign-in' } }] },
+        where: {
+            published: true,
+            OR: [{ container: { status: Status.AVAILABLE } }, { content: { status: Status.AVAILABLE } }],
+            AND: [{ NOT: { full: '' } }, { NOT: { full: 'sign-in' } }],
+        },
     })
 
     const paths = slugs.map((slug) => ({

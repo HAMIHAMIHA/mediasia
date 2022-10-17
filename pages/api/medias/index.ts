@@ -90,7 +90,6 @@ const POST = async (req: NextApiRequest, res: NextApiResponse) => {
             : files.file
 
         if (!file) return res.status(400).json({ error: 'No file' })
-        // console.log('file', file?.duration)
 
         var oldPath = file.filepath
         var newFileName = `FILE-${makeId(10)}-${makeId(10)}.${mime.extension(file.mimetype)}`

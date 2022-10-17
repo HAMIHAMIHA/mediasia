@@ -7,8 +7,6 @@
 //     //     where: { name: 'revalidate' },
 //     // })
 
-//     // console.log('phase', phase)
-
 //     const nextConfig = {
 //         reactStrictMode: true,
 //         // env: {

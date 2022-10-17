@@ -287,7 +287,6 @@ const getPagePropsFromUrl = async (slug: string) => {
 
         linkedContents = {}
         for (const releatedContent of releatedContents) {
-            console.log('releatedContent', releatedContent)
             const fields = releatedContent.fields.map((field) => {
                 if (field.type !== ContainerFieldType.DATE) return field
 
