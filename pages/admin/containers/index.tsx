@@ -113,9 +113,17 @@ const columns = [
         ),
     },
     {
-        width: 320,
+        width: 455,
         render: (e: Element) => (
             <Space>
+                <Link href={`/admin/contents/create?container=${e.id}`}>
+                    <a>
+                        <Button type="dashed" icon={<PlusOutlined />}>
+                            Create one
+                        </Button>
+                    </a>
+                </Link>
+
                 <Link href={`/admin/contents?container=${e.id}`}>
                     <a>
                         <Button type="dashed" icon={<UnorderedListOutlined />}>

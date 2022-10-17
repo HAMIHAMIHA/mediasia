@@ -1,4 +1,4 @@
-import { /*useMemo,*/ useState } from 'react'
+import { /*useMemo,*/ useMemo, useState } from 'react'
 import type { Media } from '@prisma/client'
 import { Button, Space, Typography } from 'antd'
 import { UploadOutlined, CloseOutlined } from '@ant-design/icons'
@@ -32,6 +32,17 @@ const UploadButton = ({ value, onDeleteValue, onFileRecieved, type = 'IMAGE' }: 
         if (res) onFileRecieved(res)
     }
 
+    const typeFiles = useMemo(() => {
+        switch (type) {
+            case 'IMAGE':
+                return 'image/*'
+            case 'VIDEO':
+                return 'video/*'
+            case 'FILE':
+                return '.pdf,.xlsx,.xls,.csv,.doc,.docx'
+        }
+    }, [type])
+
     return (
         <Space>
             <Button
@@ -57,7 +68,7 @@ const UploadButton = ({ value, onDeleteValue, onFileRecieved, type = 'IMAGE' }: 
                     }}
                     type="file"
                     name="file"
-                    // accept="image/*"
+                    accept={typeFiles}
                     // accept=".pdf,.xlsx,.xls,.csv,.doc,.docx|video/*|image/*"
                     onChange={handleFiles}
                     onClick={(event: any) => {

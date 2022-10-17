@@ -4,13 +4,11 @@ import Link from 'next/link'
 import type { GetStaticPathsContext } from 'next'
 
 import { prisma } from '../utils/prisma'
-import CustomImage from '../components/CustomImage'
 import PageDisplay from '../components/PageDisplay'
 import { ContentFields, PageProps } from '../types'
 import getPagePropsFromUrl from '../utils/getPagePropsFromUrl'
 import { ContainerFieldType, Status } from '@prisma/client'
-import { Button, Card, Space, Typography, Image, Tag, List, Descriptions } from 'antd'
-import { Fragment } from 'react'
+import { Button, Space, Typography, Image, Tag, List, Descriptions } from 'antd'
 import { CaretLeftOutlined } from '@ant-design/icons'
 
 const { Title, Text } = Typography
@@ -124,14 +122,16 @@ const DefaultSectionsHome = (props: PageProps) => {
 
     return (
         <Space direction="vertical" style={{ padding: 8, width: '100%' }}>
-            <Link href={container?.slug?.full || '/'}>
-                <a>
-                    <Button
-                        type="dashed"
-                        icon={<CaretLeftOutlined />}
-                    >{`Back to ${container?.title}`}</Button>
-                </a>
-            </Link>
+            {!!container && (
+                <Link href={container?.slug?.full || '/'}>
+                    <a>
+                        <Button
+                            type="dashed"
+                            icon={<CaretLeftOutlined />}
+                        >{`Back to ${container?.title}`}</Button>
+                    </a>
+                </Link>
+            )}
             <Title>{title}</Title>
 
             <div style={{ backgroundColor: '#fff' }}>

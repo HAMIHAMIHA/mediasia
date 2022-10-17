@@ -292,6 +292,7 @@ const Admin = () => {
                                                     type="primary"
                                                     // shape="circle"
                                                     icon={<CaretUpOutlined />}
+                                                    size="small"
                                                 />
                                                 <Button
                                                     disabled={idx === get(values, 'fields', []).length - 1}
@@ -299,6 +300,7 @@ const Admin = () => {
                                                     type="primary"
                                                     // shape="circle"
                                                     icon={<CaretDownOutlined />}
+                                                    size="small"
                                                 />
                                             </Space>
                                             <Card
@@ -309,8 +311,8 @@ const Admin = () => {
                                                         type="primary"
                                                         onClick={() => removeField(idx)}
                                                         danger
-                                                        // shape="circle"
-                                                        icon={<CloseOutlined />}
+                                                        icon={<MinusOutlined />}
+                                                        size="small"
                                                     />
                                                 }
                                                 style={{ flex: 1 }}

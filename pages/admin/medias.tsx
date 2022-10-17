@@ -14,11 +14,12 @@ import moment from 'moment'
 import useDebounce from '../../hooks/useDebounce'
 import Head from 'next/head'
 import { DeleteOutlined, FileOutlined, PictureOutlined, VideoCameraOutlined } from '@ant-design/icons'
+import { FileType } from '@types'
 
 const AdminImages = () => {
     const queryClient = useQueryClient()
     const [q, setQ] = useState<string | undefined>()
-    const [type, setType] = useState<string>('IMAGE')
+    const [type, setType] = useState<FileType>('IMAGE')
     const debouncedQ = useDebounce<string | undefined>(q, 750)
 
     const queryKeys = [
@@ -102,9 +103,15 @@ const AdminImages = () => {
             case 'IMAGE':
                 return [
                     {
-                        width: 75,
+                        width: 90,
                         render: (image: Media) => (
-                            <Image width={50} height={50} src={`/api/uploads/images/${image.uri}`} alt="" />
+                            <Image
+                                style={{ objectFit: 'contain' }}
+                                height={50}
+                                width={70}
+                                src={`/api/uploads/images/${image.uri}`}
+                                alt=""
+                            />
                         ),
                     },
                     {
@@ -241,7 +248,10 @@ const AdminImages = () => {
                             buttonStyle="solid"
                         />
                     </Space>
-                    <UploadButton onFileRecieved={() => queryClient.invalidateQueries('medias')} />
+                    <UploadButton
+                        type={type}
+                        onFileRecieved={() => queryClient.invalidateQueries('medias')}
+                    />
                 </div>
                 <Table
                     rowKey={(record) => record.id}

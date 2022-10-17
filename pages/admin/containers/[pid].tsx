@@ -15,6 +15,7 @@ import {
     Divider,
     Switch,
     InputNumber,
+    Collapse,
 } from 'antd'
 import Head from 'next/head'
 import get from 'lodash.get'
@@ -40,6 +41,7 @@ import { ContainerField, ContainerFieldType } from '@prisma/client'
 import autoAnimate from '@formkit/auto-animate'
 
 const { Text, Title } = Typography
+const { Panel } = Collapse
 
 const initialValues: FullContainerEdit = {
     title: '',
@@ -652,6 +654,7 @@ const FieldsManager = ({ values, onChange, errors }: FieldsManagerProps) => {
                                     type="primary"
                                     // shape="circle"
                                     icon={<CaretUpOutlined />}
+                                    size="small"
                                 />
                                 <Button
                                     disabled={idx === get(values, 'fields', []).length - 1}
@@ -659,315 +662,354 @@ const FieldsManager = ({ values, onChange, errors }: FieldsManagerProps) => {
                                     type="primary"
                                     // shape="circle"
                                     icon={<CaretDownOutlined />}
+                                    size="small"
                                 />
                             </Space>
-                            <Card
-                                style={{ width: '100%' }}
-                                title={`Field ${idx + 1}`}
-                                extra={
-                                    <Button
-                                        id={`field-minus-${idx}`}
-                                        onClick={() => removeField(idx)}
-                                        type="primary"
-                                        danger
-                                        icon={<MinusOutlined />}
-                                    />
-                                }
-                            >
-                                <Space direction="vertical">
-                                    <Space>
-                                        <Space direction="vertical">
-                                            <Text>Label</Text>
-                                            <Input
-                                                id={`field-label-${idx}`}
-                                                style={{ width: 240 }}
-                                                value={field.label}
-                                                onChange={(e) => modifyField(idx, 'label', e.target.value)}
-                                                status={errors?.[idx]?.label ? 'error' : undefined}
+                            <Collapse defaultActiveKey={['1']} style={{ width: '100%' }}>
+                                <Panel
+                                    key="1"
+                                    style={{ width: '100%' }}
+                                    header={
+                                        <Text type={errors?.[idx] ? 'danger' : undefined}>{`Field ${
+                                            idx + 1
+                                        }`}</Text>
+                                    }
+                                    extra={
+                                        <Button
+                                            id={`field-minus-${idx}`}
+                                            onClick={() => removeField(idx)}
+                                            type="primary"
+                                            danger
+                                            icon={<MinusOutlined />}
+                                            size="small"
+                                        />
+                                    }
+                                >
+                                    {/* <Card
+                                        style={{ width: '100%' }}
+                                        title={`Field ${idx + 1}`}
+                                        extra={
+                                            <Button
+                                                id={`field-minus-${idx}`}
+                                                onClick={() => removeField(idx)}
+                                                type="primary"
+                                                danger
+                                                icon={<MinusOutlined />}
                                             />
-                                        </Space>
-
-                                        <Space direction="vertical">
-                                            <Text>Name</Text>
-                                            <Input
-                                                id={`field-name-${idx}`}
-                                                style={{ width: 240 }}
-                                                value={field.name}
-                                                onChange={(e) =>
-                                                    modifyField(idx, 'name', camelcase(e.target.value))
-                                                }
-                                                status={errors?.[idx]?.name ? 'error' : undefined}
-                                            />
-                                        </Space>
-
-                                        <Space direction="vertical">
-                                            <Text>Required</Text>
-                                            <div
-                                                style={{
-                                                    height: 32,
-                                                    width: 75,
-                                                    alignItems: 'center',
-                                                    display: 'flex',
-                                                }}
-                                            >
-                                                <Switch
-                                                    checked={field.required || undefined}
-                                                    onClick={(e) => modifyField(idx, 'required', e)}
-                                                />
-                                            </div>
-                                        </Space>
-                                    </Space>
-
-                                    <Space align="start">
-                                        <Space direction="vertical">
-                                            <Text>Type</Text>
-                                            <Select
-                                                id={`field-type-${idx}`}
-                                                style={{ width: 240 }}
-                                                value={field.type}
-                                                onChange={(e) => {
-                                                    modifyField(idx, 'type', e)
-                                                    if (!canMeta(e)) {
-                                                        modifyField(idx, 'metadata', undefined)
-                                                    }
-                                                    if (!canMultiple(e)) {
-                                                        modifyField(idx, 'min', undefined)
-                                                        modifyField(idx, 'max', undefined)
-                                                        modifyField(idx, 'multiple', false)
-                                                    }
-                                                    if (e === ContainerFieldType.OPTION) {
-                                                        modifyField(idx, 'options', [
-                                                            { label: '', value: '' },
-                                                        ])
-                                                    } else {
-                                                        modifyField(idx, 'options', undefined)
-                                                    }
-                                                    modifyField(idx, 'containerId', undefined)
-                                                }}
-                                            >
-                                                <Select.Option value={ContainerFieldType.STRING}>
-                                                    Text
-                                                </Select.Option>
-                                                <Select.Option value={ContainerFieldType.PARAGRAPH}>
-                                                    Paragraph
-                                                </Select.Option>
-                                                <Select.Option value={ContainerFieldType.NUMBER}>
-                                                    Number
-                                                </Select.Option>
-                                                <Select.Option value={ContainerFieldType.BOOLEAN}>
-                                                    Boolean
-                                                </Select.Option>
-                                                <Select.Option value={ContainerFieldType.OPTION}>
-                                                    Option
-                                                </Select.Option>
-                                                <Select.Option value={ContainerFieldType.DATE}>
-                                                    Date
-                                                </Select.Option>
-                                                <Select.Option value={ContainerFieldType.IMAGE}>
-                                                    Image
-                                                </Select.Option>
-                                                <Select.Option value={ContainerFieldType.FILE}>
-                                                    File
-                                                </Select.Option>
-                                                <Select.Option value={ContainerFieldType.VIDEO}>
-                                                    Video
-                                                </Select.Option>
-                                                <Select.Option value={ContainerFieldType.LINK}>
-                                                    Link
-                                                </Select.Option>
-                                                <Select.Option value={ContainerFieldType.RICHTEXT}>
-                                                    Rich text
-                                                </Select.Option>
-                                                <Select.Option value={ContainerFieldType.CONTENT}>
-                                                    Content
-                                                </Select.Option>
-                                                <Select.Option value={ContainerFieldType.COLOR}>
-                                                    Color
-                                                </Select.Option>
-                                            </Select>
-                                        </Space>
-
-                                        {field.type === ContainerFieldType.CONTENT && (
+                                        }
+                                    > */}
+                                    <Space direction="vertical">
+                                        <Space>
                                             <Space direction="vertical">
-                                                <Text>Content from</Text>
-                                                <CustomSelect.ListContainers
-                                                    value={field.linkedContainerId || undefined}
-                                                    onChange={(e: string) =>
-                                                        modifyField(idx, 'linkedContainerId', e)
+                                                <Text>Label</Text>
+                                                <Input
+                                                    id={`field-label-${idx}`}
+                                                    style={{ width: 240 }}
+                                                    value={field.label}
+                                                    onChange={(e) =>
+                                                        modifyField(idx, 'label', e.target.value)
                                                     }
-                                                    status={
-                                                        errors?.[idx]?.linkedContainerId ? 'error' : undefined
-                                                    }
+                                                    status={errors?.[idx]?.label ? 'error' : undefined}
                                                 />
                                             </Space>
-                                        )}
 
-                                        {field.type === ContainerFieldType.OPTION && (
                                             <Space direction="vertical">
-                                                <Text>Options</Text>
-                                                <>
-                                                    {((get(field, 'options', []) as any[]) || [])?.map(
-                                                        (option: any, jdx: number) => (
-                                                            <Space key={jdx}>
-                                                                <Input
-                                                                    size="small"
-                                                                    style={{ width: 150 }}
-                                                                    value={option.label}
-                                                                    onChange={(e) =>
-                                                                        modifyField(
-                                                                            idx,
-                                                                            `options.${jdx}.label`,
-                                                                            e.target.value
-                                                                        )
-                                                                    }
-                                                                    placeholder="Label"
-                                                                    status={
-                                                                        errors?.[idx]?.options?.[jdx]?.label
-                                                                            ? 'error'
-                                                                            : undefined
-                                                                    }
-                                                                />
-                                                                <Input
-                                                                    size="small"
-                                                                    style={{ width: 150 }}
-                                                                    value={option.value}
-                                                                    onChange={(e) =>
-                                                                        modifyField(
-                                                                            idx,
-                                                                            `options.${jdx}.value`,
-                                                                            kebabcase(e.target.value)
-                                                                        )
-                                                                    }
-                                                                    placeholder="Value"
-                                                                    status={
-                                                                        errors?.[idx]?.options?.[jdx]?.value
-                                                                            ? 'error'
-                                                                            : undefined
-                                                                    }
-                                                                />
-                                                                <Button
-                                                                    size="small"
-                                                                    disabled={
-                                                                        (get(field, 'options', []) as any[])
-                                                                            .length === 1
-                                                                    }
-                                                                    onClick={() => {
-                                                                        const copyOpts = [
-                                                                            ...(get(
-                                                                                field,
-                                                                                'options',
-                                                                                []
-                                                                            ) as any[]),
-                                                                        ]
-                                                                        copyOpts.splice(jdx, 1)
-
-                                                                        modifyField(idx, 'options', copyOpts)
-                                                                    }}
-                                                                    type="primary"
-                                                                    danger
-                                                                    icon={<MinusOutlined />}
-                                                                />
-                                                            </Space>
-                                                        )
-                                                    )}
-                                                </>
-                                                <Button
-                                                    size="small"
-                                                    onClick={() =>
-                                                        modifyField(idx, 'options', [
-                                                            ...((get(field, 'options', []) as any[]) || []),
-                                                            { label: '', value: '' },
-                                                        ])
+                                                <Text>Name</Text>
+                                                <Input
+                                                    id={`field-name-${idx}`}
+                                                    style={{ width: 240 }}
+                                                    value={field.name}
+                                                    onChange={(e) =>
+                                                        modifyField(idx, 'name', camelcase(e.target.value))
                                                     }
-                                                    type="primary"
-                                                    icon={<PlusOutlined />}
+                                                    status={errors?.[idx]?.name ? 'error' : undefined}
                                                 />
                                             </Space>
-                                        )}
-                                    </Space>
 
-                                    <Space>
-                                        <Space direction="vertical">
-                                            <Text>Multiple</Text>
-                                            <div
-                                                style={{
-                                                    height: 32,
-                                                    width: 75,
-                                                    alignItems: 'center',
-                                                    display: 'flex',
-                                                }}
-                                            >
-                                                <Switch
-                                                    disabled={!canMultiple(field.type)}
-                                                    checked={field.multiple}
-                                                    onClick={(e) => {
-                                                        if (!e) {
+                                            <Space direction="vertical">
+                                                <Text>Required</Text>
+                                                <div
+                                                    style={{
+                                                        height: 32,
+                                                        width: 75,
+                                                        alignItems: 'center',
+                                                        display: 'flex',
+                                                    }}
+                                                >
+                                                    <Switch
+                                                        checked={field.required || undefined}
+                                                        onClick={(e) => modifyField(idx, 'required', e)}
+                                                    />
+                                                </div>
+                                            </Space>
+                                        </Space>
+
+                                        <Space align="start">
+                                            <Space direction="vertical">
+                                                <Text>Type</Text>
+                                                <Select
+                                                    id={`field-type-${idx}`}
+                                                    style={{ width: 240 }}
+                                                    value={field.type}
+                                                    onChange={(e) => {
+                                                        modifyField(idx, 'type', e)
+                                                        if (!canMeta(e)) {
+                                                            modifyField(idx, 'metadata', undefined)
+                                                        }
+                                                        if (!canMultiple(e)) {
                                                             modifyField(idx, 'min', undefined)
                                                             modifyField(idx, 'max', undefined)
-                                                        } else {
-                                                            modifyField(idx, 'min', 1)
-                                                            modifyField(idx, 'max', 15)
+                                                            modifyField(idx, 'multiple', false)
                                                         }
-                                                        modifyField(idx, 'multiple', e)
+                                                        if (e === ContainerFieldType.OPTION) {
+                                                            modifyField(idx, 'options', [
+                                                                { label: '', value: '' },
+                                                            ])
+                                                        } else {
+                                                            modifyField(idx, 'options', undefined)
+                                                        }
+                                                        modifyField(idx, 'containerId', undefined)
                                                     }}
-                                                />
-                                            </div>
+                                                >
+                                                    <Select.Option value={ContainerFieldType.STRING}>
+                                                        Text
+                                                    </Select.Option>
+                                                    <Select.Option value={ContainerFieldType.PARAGRAPH}>
+                                                        Paragraph
+                                                    </Select.Option>
+                                                    <Select.Option value={ContainerFieldType.NUMBER}>
+                                                        Number
+                                                    </Select.Option>
+                                                    <Select.Option value={ContainerFieldType.BOOLEAN}>
+                                                        Boolean
+                                                    </Select.Option>
+                                                    <Select.Option value={ContainerFieldType.OPTION}>
+                                                        Option
+                                                    </Select.Option>
+                                                    <Select.Option value={ContainerFieldType.DATE}>
+                                                        Date
+                                                    </Select.Option>
+                                                    <Select.Option value={ContainerFieldType.IMAGE}>
+                                                        Image
+                                                    </Select.Option>
+                                                    <Select.Option value={ContainerFieldType.FILE}>
+                                                        File
+                                                    </Select.Option>
+                                                    <Select.Option value={ContainerFieldType.VIDEO}>
+                                                        Video
+                                                    </Select.Option>
+                                                    <Select.Option value={ContainerFieldType.LINK}>
+                                                        Link
+                                                    </Select.Option>
+                                                    <Select.Option value={ContainerFieldType.RICHTEXT}>
+                                                        Rich text
+                                                    </Select.Option>
+                                                    <Select.Option value={ContainerFieldType.CONTENT}>
+                                                        Content
+                                                    </Select.Option>
+                                                    <Select.Option value={ContainerFieldType.COLOR}>
+                                                        Color
+                                                    </Select.Option>
+                                                </Select>
+                                            </Space>
+
+                                            {field.type === ContainerFieldType.CONTENT && (
+                                                <Space direction="vertical">
+                                                    <Text>Content from</Text>
+                                                    <CustomSelect.ListContainers
+                                                        value={field.linkedContainerId || undefined}
+                                                        onChange={(e: string) =>
+                                                            modifyField(idx, 'linkedContainerId', e)
+                                                        }
+                                                        status={
+                                                            errors?.[idx]?.linkedContainerId
+                                                                ? 'error'
+                                                                : undefined
+                                                        }
+                                                    />
+                                                </Space>
+                                            )}
+
+                                            {field.type === ContainerFieldType.OPTION && (
+                                                <Space direction="vertical">
+                                                    <Text>Options</Text>
+                                                    <>
+                                                        {((get(field, 'options', []) as any[]) || [])?.map(
+                                                            (option: any, jdx: number) => (
+                                                                <Space key={jdx}>
+                                                                    <Input
+                                                                        size="small"
+                                                                        style={{ width: 150 }}
+                                                                        value={option.label}
+                                                                        onChange={(e) =>
+                                                                            modifyField(
+                                                                                idx,
+                                                                                `options.${jdx}.label`,
+                                                                                e.target.value
+                                                                            )
+                                                                        }
+                                                                        placeholder="Label"
+                                                                        status={
+                                                                            errors?.[idx]?.options?.[jdx]
+                                                                                ?.label
+                                                                                ? 'error'
+                                                                                : undefined
+                                                                        }
+                                                                    />
+                                                                    <Input
+                                                                        size="small"
+                                                                        style={{ width: 150 }}
+                                                                        value={option.value}
+                                                                        onChange={(e) =>
+                                                                            modifyField(
+                                                                                idx,
+                                                                                `options.${jdx}.value`,
+                                                                                kebabcase(e.target.value)
+                                                                            )
+                                                                        }
+                                                                        placeholder="Value"
+                                                                        status={
+                                                                            errors?.[idx]?.options?.[jdx]
+                                                                                ?.value
+                                                                                ? 'error'
+                                                                                : undefined
+                                                                        }
+                                                                    />
+                                                                    <Button
+                                                                        size="small"
+                                                                        disabled={
+                                                                            (
+                                                                                get(
+                                                                                    field,
+                                                                                    'options',
+                                                                                    []
+                                                                                ) as any[]
+                                                                            ).length === 1
+                                                                        }
+                                                                        onClick={() => {
+                                                                            const copyOpts = [
+                                                                                ...(get(
+                                                                                    field,
+                                                                                    'options',
+                                                                                    []
+                                                                                ) as any[]),
+                                                                            ]
+                                                                            copyOpts.splice(jdx, 1)
+
+                                                                            modifyField(
+                                                                                idx,
+                                                                                'options',
+                                                                                copyOpts
+                                                                            )
+                                                                        }}
+                                                                        type="primary"
+                                                                        danger
+                                                                        icon={<MinusOutlined />}
+                                                                    />
+                                                                </Space>
+                                                            )
+                                                        )}
+                                                    </>
+                                                    <Button
+                                                        size="small"
+                                                        onClick={() =>
+                                                            modifyField(idx, 'options', [
+                                                                ...((get(field, 'options', []) as any[]) ||
+                                                                    []),
+                                                                { label: '', value: '' },
+                                                            ])
+                                                        }
+                                                        type="primary"
+                                                        icon={<PlusOutlined />}
+                                                    />
+                                                </Space>
+                                            )}
                                         </Space>
 
-                                        {field.multiple && (
-                                            <>
-                                                <Space direction="vertical">
-                                                    <Text>Min</Text>
-                                                    <InputNumber
-                                                        style={{
-                                                            width: 65,
+                                        <Space>
+                                            <Space direction="vertical">
+                                                <Text>Multiple</Text>
+                                                <div
+                                                    style={{
+                                                        height: 32,
+                                                        width: 75,
+                                                        alignItems: 'center',
+                                                        display: 'flex',
+                                                    }}
+                                                >
+                                                    <Switch
+                                                        disabled={!canMultiple(field.type)}
+                                                        checked={field.multiple}
+                                                        onClick={(e) => {
+                                                            if (!e) {
+                                                                modifyField(idx, 'min', undefined)
+                                                                modifyField(idx, 'max', undefined)
+                                                            } else {
+                                                                modifyField(idx, 'min', 1)
+                                                                modifyField(idx, 'max', 15)
+                                                            }
+                                                            modifyField(idx, 'multiple', e)
                                                         }}
-                                                        value={field.min}
-                                                        onChange={(e) => modifyField(idx, 'min', e)}
-                                                        min={0}
-                                                        max={field.max || undefined}
-                                                        status={errors?.[idx]?.min ? 'error' : undefined}
                                                     />
-                                                </Space>
-                                                <Space direction="vertical">
-                                                    <Text>Max</Text>
-                                                    <InputNumber
-                                                        style={{
-                                                            width: 65,
-                                                        }}
-                                                        value={field.max}
-                                                        onChange={(e) => modifyField(idx, 'max', e)}
-                                                        min={field.min || undefined}
-                                                        max={999}
-                                                        status={errors?.[idx]?.max ? 'error' : undefined}
-                                                    />
-                                                </Space>
-                                            </>
-                                        )}
-                                    </Space>
+                                                </div>
+                                            </Space>
 
-                                    <Space direction="vertical">
-                                        <Text>Metadata</Text>
-                                        <Select
-                                            allowClear
-                                            disabled={!canMeta(field.type)}
-                                            id={`meta-name-${idx}`}
-                                            style={{ width: 240 }}
-                                            value={field.metadata}
-                                            onChange={(e) => modifyField(idx, 'metadata', e)}
-                                        >
-                                            <Select.Option value="application-name">
-                                                Application name
-                                            </Select.Option>
-                                            <Select.Option value="author">Author</Select.Option>
-                                            <Select.Option value="description">Description</Select.Option>
-                                            <Select.Option value="generator">Generator</Select.Option>
-                                            <Select.Option value="keywords">Keywords</Select.Option>
-                                            <Select.Option value="viewport">Viewport</Select.Option>
-                                        </Select>
+                                            {field.multiple && (
+                                                <>
+                                                    <Space direction="vertical">
+                                                        <Text>Min</Text>
+                                                        <InputNumber
+                                                            style={{
+                                                                width: 65,
+                                                            }}
+                                                            value={field.min}
+                                                            onChange={(e) => modifyField(idx, 'min', e)}
+                                                            min={0}
+                                                            max={field.max || undefined}
+                                                            status={errors?.[idx]?.min ? 'error' : undefined}
+                                                        />
+                                                    </Space>
+                                                    <Space direction="vertical">
+                                                        <Text>Max</Text>
+                                                        <InputNumber
+                                                            style={{
+                                                                width: 65,
+                                                            }}
+                                                            value={field.max}
+                                                            onChange={(e) => modifyField(idx, 'max', e)}
+                                                            min={field.min || undefined}
+                                                            max={999}
+                                                            status={errors?.[idx]?.max ? 'error' : undefined}
+                                                        />
+                                                    </Space>
+                                                </>
+                                            )}
+                                        </Space>
+
+                                        <Space direction="vertical">
+                                            <Text>Metadata</Text>
+                                            <Select
+                                                allowClear
+                                                disabled={!canMeta(field.type)}
+                                                id={`meta-name-${idx}`}
+                                                style={{ width: 240 }}
+                                                value={field.metadata}
+                                                onChange={(e) => modifyField(idx, 'metadata', e)}
+                                            >
+                                                <Select.Option value="application-name">
+                                                    Application name
+                                                </Select.Option>
+                                                <Select.Option value="author">Author</Select.Option>
+                                                <Select.Option value="description">Description</Select.Option>
+                                                <Select.Option value="generator">Generator</Select.Option>
+                                                <Select.Option value="keywords">Keywords</Select.Option>
+                                                <Select.Option value="viewport">Viewport</Select.Option>
+                                            </Select>
+                                        </Space>
                                     </Space>
-                                </Space>
-                            </Card>
+                                    {/* </Card> */}
+                                </Panel>
+                            </Collapse>
                         </div>
                     ))}
                 </div>

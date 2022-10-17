@@ -1,5 +1,11 @@
 import { Space, Button, Card, Divider, Typography } from 'antd'
-import { PlusOutlined, CaretUpOutlined, CaretDownOutlined, CloseOutlined } from '@ant-design/icons'
+import {
+    PlusOutlined,
+    CaretUpOutlined,
+    CaretDownOutlined,
+    CloseOutlined,
+    MinusOutlined,
+} from '@ant-design/icons'
 import { FullSectionEdit, Theme } from '../../types'
 import CustomSelect from '../../components/CustomSelect'
 import GetEditComponent from '../../components/GetEditComponent'
@@ -85,6 +91,7 @@ const SectionManager = ({ values, onChange, fields }: SectionManagerProps) => {
                                 type="primary"
                                 // shape="circle"
                                 icon={<CaretUpOutlined />}
+                                size="small"
                             />
                             <Button
                                 disabled={idx === values?.length - 1}
@@ -92,6 +99,7 @@ const SectionManager = ({ values, onChange, fields }: SectionManagerProps) => {
                                 type="primary"
                                 // shape="circle"
                                 icon={<CaretDownOutlined />}
+                                size="small"
                             />
                         </Space>
                         <Card
@@ -132,8 +140,8 @@ const SectionManager = ({ values, onChange, fields }: SectionManagerProps) => {
                                     type="primary"
                                     onClick={() => removeSection(idx)}
                                     danger
-                                    // shape="circle"
-                                    icon={<CloseOutlined />}
+                                    icon={<MinusOutlined />}
+                                    size="small"
                                 />
                             }
                             style={{ flex: 1 }}
