@@ -4,7 +4,7 @@ import { useQuery, useQueryClient, UseQueryResult } from 'react-query'
 import { getMedias } from '../../network/medias'
 import type { Media } from '@prisma/client'
 import get from 'lodash.get'
-import { CloseOutlined } from '@ant-design/icons'
+import { CloseOutlined, SearchOutlined } from '@ant-design/icons'
 import moment from 'moment'
 import UploadButton from '../../components/UploadButton'
 import useDebounce from '@hooks/useDebounce'
@@ -119,6 +119,7 @@ const MediaModal = ({
                         <Input
                             allowClear
                             placeholder="Search by name"
+                            prefix={<SearchOutlined />}
                             value={q}
                             onChange={(e) => setQ(e.target.value)}
                             style={{ width: 180 }}

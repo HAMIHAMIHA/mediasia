@@ -224,7 +224,9 @@ export type PageProps = {
     fields: ContentFields[]
     contents: ContainerPageContents[]
     headerSections: PageSection[]
+    topSections: PageSection[]
     sections: PageSection[]
+    bottomSections: PageSection[]
     footerSections: PageSection[]
     linkedContents: any | null
     container: {

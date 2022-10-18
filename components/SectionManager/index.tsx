@@ -1,11 +1,5 @@
 import { Space, Button, Card, Divider, Typography } from 'antd'
-import {
-    PlusOutlined,
-    CaretUpOutlined,
-    CaretDownOutlined,
-    CloseOutlined,
-    MinusOutlined,
-} from '@ant-design/icons'
+import { PlusOutlined, CaretUpOutlined, CaretDownOutlined, MinusOutlined } from '@ant-design/icons'
 import { FullSectionEdit, Theme } from '../../types'
 import CustomSelect from '../../components/CustomSelect'
 import GetEditComponent from '../../components/GetEditComponent'

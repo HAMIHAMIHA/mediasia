@@ -16,7 +16,7 @@ import { useQuery, UseQueryResult } from 'react-query'
 import { getRoles } from '../../../../network/roles'
 import get from 'lodash.get'
 import trim from 'lodash.trim'
-import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons'
+import { DeleteOutlined, EditOutlined, PlusOutlined, SearchOutlined } from '@ant-design/icons'
 import { useState } from 'react'
 import useDebounce from '../../../../hooks/useDebounce'
 import moment from 'moment'
@@ -51,6 +51,7 @@ const AdminRoles = () => {
                         value={q}
                         allowClear
                         placeholder="Search by name"
+                        prefix={<SearchOutlined />}
                         style={{ width: 180 }}
                         onChange={(e) => setQ(e.target.value)}
                     />

@@ -1,6 +1,12 @@
 import type { Container, Element, Slug } from '@prisma/client'
 import { Space, Button, Table, Popconfirm, Input, Breadcrumb, Badge, message } from 'antd'
-import { DeleteOutlined, EditOutlined, PlusOutlined, UnorderedListOutlined } from '@ant-design/icons'
+import {
+    DeleteOutlined,
+    EditOutlined,
+    PlusOutlined,
+    SearchOutlined,
+    UnorderedListOutlined,
+} from '@ant-design/icons'
 import Link from 'next/link'
 import moment from 'moment'
 import { useMutation, useQuery, useQueryClient, UseQueryResult } from 'react-query'
@@ -40,6 +46,7 @@ const AdminElements = () => {
                         <Input
                             value={q}
                             allowClear
+                            prefix={<SearchOutlined />}
                             placeholder="Search by title"
                             style={{ width: 180 }}
                             onChange={(e) => setQ(e.target.value)}

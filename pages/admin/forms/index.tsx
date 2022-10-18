@@ -6,7 +6,7 @@ import get from 'lodash.get'
 import trim from 'lodash.trim'
 import type { Form } from '@prisma/client'
 import { useMutation, useQuery, useQueryClient, UseQueryResult } from 'react-query'
-import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons'
+import { DeleteOutlined, EditOutlined, PlusOutlined, SearchOutlined } from '@ant-design/icons'
 
 import useDebounce from '../../../hooks/useDebounce'
 import { getForms, deleteForm } from '../../../network/forms'
@@ -43,6 +43,7 @@ const AdminPages = () => {
                             allowClear
                             id="search"
                             placeholder="Search by title"
+                            prefix={<SearchOutlined />}
                             style={{ width: 180 }}
                             onChange={(e) => setQ(e.target.value)}
                         />

@@ -5,7 +5,7 @@ import Link from 'next/link'
 import get from 'lodash.get'
 import trim from 'lodash.trim'
 import { useRouter } from 'next/router'
-import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons'
+import { DeleteOutlined, EditOutlined, PlusOutlined, SearchOutlined } from '@ant-design/icons'
 import { useMutation, useQuery, useQueryClient, UseQueryResult } from 'react-query'
 import type { Container, Content, Slug } from '@prisma/client'
 import { Space, Button, Table, Popconfirm, Input, Breadcrumb, Badge, message } from 'antd'
@@ -65,6 +65,7 @@ const AdminElements = () => {
                             value={q}
                             allowClear
                             placeholder="Search by title"
+                            prefix={<SearchOutlined />}
                             style={{ width: 180 }}
                             onChange={(e) => setQ(e.target.value)}
                         />

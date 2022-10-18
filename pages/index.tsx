@@ -8,13 +8,15 @@ import getPagePropsFromUrl from '../utils/getPagePropsFromUrl'
 import { PageProps } from '../types'
 import PageDisplay from '../components/PageDisplay'
 
-const Home = (props: PageProps) => <PageDisplay pageProps={props} onEmpty={<DefaultHome />} />
+const Home = (props: PageProps) => (
+    <PageDisplay pageProps={props} onEmpty={<DefaultHome appName={props.appName} />} />
+)
 
-const DefaultHome = () => {
+const DefaultHome = ({ appName }: { appName?: string }) => {
     return (
         <div
             style={{
-                height: '100vh',
+                height: '50vh',
                 width: '100vw',
                 display: 'flex',
                 justifyContent: 'center',
@@ -23,7 +25,7 @@ const DefaultHome = () => {
         >
             <Result
                 icon={<HomeOutlined />}
-                title="Welcome to next cms! Login to start edit your website."
+                title={`Welcome to ${appName}! Login to start edit your website.`}
                 extra={
                     <Link href="/sign-in">
                         <a>

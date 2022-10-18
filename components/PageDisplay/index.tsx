@@ -11,7 +11,19 @@ interface PageDisplayProps {
 }
 
 const PageDisplay = ({ pageProps, onEmpty, noTitle = false }: PageDisplayProps) => {
-    const { id, type, title, appName, theme, sections, metadatas, headerSections, footerSections } = pageProps
+    const {
+        id,
+        type,
+        title,
+        appName,
+        theme,
+        topSections,
+        sections,
+        bottomSections,
+        metadatas,
+        headerSections,
+        footerSections,
+    } = pageProps
 
     return (
         <>
@@ -32,8 +44,14 @@ const PageDisplay = ({ pageProps, onEmpty, noTitle = false }: PageDisplayProps) 
             </header>
 
             <main>
+                {topSections?.map((section) => (
+                    <SectionBlock key={section.id} section={section} page={pageProps} theme={theme} />
+                ))}
                 {!sections?.length && onEmpty}
                 {sections?.map((section) => (
+                    <SectionBlock key={section.id} section={section} page={pageProps} theme={theme} />
+                ))}
+                {bottomSections?.map((section) => (
                     <SectionBlock key={section.id} section={section} page={pageProps} theme={theme} />
                 ))}
             </main>

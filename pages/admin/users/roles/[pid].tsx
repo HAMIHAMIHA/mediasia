@@ -58,12 +58,14 @@ const UsersCreation = () => {
     const { pid } = router.query
     const queryClient = useQueryClient()
 
-    const { values, /*errors,*/ handleChange, handleSubmit, setValues } =
-        useFormik<Prisma.RoleCreateInput>({
-            initialValues,
-            validate,
-            onSubmit: async (values) => mutation.mutate({ pid: pid as string, values }),
-        })
+    const { values, /*errors,*/ handleChange, handleSubmit, setValues } = useFormik<Prisma.RoleCreateInput>({
+        validate,
+        initialValues,
+        validateOnBlur: false,
+        validateOnChange: false,
+        validateOnMount: false,
+        onSubmit: async (values) => mutation.mutate({ pid: pid as string, values }),
+    })
 
     const role: UseQueryResult<Role, Error> = useQuery<Role, Error>(
         ['roles', { id: pid }],

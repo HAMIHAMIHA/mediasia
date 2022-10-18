@@ -5,7 +5,7 @@ import Link from 'next/link'
 import Head from 'next/head'
 import get from 'lodash.get'
 import trim from 'lodash.trim'
-import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons'
+import { DeleteOutlined, EditOutlined, PlusOutlined, SearchOutlined } from '@ant-design/icons'
 import { useQuery, UseQueryResult } from 'react-query'
 
 import { getUsers } from '../../../network/users'
@@ -46,6 +46,7 @@ const AdminUsers = () => {
                             value={q}
                             allowClear
                             placeholder="Search by name"
+                            prefix={<SearchOutlined />}
                             style={{ width: 180 }}
                             onChange={(e) => setQ(e.target.value)}
                         />

@@ -677,7 +677,10 @@ const FieldsManager = ({ values, onChange, errors }: FieldsManagerProps) => {
                                     extra={
                                         <Button
                                             id={`field-minus-${idx}`}
-                                            onClick={() => removeField(idx)}
+                                            onClick={(event) => {
+                                                event.stopPropagation()
+                                                removeField(idx)
+                                            }}
                                             type="primary"
                                             danger
                                             icon={<MinusOutlined />}

@@ -87,6 +87,7 @@ function MenuAdmin() {
 
     const containersMenu = (
         <Menu
+            mode="inline"
             items={[
                 {
                     key: '1',
@@ -113,45 +114,47 @@ function MenuAdmin() {
                     key: '3',
                     type: 'group',
                     label: 'Contents',
-                    children: get(containers, 'data', []).map((container: Container, idx: number) => ({
-                        key: `3-${container.id}`,
-                        label: (
-                            <Link href={`/admin/containers/${container.id}`}>
-                                <a>{container.title}</a>
-                            </Link>
-                        ),
-                        icon: <FileTextOutlined />,
-                        children: [
-                            {
-                                key: `3-${container.id}-1`,
-                                label: (
-                                    <Link
-                                        href={{
-                                            pathname: '/admin/contents',
-                                            query: { container: container.id },
-                                        }}
-                                    >
-                                        <a>All {container.title}</a>
-                                    </Link>
-                                ),
-                                icon: <FileOutlined />,
-                            },
-                            {
-                                key: `3-${container.id}-2`,
-                                label: (
-                                    <Link
-                                        href={{
-                                            pathname: '/admin/contents/create',
-                                            query: { container: container.id },
-                                        }}
-                                    >
-                                        <a>Create a {container.title.toLocaleLowerCase()}</a>
-                                    </Link>
-                                ),
-                                icon: <PlusCircleOutlined />,
-                            },
-                        ],
-                    })),
+                    children: get(containers, 'data', [])
+                        .filter((e, idx) => idx < 15)
+                        .map((container: Container, idx: number) => ({
+                            key: `3-${container.id}`,
+                            label: (
+                                <Link href={`/admin/containers/${container.id}`}>
+                                    <a>{container.title}</a>
+                                </Link>
+                            ),
+                            icon: <FileTextOutlined />,
+                            children: [
+                                {
+                                    key: `3-${container.id}-1`,
+                                    label: (
+                                        <Link
+                                            href={{
+                                                pathname: '/admin/contents',
+                                                query: { container: container.id },
+                                            }}
+                                        >
+                                            <a>All {container.title}</a>
+                                        </Link>
+                                    ),
+                                    icon: <FileOutlined />,
+                                },
+                                {
+                                    key: `3-${container.id}-2`,
+                                    label: (
+                                        <Link
+                                            href={{
+                                                pathname: '/admin/contents/create',
+                                                query: { container: container.id },
+                                            }}
+                                        >
+                                            <a>Create a {container.title.toLocaleLowerCase()}</a>
+                                        </Link>
+                                    ),
+                                    icon: <PlusCircleOutlined />,
+                                },
+                            ],
+                        })),
                 },
             ]}
         />

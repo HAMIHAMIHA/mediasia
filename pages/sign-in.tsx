@@ -19,6 +19,9 @@ const DefaultSignInForm = () => {
         password: string
     }>({
         initialValues: { email: '', password: '' },
+        validateOnBlur: false,
+        validateOnChange: false,
+        validateOnMount: false,
         onSubmit: async (values) => signIn!.mutate(values),
     })
 
@@ -29,7 +32,7 @@ const DefaultSignInForm = () => {
     return (
         <div
             style={{
-                height: '100vh',
+                height: '50vh',
                 width: '100vw',
                 display: 'flex',
                 justifyContent: 'center',

@@ -63,12 +63,14 @@ const UsersCreation = () => {
     const { pid } = router.query
     const queryClient = useQueryClient()
 
-    const { values, /*errors,*/ handleChange, handleSubmit, setValues } =
-        useFormik<UserCreation>({
-            initialValues,
-            validate,
-            onSubmit: async (values) => mutation.mutate({ pid: pid as string, values }),
-        })
+    const { values, /*errors,*/ handleChange, handleSubmit, setValues } = useFormik<UserCreation>({
+        validate,
+        initialValues,
+        validateOnBlur: false,
+        validateOnChange: false,
+        validateOnMount: false,
+        onSubmit: async (values) => mutation.mutate({ pid: pid as string, values }),
+    })
 
     const user: UseQueryResult<FullUser, Error> = useQuery<FullUser, Error>(
         ['users', { id: pid }],
@@ -159,9 +161,7 @@ const UsersCreation = () => {
                                         <Input
                                             style={{ width: 240 }}
                                             value={get(values, 'name', '')!}
-                                            onChange={(e) =>
-                                                onHandleChange('name', e.target.value)
-                                            }
+                                            onChange={(e) => onHandleChange('name', e.target.value)}
                                         />
                                     </Space>
 
@@ -192,9 +192,7 @@ const UsersCreation = () => {
                                         <Input
                                             style={{ width: 240 }}
                                             value={get(values, 'email', '')}
-                                            onChange={(e) =>
-                                                onHandleChange('email', e.target.value)
-                                            }
+                                            onChange={(e) => onHandleChange('email', e.target.value)}
                                         />
                                     </Space>
 
@@ -203,9 +201,7 @@ const UsersCreation = () => {
                                         <Input.Password
                                             style={{ width: 240 }}
                                             value={get(values, 'password', '')}
-                                            onChange={(e) =>
-                                                onHandleChange('password', e.target.value)
-                                            }
+                                            onChange={(e) => onHandleChange('password', e.target.value)}
                                         />
                                     </Space>
                                 </Space>

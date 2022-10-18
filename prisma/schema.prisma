@@ -11,7 +11,8 @@ datasource db {
 }
 
 model Access {
-  id          String     @id @default(cuid()) // @map("_id")
+  id          String     @id @default(cuid())
+  // id          String     @id @default(auto()) @map("_id") @db.ObjectId
   containerId String?
   container   Container? @relation(fields: [containerId], references: [id])
   contentId   String?
@@ -30,7 +31,8 @@ enum MetadataType {
 }
 
 model Metadata {
-  id            String     @id @default(cuid()) // @map("_id")
+  id            String     @id @default(cuid())
+  // id          String     @id @default(auto()) @map("_id") @db.ObjectId
   name          String
   content       String
   containerId   String?
@@ -48,7 +50,8 @@ enum SectionType {
 }
 
 model Section {
-  id                 String      @id @default(cuid()) // @map("_id")
+  id                 String      @id @default(cuid())
+  // id          String     @id @default(auto()) @map("_id") @db.ObjectId
   type               SectionType @default(PAGE)
   block              String?
   formId             String?
@@ -66,7 +69,8 @@ model Section {
 }
 
 model Element {
-  id        String    @id @default(cuid()) // @map("_id")
+  id        String    @id @default(cuid())
+  // id          String     @id @default(auto()) @map("_id") @db.ObjectId
   title     String    @unique
   block     String
   section   Section[]
@@ -76,7 +80,8 @@ model Element {
 }
 
 model Media {
-  id         String         @id @default(cuid()) // @map("_id")
+  id         String         @id @default(cuid())
+  // id          String     @id @default(auto()) @map("_id") @db.ObjectId
   uri        String         @unique
   mimeType   String
   name       String
@@ -87,14 +92,16 @@ model Media {
 }
 
 model User {
-  id        String   @id @default(cuid()) // @map("_id")
+  id        String   @id @default(cuid())
+  // id          String     @id @default(auto()) @map("_id") @db.ObjectId
   name      String?
   login     Login?
   updatedAt DateTime @updatedAt
 }
 
 model Login {
-  id        String    @id @default(cuid()) // @map("_id")
+  id        String    @id @default(cuid())
+  // id          String     @id @default(auto()) @map("_id") @db.ObjectId
   userId    String    @unique
   user      User      @relation(fields: [userId], references: [id])
   sessions  Session[]
@@ -106,7 +113,8 @@ model Login {
 }
 
 model Role {
-  id        String   @id @default(cuid()) // @map("_id")
+  id        String   @id @default(cuid())
+  // id          String     @id @default(auto()) @map("_id") @db.ObjectId
   name      String
   logins    Login[]
   Accesses  Access[]
@@ -114,7 +122,8 @@ model Role {
 }
 
 model Session {
-  id        String   @id @default(cuid()) // @map("_id")
+  id        String   @id @default(cuid())
+  // id          String     @id @default(auto()) @map("_id") @db.ObjectId
   token     String   @unique
   loginId   String
   login     Login    @relation(fields: [loginId], references: [id])
@@ -123,14 +132,16 @@ model Session {
 }
 
 model Setting {
-  id        String   @id @default(cuid()) // @map("_id")
+  id        String   @id @default(cuid())
+  // id          String     @id @default(auto()) @map("_id") @db.ObjectId
   name      String   @unique
   value     String
   updatedAt DateTime @updatedAt
 }
 
 model Form {
-  id        String      @id @default(cuid()) // @map("_id")
+  id        String      @id @default(cuid())
+  // id          String     @id @default(auto()) @map("_id") @db.ObjectId
   title     String      @unique
   sendMail  Boolean     @default(false)
   sendTo    String?
@@ -155,7 +166,8 @@ enum FormFieldType {
 }
 
 model FormField {
-  id          String        @id @default(cuid()) // @map("_id")
+  id          String        @id @default(cuid())
+  // id          String     @id @default(auto()) @map("_id") @db.ObjectId
   formId      String
   form        Form          @relation(fields: [formId], references: [id])
   name        String?
@@ -176,7 +188,8 @@ model FormField {
 }
 
 model Message {
-  id        String   @id @default(cuid()) // @map("_id")
+  id        String   @id @default(cuid())
+  // id          String     @id @default(auto()) @map("_id") @db.ObjectId
   read      Boolean  @default(false)
   formId    String
   form      Form     @relation(fields: [formId], references: [id])
@@ -190,7 +203,8 @@ enum Status {
 }
 
 model Container {
-  id                     String           @id @default(cuid()) // @map("_id")
+  id                     String           @id @default(cuid())
+  // id          String     @id @default(auto()) @map("_id") @db.ObjectId
   title                  String
   metadatas              Metadata[]       @relation(name: "metadatas")
   // slug               String?          @unique
@@ -208,7 +222,8 @@ model Container {
 }
 
 model Content {
-  id               String         @id @default(cuid()) // @map("_id")
+  id               String         @id @default(cuid())
+  // id          String     @id @default(auto()) @map("_id") @db.ObjectId
   title            String
   metadatas        Metadata[]
   accesses         Access[]

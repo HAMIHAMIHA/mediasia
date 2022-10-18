@@ -13,7 +13,13 @@ import { getMedias, deleteMedia, editImageAlt } from '../../network/medias'
 import moment from 'moment'
 import useDebounce from '../../hooks/useDebounce'
 import Head from 'next/head'
-import { DeleteOutlined, FileOutlined, PictureOutlined, VideoCameraOutlined } from '@ant-design/icons'
+import {
+    DeleteOutlined,
+    FileOutlined,
+    PictureOutlined,
+    SearchOutlined,
+    VideoCameraOutlined,
+} from '@ant-design/icons'
 import { FileType } from '@types'
 
 const AdminImages = () => {
@@ -205,6 +211,7 @@ const AdminImages = () => {
                         <Input
                             allowClear
                             placeholder="Search by name"
+                            prefix={<SearchOutlined />}
                             value={q}
                             onChange={(e) => setQ(e.target.value)}
                             style={{ width: 180 }}

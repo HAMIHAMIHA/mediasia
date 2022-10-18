@@ -33,6 +33,9 @@ const getInitialValue = (fields: any[] | undefined) => {
 const SectionBlock = ({ section, theme, page }: Props) => {
     const { values, errors, handleChange, handleSubmit, setValues } = useFormik({
         initialValues: getInitialValue(section?.form?.fields),
+        validateOnBlur: false,
+        validateOnChange: false,
+        validateOnMount: false,
         validate: () => {
             let errors: any = {}
 
