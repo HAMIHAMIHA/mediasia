@@ -47,6 +47,12 @@ export const useProvideAuth = (): UseProvideAuthProps => {
 
     const me: UseQueryResult<ContextUser, Error> = useQuery<ContextUser, Error>(['me'], () => getMe(), {
         onSettled: () => setInitializing(false),
+        onError: (error: any) => {
+            if (error.response.status === 403) {
+                setToken(undefined)
+                localStorage.removeItem('token')
+            }
+        },
         enabled: !!token,
     })
 
