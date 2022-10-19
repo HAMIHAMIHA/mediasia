@@ -133,22 +133,6 @@ const Admin = () => {
 
                         <Card
                             bodyStyle={{ padding: 0 }}
-                            // title={
-                            //     <Space>
-                            //         <Select
-                            //             value={values.block}
-                            //             onChange={(e) => onHandleChange('block', e)}
-                            //             style={{ width: 240 }}
-                            //             status={errors.block ? 'error' : undefined}
-                            //         >
-                            //             {Object.keys(Blocks).map((key) => (
-                            //                 <Select.Option key={key} value={key}>
-                            //                     {get(Blocks, `${key}.name`, '')}
-                            //                 </Select.Option>
-                            //             ))}
-                            //         </Select>
-                            //     </Space>
-                            // }
                             title={
                                 <Space>
                                     <Text

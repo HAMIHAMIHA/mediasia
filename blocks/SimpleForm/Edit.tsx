@@ -1,6 +1,6 @@
 import styles from './SimpleForm.module.css'
 
-import { Card, Typography } from 'antd'
+import { Card } from 'antd'
 import { Props } from '../types'
 import { FormFieldType } from '@prisma/client'
 import { Fragment } from 'react'
