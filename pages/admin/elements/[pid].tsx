@@ -10,6 +10,7 @@ import { useMutation, useQuery, UseQueryResult, useQueryClient } from 'react-que
 import Head from 'next/head'
 import CustomSelect from '@components/CustomSelect'
 import { FullElementEdit } from '@types'
+import { Availability } from '@blocks/types'
 
 const { Text } = Typography
 
@@ -163,12 +164,19 @@ const Admin = () => {
                                         onChange={(e) => onHandleChange('block', e)}
                                         style={{ width: 240 }}
                                         status={errors.block ? 'error' : undefined}
+                                        allowClear
                                     >
-                                        {Object.keys(Blocks).map((key) => (
-                                            <Select.Option key={key} value={key}>
-                                                {get(Blocks, `${key}.name`, '')}
-                                            </Select.Option>
-                                        ))}
+                                        {Object.keys(Blocks)
+                                            .filter(
+                                                (key) =>
+                                                    get(Blocks, `${key}.availability`, '') ===
+                                                    Availability.ALL
+                                            )
+                                            .map((key) => (
+                                                <Select.Option key={key} value={key}>
+                                                    {get(Blocks, `${key}.name`, '')}
+                                                </Select.Option>
+                                            ))}
                                     </Select>
                                     {!!values.block && get(Blocks, `${values.block}.needForm`, false) && (
                                         <>

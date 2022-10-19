@@ -9,6 +9,7 @@ import Blocks from '../../blocks'
 import { getRoles } from '../../network/roles'
 import { getForms } from '../../network/forms'
 import { getContents } from '@network/contents'
+import { AvailabilityType } from '@blocks/types'
 
 const { Option } = Select
 const { Text } = Typography
@@ -201,14 +202,16 @@ interface SectionCascaderProps {
     element?: string
     onSectionChange(type: string | undefined): void
     onElementChange(type: string | undefined): void
+    filterAvailability?: AvailabilityType[]
 }
 
-const SectionCascader = ({
+const BlockCascader = ({
     // page,
     section,
     element,
     onSectionChange,
     onElementChange,
+    filterAvailability,
 }: SectionCascaderProps) => {
     const elements: UseQueryResult<Element[], Error> = useQuery<Element[], Error>(['elements', {}], () =>
         getElements()
@@ -244,11 +247,17 @@ const SectionCascader = ({
                         label: e.title,
                     })),
                 },
-                ...Object.keys(Blocks).map((key) => ({
-                    value: key,
-                    label: get(Blocks, `${key}.name`, ''),
-                    // disabled: !get(Blocks, `${key}.pages`, []).includes(page),
-                })),
+                ...Object.keys(Blocks)
+                    .filter(
+                        (key) =>
+                            !filterAvailability ||
+                            filterAvailability.includes(get(Blocks, `${key}.availability`, ''))
+                    )
+                    .map((key) => ({
+                        value: key,
+                        label: get(Blocks, `${key}.name`, ''),
+                        // disabled: !get(Blocks, `${key}.pages`, []).includes(page),
+                    })),
             ]}
             onChange={(e) => {
                 if (e?.length === 1) {
@@ -269,7 +278,7 @@ const SectionCascader = ({
 CustomSelect.ListContainers = ListContainers
 CustomSelect.ListContents = ListContents
 CustomSelect.ListElements = ListElements
-CustomSelect.ListSections = SectionCascader
+CustomSelect.ListBlocks = BlockCascader
 CustomSelect.ListRoles = ListRoles
 CustomSelect.ListForms = ListForms
 

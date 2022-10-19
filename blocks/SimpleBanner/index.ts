@@ -1,9 +1,10 @@
 import View from './View'
 import Edit from './Edit'
-import type { Block } from '../types'
+import { Availability, Block } from '../types'
 
 const Title: Block = {
     name: 'Simple Banner',
+    availability: Availability.ALL,
     View,
     Edit,
 }

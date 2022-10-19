@@ -4,7 +4,7 @@ import { PageForm, PageProps } from '../types'
 export interface Block {
     name: string
     preview?: string
-    availability?: AvailabilityType
+    availability: AvailabilityType
     needForm?: boolean
     View: (props: Props) => JSX.Element
     Edit: (props: Props) => JSX.Element
@@ -34,7 +34,7 @@ export interface Props {
         | undefined
 }
 
-type AvailabilityType = 'ALL' | 'CONTAINER' | 'CONTAINER_CONTENT' | 'CONTENT'
+export type AvailabilityType = 'ALL' | 'CONTAINER' | 'CONTAINER_CONTENT' | 'CONTENT'
 
 export const Availability: {
     ALL: 'ALL' // Everywhere

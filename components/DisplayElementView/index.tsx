@@ -35,7 +35,7 @@ const DisplayElementView = ({ id }: { id: string }) => {
     return (
         <Component.View
             value={element.data.content}
-            section={{ form: form.data || {} }}
+            form={form.data}
             formAction={{
                 values: {},
                 errors: {},

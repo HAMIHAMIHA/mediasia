@@ -97,8 +97,6 @@ const SectionBlock = ({ section, theme, page }: Props) => {
         })
     }
 
-    console.log('form', page)
-
     return (
         <Component.View
             value={content}

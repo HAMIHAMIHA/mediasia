@@ -42,6 +42,7 @@ import { SizeType } from 'antd/lib/config-provider/SizeContext'
 import getNameFieldFromType from '../../../utils/getNameFieldFromType'
 import RichEditor from '@components/RichEditor'
 import ColorButton from '@components/ColorButton'
+import { Availability } from '@blocks/types'
 
 const { Text } = Typography
 const { Option } = Select
@@ -392,6 +393,7 @@ const Admin = () => {
                                         <SectionManager
                                             values={get(values, 'sections', []) as FullSectionEdit[]}
                                             onChange={(e) => onHandleChange('sections', e)}
+                                            filterAvailability={[Availability.ALL, Availability.CONTENT]}
                                         />
                                     </>
                                 )}

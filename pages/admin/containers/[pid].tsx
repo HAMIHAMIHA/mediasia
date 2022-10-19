@@ -39,6 +39,7 @@ import camelcase from 'lodash.camelcase'
 import CustomSelect from '@components/CustomSelect'
 import { ContainerField, ContainerFieldType } from '@prisma/client'
 import autoAnimate from '@formkit/auto-animate'
+import { Availability } from '@blocks/types'
 
 const { Text, Title } = Typography
 const { Panel } = Collapse
@@ -382,6 +383,7 @@ const Admin = () => {
                 values={get(values, 'sections', []) as FullSectionEdit[]}
                 onChange={(e) => onHandleChange('sections', e)}
                 fields={get(values, 'fields', [])}
+                filterAvailability={[Availability.ALL, Availability.CONTAINER]}
             />
         </Space>
     )
@@ -408,6 +410,7 @@ const Admin = () => {
                 values={get(values, 'contentSections', []) as FullSectionEdit[]}
                 onChange={(e) => onHandleChange('contentSections', e)}
                 fields={get(values, 'fields', [])}
+                filterAvailability={[Availability.ALL, Availability.CONTAINER_CONTENT]}
             />
         </Space>
     )

@@ -13,6 +13,7 @@ import { ContainerField } from '@prisma/client'
 import autoAnimate from '@formkit/auto-animate'
 import { useEffect, useRef } from 'react'
 import Blocks from '@blocks'
+import { AvailabilityType } from '@blocks/types'
 
 const { Text } = Typography
 
@@ -20,9 +21,10 @@ interface SectionManagerProps {
     values: FullSectionEdit[]
     onChange(value: FullSectionEdit[]): void
     fields?: ContainerField[]
+    filterAvailability?: AvailabilityType[]
 }
 
-const SectionManager = ({ values, onChange, fields }: SectionManagerProps) => {
+const SectionManager = ({ values, onChange, fields, filterAvailability }: SectionManagerProps) => {
     const theme: UseQueryResult<Theme, Error> = useQuery<Theme, Error>(['theme'], () => getTheme())
 
     const addSection = () => {
@@ -109,11 +111,12 @@ const SectionManager = ({ values, onChange, fields }: SectionManagerProps) => {
                                     >
                                         Block:
                                     </Text>
-                                    <CustomSelect.ListSections
+                                    <CustomSelect.ListBlocks
                                         section={section.block || undefined}
                                         element={section.elementId || undefined}
                                         onSectionChange={(e) => onHandleChange(`${idx}.block`, e)}
                                         onElementChange={(e) => onHandleChange(`${idx}.elementId`, e)}
+                                        filterAvailability={filterAvailability}
                                     />
                                     {!!section.block && get(Blocks, `${section.block}.needForm`, false) && (
                                         <>

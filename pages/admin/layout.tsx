@@ -6,6 +6,7 @@ import get from 'lodash.get'
 import { useMutation, useQuery, UseQueryResult } from 'react-query'
 import { getLayout, postLayout } from '@network/api'
 import Head from 'next/head'
+import { Availability } from '@blocks/types'
 
 const { Title } = Typography
 
@@ -166,6 +167,7 @@ const Layout = () => {
                     <SectionManager
                         values={get(values, 'header', []) as FullSectionEdit[]}
                         onChange={(e) => onHandleChange('header', e)}
+                        filterAvailability={[Availability.ALL]}
                     />
 
                     <Divider orientation="left">Top Body</Divider>
@@ -173,6 +175,7 @@ const Layout = () => {
                     <SectionManager
                         values={get(values, 'topBody', []) as FullSectionEdit[]}
                         onChange={(e) => onHandleChange('topBody', e)}
+                        filterAvailability={[Availability.ALL]}
                     />
 
                     <Card style={{ marginTop: 10 }}>
@@ -186,6 +189,7 @@ const Layout = () => {
                     <SectionManager
                         values={get(values, 'bottomBody', []) as FullSectionEdit[]}
                         onChange={(e) => onHandleChange('bottomBody', e)}
+                        filterAvailability={[Availability.ALL]}
                     />
 
                     <Divider orientation="left">Footer</Divider>
@@ -193,6 +197,7 @@ const Layout = () => {
                     <SectionManager
                         values={get(values, 'footer', []) as FullSectionEdit[]}
                         onChange={(e) => onHandleChange('footer', e)}
+                        filterAvailability={[Availability.ALL]}
                     />
 
                     <Button loading={mutation.isLoading} type="primary" htmlType="submit">

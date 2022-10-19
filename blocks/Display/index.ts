@@ -1,10 +1,10 @@
 import View from './View'
 import Edit from './Edit'
-import type { Block } from '../types'
+import { Availability, Block } from '../types'
 
 const Title: Block = {
     name: 'Display',
-    type: 'container',
+    availability: Availability.CONTAINER_CONTENT,
     View,
     Edit,
 }
