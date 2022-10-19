@@ -74,6 +74,8 @@ model Element {
   title     String    @unique
   block     String
   section   Section[]
+  formId    String?
+  form      Form?     @relation(fields: [formId], references: [id])
   content   Json?
   status    Status    @default(AVAILABLE)
   updatedAt DateTime  @updatedAt
@@ -148,6 +150,7 @@ model Form {
   messages  Message[]
   fields    FormField[]
   sections  Section[]
+  elements  Element[]
   status    Status      @default(AVAILABLE)
   updatedAt DateTime    @updatedAt
 }

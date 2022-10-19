@@ -6,6 +6,7 @@ import { FormFieldType } from '@prisma/client'
 import { useMutation } from 'react-query'
 import { sendMessage } from '@network/messages'
 import set from 'lodash.set'
+import isEmail from '@utils/isEmail'
 
 interface Props {
     section: PageSection
@@ -31,20 +32,26 @@ const getInitialValue = (fields: any[] | undefined) => {
 }
 
 const SectionBlock = ({ section, theme, page }: Props) => {
+    const block = section.element ? section.element.block : section.block
+    const content = section.element ? section.element.content : section.content
+    const form = section.element ? section.element.form : section.form
+
     const { values, errors, handleChange, handleSubmit, setValues } = useFormik({
-        initialValues: getInitialValue(section?.form?.fields),
+        initialValues: getInitialValue(form?.fields),
         validateOnBlur: false,
         validateOnChange: false,
         validateOnMount: false,
         validate: () => {
             let errors: any = {}
 
-            section?.form?.fields?.forEach((field) => {
+            form?.fields?.forEach((field) => {
                 if (field.type !== FormFieldType.BUTTON && field.type !== FormFieldType.TITLE) {
                     const fieldValue = get(values, field.name!, undefined)
 
                     if (field.required && !fieldValue && isNaN(fieldValue)) {
                         errors[field.name!] = 'Required'
+                    } else if (field.type === FormFieldType.EMAIL && !isEmail(fieldValue)) {
+                        errors[field.name!] = 'Email not valid'
                     } else if (field.type === FormFieldType.NUMBER && !isNaN(fieldValue)) {
                         if (
                             !isNaN(parseFloat(`${field.min}`)) &&
@@ -65,7 +72,7 @@ const SectionBlock = ({ section, theme, page }: Props) => {
         },
         onSubmit: async (values) => {
             mutation.mutate({
-                pid: section?.form!.id as string,
+                pid: form!.id as string,
                 values,
             })
         },
@@ -74,9 +81,6 @@ const SectionBlock = ({ section, theme, page }: Props) => {
     const mutation = useMutation((data: { pid: string; values: any }) => sendMessage(data.pid, data.values), {
         onSuccess: (data: any) => setValues({}),
     })
-
-    const block = section.element ? section.element.block : section.block
-    const content = section.element ? section.element.content : section.content
 
     const Component = get(Blocks, block || '___', null)
 
@@ -93,14 +97,17 @@ const SectionBlock = ({ section, theme, page }: Props) => {
         })
     }
 
+    console.log('form', page)
+
     return (
         <Component.View
             value={content}
             page={page}
-            section={section}
+            // section={section}
             theme={theme}
+            form={form}
             formAction={
-                section.form
+                form
                     ? {
                           values,
                           errors,

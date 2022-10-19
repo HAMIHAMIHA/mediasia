@@ -45,6 +45,10 @@ export type FullFormEdit = Prisma.FormCreateInput & {
     fields?: FormFieldCreateInput[] | null
 }
 
+export type FullElementEdit = Prisma.ElementCreateInput & {
+    formId?: string
+}
+
 export type FullSection = Section & {
     element: Element | null
     form: FullForm | null
@@ -115,26 +119,29 @@ export type Theme = {
     secondary: string
 }
 
-export type PageSection = {
-    form: {
+export type PageForm = {
+    id: string
+    title: string
+    fields: {
         id: string
-        fields: {
-            id: string
-            type: FormFieldType
-            position: number
-            name: string | null
-            label: string
-            placeholder: string | null
-            required: boolean | null
+        type: FormFieldType
+        position: number
+        name: string | null
+        label: string
+        placeholder: string | null
+        required: boolean | null
 
-            options: { label: string; value: string }[] | Prisma.JsonValue
-            min: number | null
-            max: number | null
-            defaultText: string | null
-            defaultNumber: number | null
-            defaultMultiple: string[] | Prisma.JsonValue
-        }[]
-    } | null
+        options: { label: string; value: string }[] | Prisma.JsonValue
+        min: number | null
+        max: number | null
+        defaultText: string | null
+        defaultNumber: number | null
+        defaultMultiple: string[] | Prisma.JsonValue
+    }[]
+} | null
+
+export type PageSection = {
+    form: PageForm
     content: any
     id: string
     block: string | null
@@ -143,6 +150,7 @@ export type PageSection = {
         content: {} | Prisma.JsonValue
         id: string
         block: string
+        form: PageForm
     } | null
 }
 

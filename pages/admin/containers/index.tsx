@@ -120,22 +120,18 @@ const columns = [
         ),
     },
     {
-        width: 455,
+        width: 280,
         render: (e: Element) => (
             <Space>
                 <Link href={`/admin/contents/create?container=${e.id}`}>
                     <a>
-                        <Button type="dashed" icon={<PlusOutlined />}>
-                            Create one
-                        </Button>
+                        <Button type="default" shape="circle" icon={<PlusOutlined />} />
                     </a>
                 </Link>
 
                 <Link href={`/admin/contents?container=${e.id}`}>
                     <a>
-                        <Button type="dashed" icon={<UnorderedListOutlined />}>
-                            Contents
-                        </Button>
+                        <Button type="default" shape="circle" icon={<UnorderedListOutlined />} />
                     </a>
                 </Link>
 

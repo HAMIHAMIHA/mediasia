@@ -3,17 +3,26 @@ import { useQuery, UseQueryResult } from 'react-query'
 import Blocks from '../../blocks'
 import { Typography } from 'antd'
 import get from 'lodash.get'
-import type { Prisma } from '@prisma/client'
+import { FullElementEdit, FullFormEdit } from '@types'
+import { getFormDetails } from '@network/forms'
 
 const { Text } = Typography
 
 const DisplayElementView = ({ id }: { id: string }) => {
-    const element: UseQueryResult<Prisma.ElementCreateInput, Error> = useQuery<
-        Prisma.ElementCreateInput,
-        Error
-    >(['elements', { id }], () => getElementDetails(id))
+    const element: UseQueryResult<FullElementEdit, Error> = useQuery<FullElementEdit, Error>(
+        ['elements', { id }],
+        () => getElementDetails(id)
+    )
 
-    if (element.isLoading) {
+    const form: UseQueryResult<FullFormEdit, Error> = useQuery<FullFormEdit, Error>(
+        ['forms', { id: element?.data?.formId }],
+        () => getFormDetails(element?.data?.formId!),
+        {
+            enabled: !!element?.data?.formId,
+        }
+    )
+
+    if (element.isLoading || form.isLoading) {
         return <Text>Loading...</Text>
     }
 
@@ -23,7 +32,20 @@ const DisplayElementView = ({ id }: { id: string }) => {
 
     const Component = get(Blocks, element.data.block, () => null)
 
-    return <Component.View value={element.data.content} />
+    return (
+        <Component.View
+            value={element.data.content}
+            section={{ form: form.data || {} }}
+            formAction={{
+                values: {},
+                errors: {},
+                handleChange: () => {},
+                handleSubmit: () => {},
+                loading: false,
+                success: false,
+            }}
+        />
+    )
 }
 
 export default DisplayElementView

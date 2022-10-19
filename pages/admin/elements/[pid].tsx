@@ -1,22 +1,24 @@
 import { useRouter } from 'next/router'
 import { useFormik } from 'formik'
-import { Input, Space, Button, Typography, Card, Select, message, Spin } from 'antd'
+import { Input, Space, Button, Typography, Card, Select, message, Spin, Divider } from 'antd'
 import get from 'lodash.get'
 import { editElement, getElementDetails, postElement } from '../../../network/elements'
-import { Prisma, Element } from '@prisma/client'
+import { Element } from '@prisma/client'
 import Blocks from '../../../blocks'
 import GetEditComponent from '../../../components/GetEditComponent'
 import { useMutation, useQuery, UseQueryResult, useQueryClient } from 'react-query'
 import Head from 'next/head'
+import CustomSelect from '@components/CustomSelect'
+import { FullElementEdit } from '@types'
 
 const { Text } = Typography
 
-const initialValues: Prisma.ElementCreateInput = {
+const initialValues: FullElementEdit = {
     title: '',
     block: '',
 }
 
-const validate = (values: Prisma.ElementCreateInput) => {
+const validate = (values: FullElementEdit) => {
     let errors: any = {}
 
     if (!values.title) {
@@ -35,26 +37,31 @@ const Admin = () => {
     const { pid } = router.query
     const queryClient = useQueryClient()
 
-    const { values, errors, handleSubmit, handleChange, setValues } = useFormik<Prisma.ElementCreateInput>({
+    const { values, errors, handleSubmit, handleChange, setValues } = useFormik<FullElementEdit>({
         initialValues,
         validate,
         validateOnBlur: false,
         validateOnMount: false,
         validateOnChange: false,
-        onSubmit: async (values) => mutation.mutate({ pid: pid as string, values }),
+        onSubmit: async (values) =>
+            mutation.mutate({
+                pid: pid as string,
+                values: { ...values, content: values.content || undefined },
+            }),
     })
 
-    const element: UseQueryResult<Prisma.ElementCreateInput, Error> = useQuery<
-        Prisma.ElementCreateInput,
-        Error
-    >(['elements', { id: pid }], () => getElementDetails(pid as string), {
-        enabled: !!pid && pid !== 'create',
-        onSuccess: (data: Prisma.ElementCreateInput) => setValues(data),
-        onError: (err) => router.push('/admin/articles'),
-    })
+    const element: UseQueryResult<FullElementEdit, Error> = useQuery<FullElementEdit, Error>(
+        ['elements', { id: pid }],
+        () => getElementDetails(pid as string),
+        {
+            enabled: !!pid && pid !== 'create',
+            onSuccess: (data: FullElementEdit) => setValues(data),
+            onError: (err) => router.push('/admin/articles'),
+        }
+    )
 
     const mutation = useMutation(
-        (data: { pid: string; values: Prisma.ElementCreateInput }) =>
+        (data: { pid: string; values: FullElementEdit }) =>
             data.pid === 'create' ? postElement(data.values) : editElement(data.pid, data.values),
         {
             onSuccess: (data: Element) => {
@@ -125,8 +132,32 @@ const Admin = () => {
 
                         <Card
                             bodyStyle={{ padding: 0 }}
+                            // title={
+                            //     <Space>
+                            //         <Select
+                            //             value={values.block}
+                            //             onChange={(e) => onHandleChange('block', e)}
+                            //             style={{ width: 240 }}
+                            //             status={errors.block ? 'error' : undefined}
+                            //         >
+                            //             {Object.keys(Blocks).map((key) => (
+                            //                 <Select.Option key={key} value={key}>
+                            //                     {get(Blocks, `${key}.name`, '')}
+                            //                 </Select.Option>
+                            //             ))}
+                            //         </Select>
+                            //     </Space>
+                            // }
                             title={
                                 <Space>
+                                    <Text
+                                        style={{
+                                            fontSize: 14,
+                                            fontWeight: 'normal',
+                                        }}
+                                    >
+                                        Block:
+                                    </Text>
                                     <Select
                                         value={values.block}
                                         onChange={(e) => onHandleChange('block', e)}
@@ -139,6 +170,23 @@ const Admin = () => {
                                             </Select.Option>
                                         ))}
                                     </Select>
+                                    {!!values.block && get(Blocks, `${values.block}.needForm`, false) && (
+                                        <>
+                                            <Divider type="vertical" />
+                                            <Text
+                                                style={{
+                                                    fontSize: 14,
+                                                    fontWeight: 'normal',
+                                                }}
+                                            >
+                                                Form:
+                                            </Text>
+                                            <CustomSelect.ListForms
+                                                value={values.formId}
+                                                onChange={(e) => onHandleChange(`formId`, e)}
+                                            />
+                                        </>
+                                    )}
                                 </Space>
                             }
                             style={{ flex: 1 }}
@@ -147,6 +195,7 @@ const Admin = () => {
                                 block={values.block}
                                 value={values.content}
                                 onChange={(e) => onHandleChange('content', e)}
+                                formId={values.formId}
                             />
                         </Card>
 

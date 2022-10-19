@@ -5,24 +5,7 @@ import { Props } from '../types'
 import { FormFieldType } from '@prisma/client'
 import { Fragment } from 'react'
 
-const { Title } = Typography
-
-const NoFormMessage = () => (
-    <div
-        style={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            padding: '2rem 2rem 1rem 2rem',
-        }}
-    >
-        <Title level={3}>Choose a form</Title>
-    </div>
-)
-
 const Edit = ({ form }: Props) => {
-    if (!form) return <NoFormMessage />
-
     return (
         <EditPanel
             view={
@@ -121,7 +104,7 @@ const Edit = ({ form }: Props) => {
                                         return <h3 key={idx}>{field.label}</h3>
                                     case FormFieldType.BUTTON:
                                         return (
-                                            <button key={idx} className={styles.button} type="submit">
+                                            <button key={idx} className={styles.button}>
                                                 {field.label}
                                             </button>
                                         )

@@ -4,7 +4,7 @@ import type { Props } from '../types'
 import { FormFieldType } from '@prisma/client'
 import { Fragment } from 'react'
 
-const View = ({ section, formAction }: Props) => {
+const View = ({ form, formAction }: Props) => {
     if (!formAction) return <div />
 
     const { values, errors, handleChange, handleSubmit, loading, success } = formAction
@@ -15,9 +15,9 @@ const View = ({ section, formAction }: Props) => {
         <section>
             <form onSubmit={handleSubmit}>
                 <div className={styles.form}>
-                    <h3 className={styles.title}>{section?.form?.title}</h3>
+                    <h3 className={styles.title}>{form?.title}</h3>
 
-                    {section?.form?.fields
+                    {form?.fields
                         ?.sort((a, b) => a.position - b.position)
                         .map((field, idx) => {
                             const options =

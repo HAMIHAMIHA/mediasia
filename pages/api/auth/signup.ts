@@ -1,8 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import bcrypt from 'bcryptjs'
 
-import { isEmail, initSession } from '../../../utils'
-import { prisma } from '../../../utils/prisma'
+import isEmail from '@utils/isEmail'
+import { initSession } from '@utils'
+import { prisma } from '@utils/prisma'
 
 const POST = async (req: NextApiRequest, res: NextApiResponse) => {
     try {

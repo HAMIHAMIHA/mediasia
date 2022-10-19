@@ -19,7 +19,7 @@ const Edit = ({ value = {}, onChange, theme }: Props) => {
                 <section className={styles.title}>
                     <StyledInput.h1
                         className={styles.title}
-                        value={value.title}
+                        value={value?.title}
                         onChange={(e) => handleChange('title', e)}
                     />
                 </section>

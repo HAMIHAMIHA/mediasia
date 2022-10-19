@@ -6,6 +6,31 @@ import { ContainerPageContents, ContentFields, PageProps, PageSection } from '..
 
 const sanitizeDate = (date: Date | string | undefined | null) => (!!date ? moment(date).valueOf() : null)
 
+const formSelect = {
+    select: {
+        id: true,
+        title: true,
+        fields: {
+            select: {
+                id: true,
+                name: true,
+                type: true,
+                label: true,
+                placeholder: true,
+                position: true,
+                required: true,
+
+                options: true,
+                min: true,
+                max: true,
+                defaultText: true,
+                defaultNumber: true,
+                defaultMultiple: true,
+            },
+        },
+    },
+}
+
 const sectionSelect = {
     select: {
         id: true,
@@ -17,31 +42,10 @@ const sectionSelect = {
                 id: true,
                 block: true,
                 content: true,
+                form: formSelect,
             },
         },
-        form: {
-            select: {
-                id: true,
-                fields: {
-                    select: {
-                        id: true,
-                        name: true,
-                        type: true,
-                        label: true,
-                        placeholder: true,
-                        position: true,
-                        required: true,
-
-                        options: true,
-                        min: true,
-                        max: true,
-                        defaultText: true,
-                        defaultNumber: true,
-                        defaultMultiple: true,
-                    },
-                },
-            },
-        },
+        form: formSelect,
     },
 }
 

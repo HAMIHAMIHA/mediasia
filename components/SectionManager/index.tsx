@@ -12,6 +12,7 @@ import { ContainerField } from '@prisma/client'
 
 import autoAnimate from '@formkit/auto-animate'
 import { useEffect, useRef } from 'react'
+import Blocks from '@blocks'
 
 const { Text } = Typography
 
@@ -114,19 +115,23 @@ const SectionManager = ({ values, onChange, fields }: SectionManagerProps) => {
                                         onSectionChange={(e) => onHandleChange(`${idx}.block`, e)}
                                         onElementChange={(e) => onHandleChange(`${idx}.elementId`, e)}
                                     />
-                                    <Divider type="vertical" />
-                                    <Text
-                                        style={{
-                                            fontSize: 14,
-                                            fontWeight: 'normal',
-                                        }}
-                                    >
-                                        Form:
-                                    </Text>
-                                    <CustomSelect.ListForms
-                                        value={section.formId}
-                                        onChange={(e) => onHandleChange(`${idx}.formId`, e)}
-                                    />
+                                    {!!section.block && get(Blocks, `${section.block}.needForm`, false) && (
+                                        <>
+                                            <Divider type="vertical" />
+                                            <Text
+                                                style={{
+                                                    fontSize: 14,
+                                                    fontWeight: 'normal',
+                                                }}
+                                            >
+                                                Form:
+                                            </Text>
+                                            <CustomSelect.ListForms
+                                                value={section.formId}
+                                                onChange={(e) => onHandleChange(`${idx}.formId`, e)}
+                                            />
+                                        </>
+                                    )}
                                 </Space>
                             }
                             extra={

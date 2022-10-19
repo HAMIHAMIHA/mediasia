@@ -23,7 +23,7 @@ const Edit = ({ value = {}, onChange, theme }: Props) => {
                         //     textShadow: `0.025em 0.025em 0 ${background}, 0.05em 0.05em 0 ${secondary}, 0.075em 0.075em 0 ${background}, 0.1em 0.1em 0 ${secondary}`,
                         // }}
                         className={styles.title}
-                        value={value.title}
+                        value={value?.title}
                         onChange={(e) => handleChange('title', e)}
                     />
                 </section>

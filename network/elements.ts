@@ -1,6 +1,7 @@
 import INSTANCE from './api'
 import { Prisma } from '@prisma/client'
 import type { Element } from '@prisma/client'
+import { FullElementEdit } from '@types'
 
 export const postElement = (data: Prisma.ElementCreateInput): Promise<Element> =>
     new Promise(async (resolve, reject) => {
@@ -16,7 +17,7 @@ export const postElement = (data: Prisma.ElementCreateInput): Promise<Element> =
             .catch(reject)
     })
 
-export const editElement = (id: string, data: Prisma.ElementCreateInput): Promise<Element> =>
+export const editElement = (id: string, data: FullElementEdit): Promise<Element> =>
     new Promise((resolve, reject) => {
         INSTANCE({
             method: 'PUT',
@@ -54,7 +55,7 @@ export const deleteElement = (id: string): Promise<void> =>
             .catch(reject)
     })
 
-export const getElementDetails = (id: string): Promise<Prisma.ElementCreateInput> =>
+export const getElementDetails = (id: string): Promise<FullElementEdit> =>
     new Promise((resolve, reject) => {
         INSTANCE({
             method: 'GET',
