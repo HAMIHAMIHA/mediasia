@@ -1,4 +1,4 @@
-import { Login, PrismaClient, Role } from '@prisma/client'
+import { Login, PrismaClient, RightType, Role } from '@prisma/client'
 import bcrypt from 'bcryptjs'
 import get from 'lodash.get'
 const prisma = new PrismaClient()
@@ -83,32 +83,43 @@ async function main() {
             data: {
                 id: 'super-admin',
                 name: 'Super Admin',
-            },
-        })
-    }
-
-    const adminType: Role[] = await prisma.role.findMany({
-        where: { id: 'admin' },
-    })
-
-    if (!adminType.length) {
-        await prisma.role.create({
-            data: {
-                id: 'admin',
-                name: 'Admin',
-            },
-        })
-    }
-
-    const userType: Role[] = await prisma.role.findMany({
-        where: { id: 'user' },
-    })
-
-    if (!userType.length) {
-        await prisma.role.create({
-            data: {
-                id: 'user',
-                name: 'User',
+                rights: {
+                    create: [
+                        { rightType: RightType.VIEW_MESSAGE },
+                        { rightType: RightType.VIEW_CONTAINER },
+                        { rightType: RightType.CREATE_CONTAINER },
+                        { rightType: RightType.UPDATE_CONTAINER },
+                        { rightType: RightType.DELETE_CONTAINER },
+                        { rightType: RightType.VIEW_USER },
+                        { rightType: RightType.CREATE_USER },
+                        { rightType: RightType.UPDATE_USER },
+                        { rightType: RightType.DELETE_USER },
+                        { rightType: RightType.VIEW_ROLE },
+                        { rightType: RightType.CREATE_ROLE },
+                        { rightType: RightType.UPDATE_ROLE },
+                        { rightType: RightType.DELETE_ROLE },
+                        { rightType: RightType.VIEW_CONTENT },
+                        { rightType: RightType.CREATE_CONTENT },
+                        { rightType: RightType.UPDATE_CONTENT },
+                        { rightType: RightType.DELETE_CONTENT },
+                        { rightType: RightType.VIEW_ELEMENT },
+                        { rightType: RightType.CREATE_ELEMENT },
+                        { rightType: RightType.UPDATE_ELEMENT },
+                        { rightType: RightType.DELETE_ELEMENT },
+                        { rightType: RightType.VIEW_FORM },
+                        { rightType: RightType.CREATE_FORM },
+                        { rightType: RightType.UPDATE_FORM },
+                        { rightType: RightType.DELETE_FORM },
+                        { rightType: RightType.VIEW_LAYOUT },
+                        { rightType: RightType.UPDATE_LAYOUT },
+                        { rightType: RightType.VIEW_MEDIA },
+                        { rightType: RightType.CREATE_MEDIA },
+                        { rightType: RightType.UPDATE_MEDIA },
+                        { rightType: RightType.DELETE_MEDIA },
+                        { rightType: RightType.ACCESS_SETTINGS },
+                        { rightType: RightType.REVALIDATION },
+                    ],
+                },
             },
         })
     }

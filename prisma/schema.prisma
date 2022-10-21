@@ -120,7 +120,61 @@ model Role {
   name      String
   logins    Login[]
   Accesses  Access[]
+  rights    Right[]
   updatedAt DateTime @updatedAt
+}
+
+enum RightType {
+  VIEW_MESSAGE
+
+  VIEW_CONTAINER
+  CREATE_CONTAINER
+  UPDATE_CONTAINER
+  DELETE_CONTAINER
+
+  VIEW_USER
+  CREATE_USER
+  UPDATE_USER
+  DELETE_USER
+
+  VIEW_ROLE
+  CREATE_ROLE
+  UPDATE_ROLE
+  DELETE_ROLE
+
+  VIEW_CONTENT
+  CREATE_CONTENT
+  UPDATE_CONTENT
+  DELETE_CONTENT
+
+  VIEW_ELEMENT
+  CREATE_ELEMENT
+  UPDATE_ELEMENT
+  DELETE_ELEMENT
+
+  VIEW_FORM
+  CREATE_FORM
+  UPDATE_FORM
+  DELETE_FORM
+
+  VIEW_LAYOUT
+  UPDATE_LAYOUT
+
+  VIEW_MEDIA
+  CREATE_MEDIA
+  UPDATE_MEDIA
+  DELETE_MEDIA
+
+  ACCESS_SETTINGS
+  REVALIDATION
+}
+
+model Right {
+  id String @id @default(cuid())
+
+  roleId    String
+  role      Role      @relation(fields: [roleId], references: [id])
+  rightType RightType
 }
 
 model Session {

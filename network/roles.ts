@@ -1,8 +1,9 @@
 import INSTANCE from './api'
-import { Prisma } from '@prisma/client'
+import { Prisma, RightType } from '@prisma/client'
 import type { Role } from '@prisma/client'
+import { FullRole } from '@types'
 
-export const postRole = (data: Prisma.RoleCreateInput): Promise<Role> =>
+export const postRole = (data: Prisma.RoleCreateInput & { rights: RightType[] }): Promise<Role> =>
     new Promise(async (resolve, reject) => {
         INSTANCE({
             method: 'POST',
@@ -16,7 +17,7 @@ export const postRole = (data: Prisma.RoleCreateInput): Promise<Role> =>
             .catch(reject)
     })
 
-export const editRole = (id: string, data: Prisma.RoleCreateInput): Promise<Role> =>
+export const editRole = (id: string, data: Prisma.RoleCreateInput & { rights: RightType[] }): Promise<Role> =>
     new Promise((resolve, reject) => {
         INSTANCE({
             method: 'PUT',
@@ -41,7 +42,7 @@ export const getRoles = (q?: string): Promise<Role[]> =>
             .catch(reject)
     })
 
-export const getRoleDetails = (id: string): Promise<Role> =>
+export const getRoleDetails = (id: string): Promise<FullRole> =>
     new Promise((resolve, reject) => {
         INSTANCE({
             method: 'GET',

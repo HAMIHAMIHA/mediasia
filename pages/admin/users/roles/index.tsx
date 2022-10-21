@@ -96,7 +96,7 @@ const columns = [
         width: 200,
         render: (e: Role) => (
             <Space>
-                <Link href={`/admin/elements/${e.id}`}>
+                <Link href={`/admin/users/roles/${e.id}`}>
                     <a>
                         <Button type="primary" icon={<EditOutlined />}>
                             Edit

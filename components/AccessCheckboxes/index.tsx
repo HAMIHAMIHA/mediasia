@@ -16,13 +16,11 @@ const AccessCheckboxes = ({
     return (
         <Checkbox.Group value={value} style={{ width: 350 }} onChange={onChange}>
             <Row>
-                {roles?.data
-                    ?.filter((e) => e.id !== 'super-admin')
-                    ?.map((role) => (
-                        <Col key={role.id} span={8}>
-                            <Checkbox value={role.id}>{role.name}</Checkbox>
-                        </Col>
-                    ))}
+                {roles?.data?.map((role) => (
+                    <Col key={role.id} span={8}>
+                        <Checkbox value={role.id}>{role.name}</Checkbox>
+                    </Col>
+                ))}
             </Row>
         </Checkbox.Group>
     )

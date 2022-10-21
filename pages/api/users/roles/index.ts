@@ -1,3 +1,4 @@
+import { RightType } from '@prisma/client'
 import checkAuth from '@utils/checkAuth'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
@@ -32,8 +33,16 @@ const GET = async (req: NextApiRequest, res: NextApiResponse) => {
 }
 
 const POST = async (req: NextApiRequest, res: NextApiResponse) => {
+    const name = req.body.name as string
+    const rights = req.body.rights as RightType[]
+
     const role = await prisma.role.create({
-        data: { ...req.body },
+        data: {
+            name,
+            rights: {
+                create: rights.map((rightType) => ({ rightType })),
+            },
+        },
     })
 
     return res.status(200).json(role)

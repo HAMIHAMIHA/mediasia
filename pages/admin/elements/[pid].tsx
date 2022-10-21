@@ -57,7 +57,7 @@ const Admin = () => {
         {
             enabled: !!pid && pid !== 'create',
             onSuccess: (data: FullElementEdit) => setValues(data),
-            onError: (err) => router.push('/admin/articles'),
+            onError: (err) => router.push('/admin/elements'),
         }
     )
 

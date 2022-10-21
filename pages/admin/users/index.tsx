@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import type { User, Login } from '@prisma/client'
+import type { User, Login, Role } from '@prisma/client'
 import { Tag, Space, Input, Table, Button, Popconfirm } from 'antd'
 import Link from 'next/link'
 import Head from 'next/head'
@@ -90,19 +90,10 @@ const AdminUsers = () => {
 }
 
 const columns = [
-    // {
-    //     title: 'ID',
-    //     dataIndex: 'id',
-    // },
     {
-        title: 'Type',
+        title: 'Role',
         dataIndex: 'login',
-        render: (e: Login) => {
-            const type: string = get(e, 'role.id', '')
-            const color = type === 'super-admin' ? 'magenta' : type === 'admin' ? 'red' : 'blue'
-
-            return <Tag color={color}>{get(e, 'role.name', '')}</Tag>
-        },
+        render: (e: Login & { role: Role }) => e.role.name,
     },
     {
         title: 'Name',

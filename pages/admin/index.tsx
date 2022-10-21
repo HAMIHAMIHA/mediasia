@@ -1,5 +1,5 @@
 import UploadButton from '../../components/UploadButton'
-import { Space, Avatar, InputNumber, Input, Typography, Slider } from 'antd'
+import { Space, Avatar, InputNumber, Input, Typography, Slider, Button } from 'antd'
 import { useQuery /*, UseQueryResult*/ } from 'react-query'
 import { Setting } from '@prisma/client'
 import { useEffect, useState } from 'react'
@@ -8,6 +8,7 @@ import get from 'lodash.get'
 import useDebounce from '../../hooks/useDebounce'
 import Head from 'next/head'
 import ColorButton from '@components/ColorButton'
+import Link from 'next/link'
 const { Text } = Typography
 
 const Admin = () => {

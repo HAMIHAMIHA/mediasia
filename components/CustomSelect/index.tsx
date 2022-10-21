@@ -185,13 +185,11 @@ const ListRoles = ({
             status={roles.isError ? 'error' : undefined}
             loading={roles.isLoading}
         >
-            {roles.data
-                ?.filter((e) => e.id !== 'super-admin')
-                ?.map((e) => (
-                    <Select.Option key={e.id} value={e.id}>
-                        {e.name}
-                    </Select.Option>
-                ))}
+            {roles.data?.map((e) => (
+                <Select.Option key={e.id} value={e.id}>
+                    {e.name}
+                </Select.Option>
+            ))}
         </Select>
     )
 }

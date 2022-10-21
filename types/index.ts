@@ -16,6 +16,8 @@ import type {
     ContentField,
     ContainerFieldType,
     FormFieldType,
+    RightType,
+    Right,
 } from '@prisma/client'
 import { Prisma } from '@prisma/client'
 
@@ -25,6 +27,7 @@ export interface ContextUser {
     name: string
     role: string
     updatedAt: Date
+    rights: RightType[]
 }
 
 export type FullUser = User & {
@@ -67,6 +70,14 @@ export type FullMessage = Message & {
 
 export type FullForm = Form & {
     fields: FormField[] | null
+}
+
+export type FullRoleEdit = Prisma.RoleCreateInput & {
+    rightsEdit?: Set<RightType>
+}
+
+export type FullRole = Role & {
+    rights: Right[]
 }
 
 // export type FullPageEdit = Prisma.PageCreateInput & {

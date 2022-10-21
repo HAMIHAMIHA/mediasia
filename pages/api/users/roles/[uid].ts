@@ -1,3 +1,4 @@
+import { RightType } from '@prisma/client'
 import checkAuth from '@utils/checkAuth'
 import type { NextApiRequest, NextApiResponse } from 'next'
 // import type { Page, Metadata, Section, Article } from '@prisma/client'
@@ -10,6 +11,7 @@ const GET = async (req: NextApiRequest, res: NextApiResponse) => {
 
     const role = await prisma.role.findUnique({
         where: { id },
+        include: { rights: true },
     })
 
     if (!role) return res.status(404).json({ error: 'Role not found' })
@@ -19,10 +21,21 @@ const GET = async (req: NextApiRequest, res: NextApiResponse) => {
 
 const PUT = async (req: NextApiRequest, res: NextApiResponse) => {
     const id = req.query.uid as string
+    const name = req.body.name as string
+    const rights = req.body.rights as RightType[]
+
+    await prisma.right.deleteMany({
+        where: { roleId: id },
+    })
 
     const article = await prisma.role.update({
         where: { id },
-        data: req.body,
+        data: {
+            name,
+            rights: {
+                create: rights.map((rightType) => ({ rightType })),
+            },
+        },
     })
 
     return res.status(200).json(article)

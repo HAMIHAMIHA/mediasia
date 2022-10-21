@@ -1,22 +1,34 @@
 import { IncomingHttpHeaders } from 'http'
-import get from 'lodash.get'
 
 import { prisma } from '../utils/prisma'
 
 const checkAuth = async (headers: IncomingHttpHeaders) => {
-    const sessions = await prisma.session.findMany({
-        where: { token: headers.token as string, expiresAt: { gte: new Date() } },
-        include: { login: { include: { user: true } } },
+    const session = await prisma.session.findFirst({
+        where: {
+            token: headers.token as string,
+            expiresAt: { gte: new Date() },
+        },
+        include: {
+            login: {
+                include: {
+                    user: true,
+                    role: {
+                        include: { rights: true },
+                    },
+                },
+            },
+        },
     })
 
-    if (!!sessions?.length) {
+    if (!!session) {
         return {
-            token: get(sessions, 'token', ''),
-            expiresAt: get(sessions, 'expiresAt', ''),
+            token: session.token,
+            expiresAt: session.expiresAt,
             user: {
-                ...get(sessions, '0.login.user', {}),
-                role: get(sessions, '0.login.roleId', {}),
-                email: get(sessions, '0.login.email', {}),
+                ...session.login.user,
+                role: session.login.roleId,
+                email: session.login.email,
+                rights: session.login.role.rights.map((right) => right.rightType),
             },
         }
     }

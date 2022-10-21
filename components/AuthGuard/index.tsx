@@ -26,7 +26,7 @@ function AuthGuard({ children, accesses, requireAuth }: Props) {
     useEffect(() => {
         setIsChecking(true)
         if (!initializing && isBrowser && (requireAuth || !!accesses?.length)) {
-            const isAdmin = me?.role === 'super-admin' || me?.role === 'admin'
+            const isAdmin = me?.role === 'super-admin'
 
             //auth is initialized and there is no user
             if (!isAuth) {
