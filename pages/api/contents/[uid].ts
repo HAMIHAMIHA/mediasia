@@ -7,6 +7,7 @@ import {
     ContentField,
     Metadata,
     Prisma,
+    RightType,
     Section,
     SectionType,
     Status,
@@ -193,19 +194,28 @@ const pages = async (req: NextApiRequest, res: NextApiResponse) => {
 
     switch (req.method) {
         case 'GET': {
-            return await GET(req, res)
+            if (isAuth.user.rights.includes(RightType.VIEW_CONTENT)) {
+                return await GET(req, res)
+            }
+            return res.status(405).json({ error: 'Method not allowed' })
         }
 
         case 'PUT': {
-            return await PUT(req, res)
+            if (isAuth.user.rights.includes(RightType.UPDATE_CONTENT)) {
+                return await PUT(req, res)
+            }
+            return res.status(405).json({ error: 'Method not allowed' })
         }
 
         case 'DELETE': {
-            return await DELETE(req, res)
+            if (isAuth.user.rights.includes(RightType.DELETE_CONTENT)) {
+                return await DELETE(req, res)
+            }
+            return res.status(405).json({ error: 'Method not allowed' })
         }
 
         default: {
-            return res.status(405).json({ error: 'Method not allowed' })
+            return res.status(404).json({ error: 'Not found' })
         }
     }
 }

@@ -1,4 +1,4 @@
-import { Status } from '@prisma/client'
+import { RightType, Status } from '@prisma/client'
 import checkAuth from '@utils/checkAuth'
 import type { NextApiRequest, NextApiResponse } from 'next'
 // import type { Page, Metadata, Section, element } from '@prisma/client'
@@ -47,10 +47,6 @@ const POST = async (req: NextApiRequest, res: NextApiResponse) => {
     return res.status(200).json(element)
 }
 
-const ERROR = async (req: NextApiRequest, res: NextApiResponse) => {
-    return res.status(405).json({ error: 'Method not allowed' })
-}
-
 const elements = async (req: NextApiRequest, res: NextApiResponse) => {
     const isAuth = await checkAuth(req.headers)
 
@@ -60,15 +56,21 @@ const elements = async (req: NextApiRequest, res: NextApiResponse) => {
 
     switch (req.method) {
         case 'GET': {
-            return await GET(req, res)
+            if (isAuth.user.rights.includes(RightType.VIEW_ELEMENT)) {
+                return await GET(req, res)
+            }
+            return res.status(405).json({ error: 'Method not allowed' })
         }
 
         case 'POST': {
-            return await POST(req, res)
+            if (isAuth.user.rights.includes(RightType.CREATE_ELEMENT)) {
+                return await POST(req, res)
+            }
+            return res.status(405).json({ error: 'Method not allowed' })
         }
 
         default: {
-            return await ERROR(req, res)
+            return res.status(404).json({ error: 'Not found' })
         }
     }
 }

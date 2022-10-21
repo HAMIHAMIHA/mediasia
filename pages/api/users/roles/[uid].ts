@@ -49,10 +49,6 @@ const DELETE = async (req: NextApiRequest, res: NextApiResponse) => {
     return res.status(200).json(role)
 }
 
-const ERROR = async (req: NextApiRequest, res: NextApiResponse) => {
-    return res.status(405).json({ error: 'Method not allowed' })
-}
-
 const pages = async (req: NextApiRequest, res: NextApiResponse) => {
     const isAuth = await checkAuth(req.headers)
 
@@ -62,19 +58,28 @@ const pages = async (req: NextApiRequest, res: NextApiResponse) => {
 
     switch (req.method) {
         case 'GET': {
-            return await GET(req, res)
+            if (isAuth.user.rights.includes(RightType.VIEW_ROLE)) {
+                return await GET(req, res)
+            }
+            return res.status(405).json({ error: 'Method not allowed' })
         }
 
         case 'PUT': {
-            return await PUT(req, res)
+            if (isAuth.user.rights.includes(RightType.UPDATE_ROLE)) {
+                return await PUT(req, res)
+            }
+            return res.status(405).json({ error: 'Method not allowed' })
         }
 
         case 'DELETE': {
-            return await DELETE(req, res)
+            if (isAuth.user.rights.includes(RightType.DELETE_ROLE)) {
+                return await DELETE(req, res)
+            }
+            return res.status(405).json({ error: 'Method not allowed' })
         }
 
         default: {
-            return await ERROR(req, res)
+            return res.status(404).json({ error: 'Not found' })
         }
     }
 }

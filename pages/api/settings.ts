@@ -1,3 +1,4 @@
+import { RightType } from '@prisma/client'
 import checkAuth from '@utils/checkAuth'
 import type { NextApiRequest, NextApiResponse } from 'next'
 // import get from 'lodash.get'
@@ -35,11 +36,17 @@ const users = async (req: NextApiRequest, res: NextApiResponse) => {
 
     switch (req.method) {
         case 'GET': {
-            return await GET(req, res)
+            if (isAuth.user.rights.includes(RightType.ACCESS_SETTINGS)) {
+                return await GET(req, res)
+            }
+            return res.status(405).json({ error: 'Method not allowed' })
         }
 
         case 'PUT': {
-            return await PUT(req, res)
+            if (isAuth.user.rights.includes(RightType.ACCESS_SETTINGS)) {
+                return await PUT(req, res)
+            }
+            return res.status(404).json({ error: 'Not found' })
         }
 
         default: {

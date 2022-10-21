@@ -4,7 +4,7 @@ import { IncomingForm } from 'formidable'
 import mv from 'mv'
 import get from 'lodash.get'
 import mime from 'mime-types'
-import { Prisma } from '@prisma/client'
+import { Prisma, RightType } from '@prisma/client'
 import type { Media } from '@prisma/client'
 
 import { makeId } from '../../../utils'
@@ -125,10 +125,6 @@ const POST = async (req: NextApiRequest, res: NextApiResponse) => {
     })
 }
 
-const ERROR = async (req: NextApiRequest, res: NextApiResponse) => {
-    return res.status(405).json({ error: 'Method not allowed' })
-}
-
 const upload = async (req: NextApiRequest, res: NextApiResponse) => {
     const isAuth = await checkAuth(req.headers)
 
@@ -138,15 +134,21 @@ const upload = async (req: NextApiRequest, res: NextApiResponse) => {
 
     switch (req.method) {
         case 'GET': {
-            return await GET(req, res)
+            if (isAuth.user.rights.includes(RightType.VIEW_MEDIA)) {
+                return await GET(req, res)
+            }
+            return res.status(405).json({ error: 'Method not allowed' })
         }
 
         case 'POST': {
-            return await POST(req, res)
+            if (isAuth.user.rights.includes(RightType.CREATE_MEDIA)) {
+                return await POST(req, res)
+            }
+            return res.status(405).json({ error: 'Method not allowed' })
         }
 
         default: {
-            return await ERROR(req, res)
+            return res.status(404).json({ error: 'Not found' })
         }
     }
 }

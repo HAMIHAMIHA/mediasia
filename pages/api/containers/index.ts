@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { Metadata, Prisma, Status } from '@prisma/client'
+import { Metadata, Prisma, RightType, Status } from '@prisma/client'
 import get from 'lodash.get'
 import { FullContainerEdit } from '../../../types'
 
@@ -87,10 +87,6 @@ const POST = async (req: NextApiRequest, res: NextApiResponse) => {
     return res.status(200).json(container)
 }
 
-const ERROR = async (req: NextApiRequest, res: NextApiResponse) => {
-    return res.status(405).json({ error: 'Method not allowed' })
-}
-
 const containers = async (req: NextApiRequest, res: NextApiResponse) => {
     const isAuth = await checkAuth(req.headers)
 
@@ -100,15 +96,21 @@ const containers = async (req: NextApiRequest, res: NextApiResponse) => {
 
     switch (req.method) {
         case 'GET': {
-            return await GET(req, res)
+            if (isAuth.user.rights.includes(RightType.VIEW_CONTAINER)) {
+                return await GET(req, res)
+            }
+            return res.status(405).json({ error: 'Method not allowed' })
         }
 
         case 'POST': {
-            return await POST(req, res)
+            if (isAuth.user.rights.includes(RightType.CREATE_CONTAINER)) {
+                return await POST(req, res)
+            }
+            return res.status(405).json({ error: 'Method not allowed' })
         }
 
         default: {
-            return await ERROR(req, res)
+            return res.status(404).json({ error: 'Not found' })
         }
     }
 }

@@ -22,10 +22,6 @@ const GET = async (req: NextApiRequest, res: NextApiResponse) => {
     }
 }
 
-const ERROR = async (req: NextApiRequest, res: NextApiResponse) => {
-    return res.status(405).json({ error: 'Method not allowed' })
-}
-
 const uploads = async (req: NextApiRequest, res: NextApiResponse) => {
     switch (req.method) {
         case 'GET': {
@@ -33,7 +29,7 @@ const uploads = async (req: NextApiRequest, res: NextApiResponse) => {
         }
 
         default: {
-            return await ERROR(req, res)
+            return res.status(404).json({ error: 'Not found' })
         }
     }
 }

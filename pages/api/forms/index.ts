@@ -1,4 +1,4 @@
-import { Prisma, Status } from '@prisma/client'
+import { Prisma, RightType, Status } from '@prisma/client'
 import { FullFormEdit } from '../../../types'
 import get from 'lodash.get'
 import type { NextApiRequest, NextApiResponse } from 'next'
@@ -59,10 +59,6 @@ const POST = async (req: NextApiRequest, res: NextApiResponse) => {
     return res.status(200).json(article)
 }
 
-const ERROR = async (req: NextApiRequest, res: NextApiResponse) => {
-    return res.status(405).json({ error: 'Method not allowed' })
-}
-
 const pages = async (req: NextApiRequest, res: NextApiResponse) => {
     const isAuth = await checkAuth(req.headers)
 
@@ -72,15 +68,21 @@ const pages = async (req: NextApiRequest, res: NextApiResponse) => {
 
     switch (req.method) {
         case 'GET': {
-            return await GET(req, res)
+            if (isAuth.user.rights.includes(RightType.VIEW_FORM)) {
+                return await GET(req, res)
+            }
+            return res.status(405).json({ error: 'Method not allowed' })
         }
 
         case 'POST': {
-            return await POST(req, res)
+            if (isAuth.user.rights.includes(RightType.CREATE_FORM)) {
+                return await POST(req, res)
+            }
+            return res.status(405).json({ error: 'Method not allowed' })
         }
 
         default: {
-            return await ERROR(req, res)
+            return res.status(404).json({ error: 'Not found' })
         }
     }
 }

@@ -1,5 +1,5 @@
-import type { Container, Element, Slug } from '@prisma/client'
-import { Space, Button, Table, Popconfirm, Input, Breadcrumb, Badge, message } from 'antd'
+import { Container, Element, RightType, Slug } from '@prisma/client'
+import { Space, Button, Table, Popconfirm, Input, Breadcrumb, Badge, message, Tooltip } from 'antd'
 import {
     DeleteOutlined,
     EditOutlined,
@@ -16,6 +16,7 @@ import useDebounce from '../../../hooks/useDebounce'
 import { useState } from 'react'
 import Head from 'next/head'
 import { deleteContainer, getContainers } from '../../../network/containers'
+import { useAuth } from '@hooks/useAuth'
 
 const AdminElements = () => {
     const [q, setQ] = useState<string | undefined>()
@@ -121,37 +122,14 @@ const columns = [
     },
     {
         width: 280,
-        render: (e: Element) => (
-            <Space>
-                <Link href={`/admin/contents/create?container=${e.id}`}>
-                    <a>
-                        <Button type="default" shape="circle" icon={<PlusOutlined />} />
-                    </a>
-                </Link>
-
-                <Link href={`/admin/contents?container=${e.id}`}>
-                    <a>
-                        <Button type="default" shape="circle" icon={<UnorderedListOutlined />} />
-                    </a>
-                </Link>
-
-                <Link href={`/admin/containers/${e.id}`}>
-                    <a>
-                        <Button type="primary" icon={<EditOutlined />}>
-                            Edit
-                        </Button>
-                    </a>
-                </Link>
-
-                <DeleteButton id={e.id} />
-            </Space>
-        ),
+        render: (e: Element) => <Actions element={e} />,
     },
 ]
 
-const DeleteButton = ({ id }: { id: string }) => {
+const Actions = ({ element }: { element: Element }) => {
     const queryClient = useQueryClient()
-    const mutation = useMutation(() => deleteContainer(id), {
+    const { me } = useAuth()
+    const mutation = useMutation(() => deleteContainer(element.id), {
         onSuccess: () => {
             queryClient.invalidateQueries('containers')
             message.success('Container successfully removed')
@@ -162,18 +140,57 @@ const DeleteButton = ({ id }: { id: string }) => {
     })
 
     return (
-        <Popconfirm
-            disabled={id === 'page'}
-            placement="topRight"
-            title={'Are you sur to delete this container?'}
-            onConfirm={() => mutation.mutate()}
-            okText="Delete"
-            cancelText="Cancel"
-        >
-            <Button danger disabled={id === 'page'} icon={<DeleteOutlined />} loading={mutation.isLoading}>
-                Delete
-            </Button>
-        </Popconfirm>
+        <Space style={{ justifyContent: 'end', width: '100%' }}>
+            {me?.rights.includes(RightType.CREATE_CONTENT) && (
+                <Link href={`/admin/contents/create?container=${element.id}`}>
+                    <a>
+                        <Tooltip placement="topRight" title={`Create a ${element.title.toLocaleLowerCase()}`}>
+                            <Button type="default" shape="circle" icon={<PlusOutlined />} />
+                        </Tooltip>
+                    </a>
+                </Link>
+            )}
+
+            {me?.rights.includes(RightType.VIEW_CONTENT) && (
+                <Link href={`/admin/contents?container=${element.id}`}>
+                    <a>
+                        <Tooltip placement="topRight" title={`See all ${element.title.toLocaleLowerCase()}`}>
+                            <Button type="default" shape="circle" icon={<UnorderedListOutlined />} />
+                        </Tooltip>
+                    </a>
+                </Link>
+            )}
+
+            {me?.rights.includes(RightType.UPDATE_CONTAINER) && (
+                <Link href={`/admin/containers/${element.id}`}>
+                    <a>
+                        <Button type="primary" icon={<EditOutlined />}>
+                            Edit
+                        </Button>
+                    </a>
+                </Link>
+            )}
+
+            {me?.rights.includes(RightType.DELETE_CONTAINER) && (
+                <Popconfirm
+                    disabled={element.id === 'page'}
+                    placement="topRight"
+                    title={'Are you sur to delete this container?'}
+                    onConfirm={() => mutation.mutate()}
+                    okText="Delete"
+                    cancelText="Cancel"
+                >
+                    <Button
+                        danger
+                        disabled={element.id === 'page'}
+                        icon={<DeleteOutlined />}
+                        loading={mutation.isLoading}
+                    >
+                        Delete
+                    </Button>
+                </Popconfirm>
+            )}
+        </Space>
     )
 }
 

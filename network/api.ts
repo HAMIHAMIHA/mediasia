@@ -82,7 +82,7 @@ export const getSlugs = (): Promise<
     new Promise((resolve, reject) => {
         INSTANCE({
             method: 'GET',
-            url: `/api/slugss`,
+            url: `/api/slugs`,
         })
             .then(resolve)
             .catch(reject)

@@ -1,4 +1,4 @@
-import { SectionType } from '@prisma/client'
+import { RightType, SectionType } from '@prisma/client'
 import checkAuth from '@utils/checkAuth'
 import type { NextApiRequest, NextApiResponse } from 'next'
 // import get from 'lodash.get'
@@ -107,10 +107,6 @@ const POST = async (req: NextApiRequest, res: NextApiResponse) => {
     return res.status(200).json({ message: 'Updated !' })
 }
 
-const ERROR = async (req: NextApiRequest, res: NextApiResponse) => {
-    return res.status(405).json({ error: 'Method not allowed' })
-}
-
 const users = async (req: NextApiRequest, res: NextApiResponse) => {
     const isAuth = await checkAuth(req.headers)
 
@@ -120,15 +116,21 @@ const users = async (req: NextApiRequest, res: NextApiResponse) => {
 
     switch (req.method) {
         case 'GET': {
-            return await GET(req, res)
+            if (isAuth.user.rights.includes(RightType.VIEW_LAYOUT)) {
+                return await GET(req, res)
+            }
+            return res.status(405).json({ error: 'Method not allowed' })
         }
 
         case 'POST': {
-            return await POST(req, res)
+            if (isAuth.user.rights.includes(RightType.UPDATE_LAYOUT)) {
+                return await POST(req, res)
+            }
+            return res.status(405).json({ error: 'Method not allowed' })
         }
 
         default: {
-            return await ERROR(req, res)
+            return res.status(404).json({ error: 'Not found' })
         }
     }
 }

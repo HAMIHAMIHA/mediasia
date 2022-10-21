@@ -5,6 +5,7 @@ import mv from 'mv'
 import get from 'lodash.get'
 import mime from 'mime-types'
 import checkAuth from '@utils/checkAuth'
+import { RightType } from '@prisma/client'
 
 export const config = {
     api: {
@@ -18,7 +19,9 @@ const POST = async (req: NextApiRequest, res: NextApiResponse) => {
     await form.parse(req, (err, fields, files) => {
         if (err) return res.status(500).json({ error: 'err' })
 
-        const file: File | undefined | any = Array.isArray(files.file) ? get(files, 'file.0', undefined) : files.file
+        const file: File | undefined | any = Array.isArray(files.file)
+            ? get(files, 'file.0', undefined)
+            : files.file
 
         if (!file) return res.status(400).json({ error: 'No file' })
 
@@ -37,10 +40,6 @@ const POST = async (req: NextApiRequest, res: NextApiResponse) => {
     })
 }
 
-const ERROR = async (req: NextApiRequest, res: NextApiResponse) => {
-    return res.status(405).json({ error: 'Method not allowed' })
-}
-
 const upload = async (req: NextApiRequest, res: NextApiResponse) => {
     const isAuth = await checkAuth(req.headers)
 
@@ -50,11 +49,14 @@ const upload = async (req: NextApiRequest, res: NextApiResponse) => {
 
     switch (req.method) {
         case 'POST': {
-            return await POST(req, res)
+            if (isAuth.user.rights.includes(RightType.ACCESS_SETTINGS)) {
+                return await POST(req, res)
+            }
+            return res.status(405).json({ error: 'Method not allowed' })
         }
 
         default: {
-            return await ERROR(req, res)
+            return res.status(404).json({ error: 'Not found' })
         }
     }
 }

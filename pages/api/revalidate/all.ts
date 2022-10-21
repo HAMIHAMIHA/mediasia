@@ -1,9 +1,18 @@
+import { RightType, Status } from '@prisma/client'
 import checkAuth from '@utils/checkAuth'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { prisma } from '../../../utils/prisma'
 
 const POST = async (req: NextApiRequest, res: NextApiResponse) => {
-    const slugs = await prisma.slug.findMany()
+    const slugs = await prisma.slug.findMany({
+        where: {
+            published: true,
+            OR: [
+                { container: { published: true, status: Status.AVAILABLE } },
+                { content: { published: true, status: Status.AVAILABLE } },
+            ],
+        },
+    })
 
     try {
         const urls: string[] = []
@@ -22,10 +31,6 @@ const POST = async (req: NextApiRequest, res: NextApiResponse) => {
     }
 }
 
-const ERROR = async (req: NextApiRequest, res: NextApiResponse) => {
-    return res.status(405).json({ error: 'Method not allowed' })
-}
-
 const pages = async (req: NextApiRequest, res: NextApiResponse) => {
     const isAuth = await checkAuth(req.headers)
 
@@ -35,11 +40,14 @@ const pages = async (req: NextApiRequest, res: NextApiResponse) => {
 
     switch (req.method) {
         case 'POST': {
-            return await POST(req, res)
+            if (!!isAuth && isAuth.user.rights.includes(RightType.REVALIDATION)) {
+                return await POST(req, res)
+            }
+            return res.status(405).json({ error: 'Method not allowed' })
         }
 
         default: {
-            return await ERROR(req, res)
+            return res.status(404).json({ error: 'Not found' })
         }
     }
 }

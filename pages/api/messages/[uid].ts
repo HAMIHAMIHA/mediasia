@@ -1,3 +1,4 @@
+import { RightType } from '@prisma/client'
 import checkAuth from '@utils/checkAuth'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
@@ -11,10 +12,6 @@ const PUT = async (req: NextApiRequest, res: NextApiResponse) => {
     return res.status(200).json(message)
 }
 
-const ERROR = async (req: NextApiRequest, res: NextApiResponse) => {
-    return res.status(405).json({ error: 'Method not allowed' })
-}
-
 const users = async (req: NextApiRequest, res: NextApiResponse) => {
     const isAuth = await checkAuth(req.headers)
 
@@ -24,11 +21,14 @@ const users = async (req: NextApiRequest, res: NextApiResponse) => {
 
     switch (req.method) {
         case 'PUT': {
-            return await PUT(req, res)
+            if (isAuth.user.rights.includes(RightType.VIEW_MESSAGE)) {
+                return await PUT(req, res)
+            }
+            return res.status(405).json({ error: 'Method not allowed' })
         }
 
         default: {
-            return await ERROR(req, res)
+            return res.status(404).json({ error: 'Not found' })
         }
     }
 }

@@ -1,4 +1,4 @@
-import { Metadata, Prisma, Section, SectionType, Status } from '@prisma/client'
+import { Metadata, Prisma, RightType, Section, SectionType, Status } from '@prisma/client'
 import { FullContainerEdit } from '@types'
 import checkAuth from '@utils/checkAuth'
 import get from 'lodash.get'
@@ -213,19 +213,28 @@ const pages = async (req: NextApiRequest, res: NextApiResponse) => {
 
     switch (req.method) {
         case 'GET': {
-            return await GET(req, res)
+            if (isAuth.user.rights.includes(RightType.VIEW_CONTAINER)) {
+                return await GET(req, res)
+            }
+            return res.status(405).json({ error: 'Method not allowed' })
         }
 
         case 'PUT': {
-            return await PUT(req, res)
+            if (isAuth.user.rights.includes(RightType.UPDATE_CONTAINER)) {
+                return await PUT(req, res)
+            }
+            return res.status(405).json({ error: 'Method not allowed' })
         }
 
         case 'DELETE': {
-            return await DELETE(req, res)
+            if (isAuth.user.rights.includes(RightType.DELETE_CONTAINER)) {
+                return await DELETE(req, res)
+            }
+            return res.status(405).json({ error: 'Method not allowed' })
         }
 
         default: {
-            return res.status(405).json({ error: 'Method not allowed' })
+            return res.status(404).json({ error: 'Not found' })
         }
     }
 }

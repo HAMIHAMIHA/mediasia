@@ -3,6 +3,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { prisma } from '../../../utils/prisma'
 import checkAuth from '../../../utils/checkAuth'
 import { MESSAGE_PAGE_SIZE } from '../../../utils/contants'
+import { RightType } from '@prisma/client'
 
 const GET = async (req: NextApiRequest, res: NextApiResponse) => {
     let page = 0
@@ -50,20 +51,15 @@ const POST = async (req: NextApiRequest, res: NextApiResponse) => {
     return res.status(200).json(message)
 }
 
-const ERROR = async (req: NextApiRequest, res: NextApiResponse) => {
-    return res.status(405).json({ error: 'Method not allowed' })
-}
-
 const users = async (req: NextApiRequest, res: NextApiResponse) => {
     switch (req.method) {
         case 'GET': {
             const isAuth = await checkAuth(req.headers)
 
-            if (!isAuth) {
-                return res.status(403).json({ error: 'Forbidden' })
+            if (!!isAuth && isAuth.user.rights.includes(RightType.VIEW_MESSAGE)) {
+                return await GET(req, res)
             }
-
-            return await GET(req, res)
+            return res.status(405).json({ error: 'Method not allowed' })
         }
 
         case 'POST': {
@@ -71,7 +67,7 @@ const users = async (req: NextApiRequest, res: NextApiResponse) => {
         }
 
         default: {
-            return await ERROR(req, res)
+            return res.status(404).json({ error: 'Not found' })
         }
     }
 }

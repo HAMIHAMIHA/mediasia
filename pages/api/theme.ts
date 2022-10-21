@@ -1,3 +1,4 @@
+import { RightType } from '@prisma/client'
 import checkAuth from '@utils/checkAuth'
 import type { NextApiRequest, NextApiResponse } from 'next'
 
@@ -23,10 +24,6 @@ const GET = async (req: NextApiRequest, res: NextApiResponse) => {
     })
 }
 
-const ERROR = async (req: NextApiRequest, res: NextApiResponse) => {
-    return res.status(405).json({ error: 'Method not allowed' })
-}
-
 const me = async (req: NextApiRequest, res: NextApiResponse) => {
     const isAuth = await checkAuth(req.headers)
 
@@ -36,11 +33,17 @@ const me = async (req: NextApiRequest, res: NextApiResponse) => {
 
     switch (req.method) {
         case 'GET': {
-            return await GET(req, res)
+            if (
+                isAuth.user.rights.includes(RightType.UPDATE_CONTAINER) ||
+                isAuth.user.rights.includes(RightType.UPDATE_CONTENT)
+            ) {
+                return await GET(req, res)
+            }
+            return res.status(405).json({ error: 'Method not allowed' })
         }
 
         default: {
-            return await ERROR(req, res)
+            return res.status(404).json({ error: 'Not found' })
         }
     }
 }

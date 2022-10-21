@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import type { User } from '@prisma/client'
+import { RightType, User } from '@prisma/client'
 import bcrypt from 'bcryptjs'
 
 import { prisma } from '../../../utils/prisma'
@@ -90,15 +90,21 @@ const users = async (req: NextApiRequest, res: NextApiResponse) => {
 
     switch (req.method) {
         case 'GET': {
-            return await GET(req, res)
+            if (isAuth.user.rights.includes(RightType.VIEW_USER)) {
+                return await GET(req, res)
+            }
+            return res.status(405).json({ error: 'Method not allowed' })
         }
 
         case 'POST': {
-            return await POST(req, res)
+            if (isAuth.user.rights.includes(RightType.CREATE_USER)) {
+                return await POST(req, res)
+            }
+            return res.status(405).json({ error: 'Method not allowed' })
         }
 
         default: {
-            return res.status(405).json({ error: 'Method not allowed' })
+            return res.status(404).json({ error: 'Not found' })
         }
     }
 }

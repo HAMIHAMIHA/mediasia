@@ -37,9 +37,10 @@ import { FullContainerEdit, FullSection, FullSectionEdit } from '../../../types'
 import { editContainer, getContainerDetails, postContainer } from '../../../network/containers'
 import camelcase from 'lodash.camelcase'
 import CustomSelect from '@components/CustomSelect'
-import { ContainerField, ContainerFieldType } from '@prisma/client'
+import { ContainerField, ContainerFieldType, RightType } from '@prisma/client'
 import autoAnimate from '@formkit/auto-animate'
 import { Availability } from '@blocks/types'
+import { useAuth } from '@hooks/useAuth'
 
 const { Text, Title } = Typography
 const { Panel } = Collapse
@@ -146,7 +147,14 @@ const validate = (values: FullContainerEdit) => {
 const Admin = () => {
     const router = useRouter()
     const { pid } = router.query
+    const { me } = useAuth()
     const queryClient = useQueryClient()
+
+    useEffect(() => {
+        if (!me?.rights.includes(RightType.UPDATE_CONTAINER)) {
+            router.push('/not-found')
+        }
+    }, [me?.rights])
 
     const { values, errors, handleSubmit, handleChange, setValues } = useFormik<FullContainerEdit>({
         initialValues,
@@ -216,9 +224,11 @@ const Admin = () => {
         ['containers', { id: pid }],
         () => getContainerDetails(pid as string),
         {
-            enabled: !!pid && pid !== 'create' && !mutation.isLoading,
-            // onSuccess: (data: FullContainerEdit) => setValues(data),
-
+            enabled:
+                !!pid &&
+                pid !== 'create' &&
+                !mutation.isLoading &&
+                me?.rights.includes(RightType.VIEW_CONTAINER),
             onSuccess: (data: FullContainerEdit) => {
                 const sections = get(data, 'sections', []).sort((a, b) => a.position - b.position)
 
