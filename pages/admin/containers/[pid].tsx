@@ -228,7 +228,8 @@ const Admin = () => {
                 !!pid &&
                 pid !== 'create' &&
                 !mutation.isLoading &&
-                me?.rights.includes(RightType.VIEW_CONTAINER),
+                me?.rights.includes(RightType.VIEW_CONTAINER) &&
+                me?.rights.includes(RightType.UPDATE_CONTAINER),
             onSuccess: (data: FullContainerEdit) => {
                 const sections = get(data, 'sections', []).sort((a, b) => a.position - b.position)
 
