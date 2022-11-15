@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 50 50">
+  <g id="icon_open_photo" transform="translate(-135.372 -1361)">
+    <circle id="Ellipse_17" data-name="Ellipse 17" cx="25" cy="25" r="25" transform="translate(135.372 1361)" fill="#fff"/>
+    <g id="maximize-svgrepo-com" transform="translate(146.019 1372.019)">
+      <g id="Groupe_92" data-name="Groupe 92">
+        <path id="Tracé_53" data-name="Tracé 53" d="M230.3,0h-8.163a.854.854,0,0,0,0,1.707h6.1L215.076,14.866a.857.857,0,0,0,.6,1.461.833.833,0,0,0,.6-.253L229.443,2.915v6.1a.854.854,0,1,0,1.707,0V.854A.85.85,0,0,0,230.3,0Z" transform="translate(-201.241 0)" fill="#42145f"/>
+        <path id="Tracé_54" data-name="Tracé 54" d="M29.055,14.619a.85.85,0,0,0-.854.854V23.75A4.458,4.458,0,0,1,23.75,28.2H6.159A4.458,4.458,0,0,1,1.707,23.75V6.159A4.458,4.458,0,0,1,6.159,1.707h8.214a.854.854,0,1,0,0-1.707H6.159A6.166,6.166,0,0,0,0,6.159V23.75a6.166,6.166,0,0,0,6.159,6.159H23.75a6.166,6.166,0,0,0,6.159-6.159V15.473A.85.85,0,0,0,29.055,14.619Z" fill="#42145f"/>
+      </g>
+    </g>
+  </g>
+</svg>

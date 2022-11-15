@@ -1,4 +1,6 @@
-import '../styles/globals.css'
+import '../public/styles/globals.css'
+import '../public/styles/styles.css'
+import '../public/styles/svg.css'
 import 'antd/dist/antd.css'
 import 'draft-js/dist/Draft.css'
 import type { NextWebVitalsMetric } from 'next/app'

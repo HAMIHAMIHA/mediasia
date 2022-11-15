@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 28 28">
+  <g id="burger_menu" transform="translate(-67 -101)">
+    <line id="Ligne_15" data-name="Ligne 15" x2="25" transform="translate(68.5 102.5)" fill="none" stroke="#42145f" stroke-linecap="round" stroke-width="3"/>
+    <line id="Ligne_16" data-name="Ligne 16" x2="25" transform="translate(68.5 115)" fill="none" stroke="#42145f" stroke-linecap="round" stroke-width="3"/>
+    <line id="Ligne_17" data-name="Ligne 17" x2="25" transform="translate(68.5 127.5)" fill="none" stroke="#42145f" stroke-linecap="round" stroke-width="3"/>
+  </g>
+</svg>

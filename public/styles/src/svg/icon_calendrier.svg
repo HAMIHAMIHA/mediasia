@@ -1,0 +1,29 @@
+<svg id="icon_calendrier" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="40" height="40" viewBox="0 0 40 40">
+  <defs>
+    <clipPath id="clip-path">
+      <rect id="Rectangle_35" data-name="Rectangle 35" width="40" height="40" fill="#42145f"/>
+    </clipPath>
+  </defs>
+  <rect id="Rectangle_22" data-name="Rectangle 22" width="2.731" height="2.731" transform="translate(11.818 18.793)" fill="#42145f"/>
+  <rect id="Rectangle_23" data-name="Rectangle 23" width="2.731" height="2.731" transform="translate(18.634 18.793)" fill="#42145f"/>
+  <rect id="Rectangle_24" data-name="Rectangle 24" width="2.731" height="2.731" transform="translate(25.45 18.793)" fill="#42145f"/>
+  <rect id="Rectangle_25" data-name="Rectangle 25" width="2.731" height="2.731" transform="translate(32.14 18.793)" fill="#42145f"/>
+  <rect id="Rectangle_26" data-name="Rectangle 26" width="2.731" height="2.731" transform="translate(5.129 25.126)" fill="#42145f"/>
+  <rect id="Rectangle_27" data-name="Rectangle 27" width="2.731" height="2.731" transform="translate(11.818 25.126)" fill="#42145f"/>
+  <rect id="Rectangle_28" data-name="Rectangle 28" width="2.731" height="2.731" transform="translate(18.634 25.126)" fill="#42145f"/>
+  <rect id="Rectangle_29" data-name="Rectangle 29" width="2.731" height="2.731" transform="translate(25.45 25.126)" fill="#42145f"/>
+  <rect id="Rectangle_30" data-name="Rectangle 30" width="2.731" height="2.731" transform="translate(5.129 31.225)" fill="#42145f"/>
+  <rect id="Rectangle_31" data-name="Rectangle 31" width="2.731" height="2.731" transform="translate(11.818 31.225)" fill="#42145f"/>
+  <rect id="Rectangle_32" data-name="Rectangle 32" width="2.731" height="2.731" transform="translate(18.634 31.225)" fill="#42145f"/>
+  <rect id="Rectangle_33" data-name="Rectangle 33" width="2.731" height="2.731" transform="translate(25.45 31.225)" fill="#42145f"/>
+  <rect id="Rectangle_34" data-name="Rectangle 34" width="2.731" height="2.731" transform="translate(32.14 31.225)" fill="#42145f"/>
+  <g id="Groupe_26" data-name="Groupe 26">
+    <g id="Groupe_25" data-name="Groupe 25" clip-path="url(#clip-path)">
+      <path id="Tracé_23" data-name="Tracé 23" d="M4.9,64.1a4.932,4.932,0,0,1-3.461-1.42A4.781,4.781,0,0,1,0,59.267V31.919a4.786,4.786,0,0,1,1.438-3.413A4.916,4.916,0,0,1,4.9,27.087H35.1a4.916,4.916,0,0,1,3.459,1.419A4.787,4.787,0,0,1,40,31.919V59.293a4.752,4.752,0,0,1-1.5,3.41,5.122,5.122,0,0,1-3.527,1.445v0Zm-2.565-2.3A3.658,3.658,0,0,0,4.9,62.852l30.074.049v0a3.846,3.846,0,0,0,2.646-1.089,3.512,3.512,0,0,0,1.115-2.516V31.919a3.547,3.547,0,0,0-1.067-2.53A3.644,3.644,0,0,0,35.1,28.337H4.9A3.644,3.644,0,0,0,2.334,29.39a3.548,3.548,0,0,0-1.067,2.53V59.267a3.542,3.542,0,0,0,1.066,2.526" transform="translate(0 -24.148)" fill="#42145f"/>
+      <path id="Tracé_24" data-name="Tracé 24" d="M.633,121.647a.625.625,0,1,1,0-1.25H39.367a.625.625,0,1,1,0,1.25Z" transform="translate(0 -107.333)" fill="#42145f"/>
+      <path id="Tracé_25" data-name="Tracé 25" d="M81.69.625a.634.634,0,0,1,1.267,0V6.5a.634.634,0,0,1-1.267,0Z" transform="translate(-72.706)" fill="#42145f"/>
+      <path id="Tracé_26" data-name="Tracé 26" d="M270.515.625a.634.634,0,0,1,1.267,0V6.5a.634.634,0,0,1-1.267,0Z" transform="translate(-240.766)" fill="#42145f"/>
+      <path id="Tracé_27" data-name="Tracé 27" d="M277.107,227.991a.623.623,0,0,1,.438-.769.633.633,0,0,1,.779.432l.161.567,3.6-2.3a.637.637,0,0,1,.874.183.618.618,0,0,1-.186.862l-4.29,2.748a.636.636,0,0,1-.981-.336Z" transform="translate(-246.611 -201.313)" fill="#42145f"/>
+    </g>
+  </g>
+</svg>

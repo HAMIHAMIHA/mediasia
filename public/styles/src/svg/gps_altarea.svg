@@ -1,0 +1,12 @@
+<svg id="gps_altarea" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="35.544" height="53.347" viewBox="0 0 35.544 53.347">
+  <defs>
+    <clipPath id="clip-path">
+      <rect id="Rectangle_18" data-name="Rectangle 18" width="35.544" height="53.347" fill="none"/>
+    </clipPath>
+  </defs>
+  <g id="Groupe_3" data-name="Groupe 3" clip-path="url(#clip-path)">
+    <path id="Tracé_2" data-name="Tracé 2" d="M17.772,0A17.666,17.666,0,0,0,0,17.559a17.315,17.315,0,0,0,2.451,8.9L17.7,53.347,33.093,26.46a17.31,17.31,0,0,0,2.451-8.9A17.666,17.666,0,0,0,17.772,0" transform="translate(0)" fill="#42145f"/>
+    <path id="Tracé_3" data-name="Tracé 3" d="M88.181,46.856a.491.491,0,0,0,.421.257h3.8l-8.83-18.973a3.807,3.807,0,0,0-3.39-2.031H78.53Z" transform="translate(-62.808 -20.881)" fill="#fff"/>
+    <path id="Tracé_4" data-name="Tracé 4" d="M39.73,49.778l-2.051-4.41L29.7,62.517h3.8a.484.484,0,0,0,.42-.257Z" transform="translate(-23.753 -36.285)" fill="#fff"/>
+  </g>
+</svg>
