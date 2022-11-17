@@ -1,4 +1,5 @@
-.input {
+.input,
+.DraftEditor-root {
     all: inherit;
     width: 100%;
 

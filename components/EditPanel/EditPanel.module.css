@@ -5,9 +5,14 @@
 
 .buttonPanel {
     position: absolute;
-    top: 0;
-    right: 0;
+    top: 2px;
+    right: 2px;
     z-index: 2;
+    opacity: 50%;
+}
+
+.buttonPanel:hover {
+    opacity: 100%;
 }
 
 .panelWrap {

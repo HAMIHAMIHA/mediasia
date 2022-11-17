@@ -1,6 +1,7 @@
-import { SearchOutlined } from '@ant-design/icons'
+import { CloseOutlined, MoreOutlined, SearchOutlined } from '@ant-design/icons'
+import { useOutsideAlerter } from '@hooks/useOutsideAlerter'
 import { Button, Card } from 'antd'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import styles from './EditPanel.module.css'
 
 interface PanelProps {
@@ -9,7 +10,9 @@ interface PanelProps {
 }
 
 const EditPanel = ({ view, panel }: PanelProps) => {
+    const myRef = useRef(null)
     const [isOpen, setIsOpen] = useState(false)
+    useOutsideAlerter(myRef, () => setIsOpen(false))
 
     return (
         <div className={styles.wrap}>
@@ -19,8 +22,16 @@ const EditPanel = ({ view, panel }: PanelProps) => {
 
             {!!panel && isOpen ? (
                 <Card
+                    ref={myRef}
                     title="Settings Panel"
-                    extra={<Button onClick={() => setIsOpen(!isOpen)} icon={<SearchOutlined />} />}
+                    extra={
+                        <Button
+                            danger
+                            onClick={() => setIsOpen(!isOpen)}
+                            icon={<CloseOutlined />}
+                            size="small"
+                        />
+                    }
                     className={styles.panelWrap}
                     bordered={false}
                 >
@@ -30,7 +41,7 @@ const EditPanel = ({ view, panel }: PanelProps) => {
                 <Button
                     className={styles.buttonPanel}
                     onClick={() => setIsOpen(!isOpen)}
-                    icon={<SearchOutlined />}
+                    icon={<MoreOutlined />}
                 />
             )}
         </div>

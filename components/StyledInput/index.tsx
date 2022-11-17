@@ -1,3 +1,15 @@
+// @ts-nocheck
+import { useRef, useState } from 'react'
+import {
+    Editor,
+    EditorState,
+    RichUtils,
+    getDefaultKeyBinding,
+    convertFromHTML,
+    ContentState,
+    convertToRaw,
+} from 'draft-js'
+
 import styles from './StyledInput.module.css'
 
 interface Props<T> {
@@ -141,6 +153,51 @@ const Button = ({ value, onChange, className, style }: Props<string>) => (
     </button>
 )
 
+const Test = ({ value, onChange, className, style }: Props<string>) => {
+    const ref = useRef<any>()
+    const [editorState, setEditorState] = useState(EditorState.createEmpty())
+
+    const handleOnChange = (e: EditorState) => {
+        setEditorState(e)
+        // console.log(e)
+        console.log('ref:', ref?.current)
+        console.log('state: ', convertToRaw(editorState.getCurrentContent()).blocks)
+    }
+
+    const handleKeyCommand = (command: string, editorState: EditorState) => {
+        const newState = RichUtils.handleKeyCommand(editorState, command)
+        if (newState) {
+            handleOnChange(newState)
+            return true
+        }
+        return false
+    }
+
+    const mapKeyToEditorCommand = (e: any) => {
+        if (e.keyCode === 9 /* TAB */) {
+            const newEditorState = RichUtils.onTab(e, editorState, 4 /* maxDepth */)
+            if (newEditorState !== editorState) {
+                handleOnChange(newEditorState)
+            }
+            return
+        }
+        return getDefaultKeyBinding(e)
+    }
+
+    return (
+        <div className={className} onClick={(e) => e.preventDefault()} style={{ ...style, width: '100%' }}>
+            <Editor
+                ref={ref}
+                editorState={editorState}
+                handleKeyCommand={handleKeyCommand}
+                keyBindingFn={mapKeyToEditorCommand}
+                onChange={handleOnChange}
+                spellCheck={true}
+            />
+        </div>
+    )
+}
+
 StyledInput.div = StyledInput
 StyledInput.span = Span
 StyledInput.p = P
@@ -151,5 +208,6 @@ StyledInput.h3 = H3
 StyledInput.h4 = H4
 StyledInput.button = Button
 StyledInput.a = A
+StyledInput.Test = Test
 
 export default StyledInput

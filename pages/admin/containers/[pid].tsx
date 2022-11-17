@@ -457,55 +457,60 @@ const Admin = () => {
                 <title>Admin - Elements</title>
             </Head>
 
-            <form onSubmit={handleSubmit}>
-                <Space
-                    direction="vertical"
-                    size="large"
-                    style={{
-                        width: '100%',
-                        minHeight: 'calc(100vh - 29px)',
-                        padding: 15,
-                        backgroundColor: '#f0f2f5',
-                    }}
-                >
-                    <div className="admin-card-container">
-                        <Tabs
-                            type="card"
-                            tabBarExtraContent={
-                                pid !== 'create'
-                                    ? {
-                                          right: (
-                                              <Button
-                                                  icon={<CopyOutlined />}
-                                                  onClick={() => {
-                                                      setValues({
-                                                          ...values,
-                                                          id: undefined,
-                                                          title: '',
-                                                          slug: undefined,
-                                                          slugEdit: [''],
-                                                          status: undefined,
-                                                          updatedAt: undefined,
-                                                      })
+            {/* <form
+                onSubmit={(e) => {
+                    e.preventDefault()
+                    handleSubmit(e)
+                }}
+            > */}
+            <Space
+                direction="vertical"
+                size="large"
+                style={{
+                    width: '100%',
+                    minHeight: 'calc(100vh - 29px)',
+                    padding: 15,
+                    backgroundColor: '#f0f2f5',
+                }}
+            >
+                <div className="admin-card-container">
+                    <Tabs
+                        type="card"
+                        tabBarExtraContent={
+                            pid !== 'create'
+                                ? {
+                                      right: (
+                                          <Button
+                                              icon={<CopyOutlined />}
+                                              onClick={() => {
+                                                  setValues({
+                                                      ...values,
+                                                      id: undefined,
+                                                      title: '',
+                                                      slug: undefined,
+                                                      slugEdit: [''],
+                                                      status: undefined,
+                                                      updatedAt: undefined,
+                                                  })
 
-                                                      router.push('/admin/containers/create')
-                                                  }}
-                                              >
-                                                  Create a copy
-                                              </Button>
-                                          ),
-                                      }
-                                    : null
-                            }
-                            items={tabItems}
-                        />
-                    </div>
+                                                  router.push('/admin/containers/create')
+                                              }}
+                                          >
+                                              Create a copy
+                                          </Button>
+                                      ),
+                                  }
+                                : null
+                        }
+                        items={tabItems}
+                    />
+                </div>
 
-                    <Button loading={mutation.isLoading} type="primary" htmlType="submit">
-                        Save
-                    </Button>
-                </Space>
-            </form>
+                <Button loading={mutation.isLoading} type="primary" onClick={() => handleSubmit()}>
+                    Save
+                </Button>
+            </Space>
+            {/* </form> */}
         </>
     )
 }

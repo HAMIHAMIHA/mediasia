@@ -1,5 +1,9 @@
+import ColorButton from '@components/ColorButton'
 import EditPanel from '@components/EditPanel'
+import MediaModal from '@components/MediaModal'
 import StyledInput from '@components/StyledInput'
+import { Media } from '@prisma/client'
+import { Space } from 'antd'
 import set from 'lodash.set'
 import type { Props } from '../types'
 
@@ -60,15 +64,36 @@ const Edit = ({ value = {}, onChange, theme }: Props) => {
                             </div>
                         </div>
                     </div>
-                    <div className="right-box">
+                    <div
+                        className="right-box"
+                        style={{
+                            backgroundImage: value.image
+                                ? `url(/api/uploads/images/${value.image.uri})`
+                                : undefined,
+                        }}
+                    >
                         <div className="white-border">
-                            <div className="text">{text1[4]}</div>
+                            {/* <div className="text">{text1[4]}</div> */}
+                            <StyledInput.Test
+                                className="text"
+                                value={value.leftTitle}
+                                onChange={(e) => handleChange('leftTitle', e)}
+                            />
                         </div>
                         {/* <Image src={src} width={960} height={500}/> */}
                     </div>
                 </div>
             }
-            panel={<p>Hello</p>}
+            panel={
+                <Space direction="vertical">
+                    {/* <ColorButton value={value.color} onChange={(e) => handleChange('color', e)} /> */}
+                    <MediaModal
+                        type="IMAGE"
+                        value={value.image}
+                        onMediaSelected={(e) => handleChange('image', e)}
+                    />
+                </Space>
+            }
         />
     )
 }
