@@ -51,3 +51,6 @@ yarn-error.log*
 # public
 /public/robots.txt
 /public/sitemap*.xml
+
+.env
+.env.development
