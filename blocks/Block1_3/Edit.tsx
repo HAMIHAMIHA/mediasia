@@ -25,7 +25,7 @@ const Edit = ({ value = {}, onChange, theme }: Props) => {
 
     // let src=require(`../../public/styles/src/image_home_5@2x.png`).default
     return (
-        <div className="block1_3">
+        <>
             <div className="left-box">
                 <div className="text-box">
                     <div className="text-box-title">{text1[0]}</div>
@@ -45,7 +45,7 @@ const Edit = ({ value = {}, onChange, theme }: Props) => {
                 </div>
                 {/* <Image src={src} width={960} height={500}/> */}
             </div>
-        </div>
+        </>
     )
 }
 

@@ -90,41 +90,8 @@ const Edit = ({ value = {}, onChange, theme }: Props) => {
         // console.log(chosen)
     }
     return (
-        <div className="block1_2">
+        <>
             <div className={'map' + (open ? ' open' : '')}>
-                {/* <div className="mblock2-map">
-                    <div className="title">
-                        {number1} {text1}
-                    </div>
-                    <Map
-                        // {...viewport}
-                        initialViewState={{
-                            longitude: 0.6,
-                            latitude: 47.18,
-                            zoom: 6.06
-                        }}
-                        style={{width: '100%', height: '400px'}}
-                        mapStyle="mapbox://styles/mapbox/streets-v9"
-                        mapboxAccessToken="pk.eyJ1IjoicGl6enVwIiwiYSI6ImNsOTNtN3FzbzA1b3Mzdm9lZXpvcG94OXQifQ.PT2kirQB9_9_8By1AT41uQ"
-                        // mapboxAccessToken={process.env.REACT_APP_MAPBOX_TOKEN}
-                        // onViewportChange={ viewport=>{
-                        //         setViewport(viewport);
-                        //     }}
-                    >
-                        <Marker longitude={6} latitude={54} anchor="bottom" >
-                            <div className="icon-gps_altarea">
-                                <span className="path1"></span>
-                                <span className="path2"></span>
-                                <span className="path3"></span>
-                            </div>
-                        </Marker>
-                        <Marker longitude={8} latitude={53.8} anchor="bottom" >
-                            <div className="number-ball" aria-label="aria-label">
-                                13
-                            </div>
-                        </Marker>
-                    </Map>
-                </div> */}
                 <div className={'block2-map' + (open ? ' open' : '')} id="block2-id">
                     <div className="title">
                         {number1} {text1}
@@ -140,10 +107,7 @@ const Edit = ({ value = {}, onChange, theme }: Props) => {
                             style={{ width: '100%', height: '100%' }}
                             mapStyle="mapbox://styles/mapbox/streets-v9"
                             mapboxAccessToken="pk.eyJ1IjoicGl6enVwIiwiYSI6ImNsOTNtN3FzbzA1b3Mzdm9lZXpvcG94OXQifQ.PT2kirQB9_9_8By1AT41uQ"
-                            // mapboxAccessToken={process.env.REACT_APP_MAPBOX_TOKEN}
-                            // onViewportChange={ viewport=>{
-                            //         setViewport(viewport);
-                            //     }}
+
                         >
                             <Marker longitude={6} latitude={54} anchor="bottom">
                                 <div className="icon-gps_altarea">
@@ -159,9 +123,6 @@ const Edit = ({ value = {}, onChange, theme }: Props) => {
                             </Marker>
                         </Map>
                     </div>
-                    {/* <Script id="show-scroll" strategy="lazyOnload">
-                        {`console.log("1")`}
-                    </Script> */}
                 </div>
             </div>
             <div className="scrollBox">
@@ -297,12 +258,6 @@ const Edit = ({ value = {}, onChange, theme }: Props) => {
                                 {i + 1}
                             </div>
                         ))}
-                        {/* <div className="selection selected">1</div>
-                        <div className="selection">2</div>
-                        <div className="selection">3</div>
-                        <div className="selection">4</div>
-                        <div className="selection">5</div>
-                        <div className="selection">6</div> */}
                         <div className="icon-right cursorPointer" onClick={rightChosen}></div>
                     </div>
                     <div
@@ -321,7 +276,7 @@ const Edit = ({ value = {}, onChange, theme }: Props) => {
                     </div>
                 </div>
             </div>
-        </div>
+        </>
     )
 }
 

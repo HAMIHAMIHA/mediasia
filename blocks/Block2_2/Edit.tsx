@@ -87,7 +87,7 @@ const Edit = ({ value = {}, onChange, theme }: Props) => {
     //     plus(chosenArr.push(arr[index]))
     // }
     return (
-        <div className="block2_2">
+        <>
             <div className="scrollBox">
                 <div className="scroll-boxm">
                     {arr_scroll_box[chosen - 1].map((e, i) => (
@@ -166,90 +166,8 @@ const Edit = ({ value = {}, onChange, theme }: Props) => {
                     ))}
                     <div className="icon-right cursorPointer" onClick={rightChosen}></div>
                 </div>
-                {/* {arrm.map((e, i) =>
-                    <div  key={i} className="show-box">
-                        <div className="picture-title">
-                            <Image key={i} src={ e.icon} alt="brand1" width={83} height={20}  className="picture"/>
-                        </div>
-                        <div className="picture-box picture-box1">
-                            <div className="bgc">
-                                <Image key={i} src={ e.src} alt="brand1" width={1200} height={900} className="picture"/>
-                                <div className="picture-text1">{text2[0]}</div>
-                                <div className="picture-text2">{text2[3]}</div>
-                            </div>
-                            <div className="white-bottom-box">
-                                <div className="Surface-flex">
-                                    <div className="icon-calendrier"></div>
-                                    <div className="Surface-name">
-                                        <div className="Surface-Surface">{text3[0]}</div>
-                                        <div className="Surface-info">{text3[1]}</div>
-                                    </div>
-                                </div>
-                                <div className="Surface-flex">
-                                    <div className="icon-surface"></div>
-                                    <div className="Livraison-name">
-                                        <div className="Surface-Surface">{text3[2]}</div>
-                                        <div className="Surface-info">{text3[3]}</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="Decouvrir">
-                            <div>Découvrir</div>  
-                            <div className="icon-right"></div>
-                        </div>
-                    </div>
-                )}
-                <div className="voir">
-                    Voir plus de projets
-                </div>
-                <div className={"scroll-box" + (open ? ' box-show' : '') }>
-                    {arr.map((e, i) =>
-                        <div key={i} className="show-box">
-                            <div className="picture-title">title</div>
-                            <div className="picture-box picture-box1">
-                                <div className="bgc"> 
-                                    <Image key={i} src={ e.src} alt="brand1" width={1200} height={900} className="picture"/>
-                                    <div className="picture-text1">{text2[0]}</div>
-                                    <div className="picture-text2">{text2[3]}</div>
-                                </div>
-                                <div className="white-bottom-box">
-                                    <div className="Surface-flex">
-                                        <div className="surface"></div>
-                                        <div className="Surface-name">
-                                            <div className="Surface-Surface">{text3[0]}</div>
-                                            <div className="Surface-info">{text3[1]}</div>
-                                        </div>
-                                    </div>
-                                    <div className="Surface-flex">
-                                        <div className="calendrier"></div>
-                                        <div className="Livraison-name">
-                                            <div className="Surface-Surface">{text3[2]}</div>
-                                            <div className="Surface-info">{text3[3]}</div>
-                                        </div>
-                                    </div>
-                                    <div className="Decouvrir">
-                                    Découvrir <div className="icon-right"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    )}
-                </div>
-                <div className={"border-bottom" + (open ? ' border-bottom-click' : '') }>
-                </div>
-                <div className="border-selection">
-                    <div className="icon-left"></div>
-                    <div className="selection selected">1</div>
-                    <div className="selection">2</div>
-                    <div className="selection">3</div>
-                    <div className="selection">4</div>
-                    <div className="selection">5</div>
-                    <div className="selection">6</div>
-                    <div className="icon-right"></div>
-                </div> */}
             </div>
-        </div>
+        </>
     )
 }
 

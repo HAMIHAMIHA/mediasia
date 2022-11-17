@@ -22,7 +22,7 @@ const Edit = ({ value = {}, onChange, theme }: Props) => {
     const { text1, text2, text3 } = values
 
     return (
-        <div className="Footer">
+        <>
             <div className="block5Top">
                 <div className="icon-logo_simple"></div>
                 <text className="topName">{text1[0]}</text>
@@ -79,7 +79,7 @@ const Edit = ({ value = {}, onChange, theme }: Props) => {
                     <div className="second-line">{text3[4]}</div>
                 </div>
             </div>
-        </div>
+        </>
     )
 }
 
