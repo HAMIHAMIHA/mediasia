@@ -30,7 +30,7 @@ const Edit = ({ value = {}, onChange, theme }: Props) => {
     let src1 = require(`../../public/styles/src/page5/image_page_projet_reference_2@2x.png`).default
     let src2 = require(`../../public/styles/src/page4/image_page_reference_4@2x.png`).default
     return (
-        <div className="block6_3">
+        <>
             <div className="headline">{text1}</div>
             <div className="firstParagraph">
                 <div className="left">
@@ -59,7 +59,7 @@ const Edit = ({ value = {}, onChange, theme }: Props) => {
                     <Image src={src2} alt="brand1" className="image" width={1200} height={640} />
                 </div>
             </div>
-        </div>
+        </>
     )
 }
 

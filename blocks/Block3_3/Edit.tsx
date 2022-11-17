@@ -75,7 +75,7 @@ const Edit = ({ value = {}, onChange, theme }: Props) => {
         }
     }
     return (
-        <div className="block3_3">
+        <>
             <div className="inner_box">
                 <div className="leftBox">
                     <div className="image" onClick={show_box}>
@@ -133,7 +133,7 @@ const Edit = ({ value = {}, onChange, theme }: Props) => {
                     <div className="icon-right" onClick={rightChosen}></div>
                 </div>
             </div>
-        </div>
+        </>
     )
 }
 

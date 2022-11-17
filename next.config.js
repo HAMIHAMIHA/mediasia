@@ -10,7 +10,7 @@
 //     const nextConfig = {
 //         reactStrictMode: true,
 //         // env: {
-//         //     SITE_URL: 'http://localhost:8080',
+//         //     SITE_URL: 'http://localhost:3000',
 //         //     // i18n: {
 //         //     //     locales: ['en', 'fr', 'es', 'zh'],
 //         //     //     defaultLocale: 'en',

@@ -7,7 +7,7 @@
 # Development
 
 `npm run initdb`
-`npm run dev` run on port 8080
+`npm run dev` run on port 3000
 
 # Default user
 

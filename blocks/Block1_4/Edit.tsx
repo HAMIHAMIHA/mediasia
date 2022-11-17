@@ -58,7 +58,7 @@ const Edit = ({ value = {}, onChange, theme }: Props) => {
         // console.log(chosen)
     }
     return (
-        <div className="block1_4">
+        <>
             <div className="block4Title">{text1}</div>
             <div className="brandContainer">
                 {arr_scroll_box[chosen - 1].map((e, i) => (
@@ -86,7 +86,7 @@ const Edit = ({ value = {}, onChange, theme }: Props) => {
                 <div className="selection">3</div>
                 <div className="icon-right"></div> */}
             </div>
-        </div>
+        </>
     )
 }
 

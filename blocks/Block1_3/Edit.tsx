@@ -38,6 +38,15 @@ const Edit = ({ value = {}, onChange, theme }: Props) => {
 
     // let src=require(`../../public/styles/src/image_home_5@2x.png`).default
     return (
+<<<<<<< HEAD
+        <>
+            <div className="left-box">
+                <div className="text-box">
+                    <div className="text-box-title">{text1[0]}</div>
+                    <div className="text-box-text">
+                        <text className="text1">{text1[1]}</text>
+                        <text className="text2">{text1[2]}</text>
+=======
         <EditPanel
             view={
                 <div className="block1_3">
@@ -63,6 +72,7 @@ const Edit = ({ value = {}, onChange, theme }: Props) => {
                                 <div className="title-color-text">{text1[3]}</div>
                             </div>
                         </div>
+>>>>>>> a19ef1649ac9ee59822ed4a64e417cc26c4827eb
                     </div>
                     <div
                         className="right-box"
@@ -83,6 +93,16 @@ const Edit = ({ value = {}, onChange, theme }: Props) => {
                         {/* <Image src={src} width={960} height={500}/> */}
                     </div>
                 </div>
+<<<<<<< HEAD
+            </div>
+            <div className="right-box">
+                <div className="white-border">
+                    <div className="text">{text1[4]}</div>
+                </div>
+                {/* <Image src={src} width={960} height={500}/> */}
+            </div>
+        </>
+=======
             }
             panel={
                 <Space direction="vertical">
@@ -95,6 +115,7 @@ const Edit = ({ value = {}, onChange, theme }: Props) => {
                 </Space>
             }
         />
+>>>>>>> a19ef1649ac9ee59822ed4a64e417cc26c4827eb
     )
 }
 

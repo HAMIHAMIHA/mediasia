@@ -31,8 +31,8 @@ const Edit = ({ value = {}, onChange, theme }: Props) => {
     let brand3 = require(`../../public/styles/src/page4/label_3@2x.png`).default
     let brand4 = require(`../../public/styles/src/page4/label_4@2x.png`).default
     return (
-        <div className="block5_3">
-            <div className="images">
+        <>
+            <div className="images5_3">
                 <div className="left">
                     <Image src={src1} alt="brand1" width={940} height={500} />
                 </div>
@@ -40,7 +40,7 @@ const Edit = ({ value = {}, onChange, theme }: Props) => {
                     <Image src={src2} alt="brand1" width={940} height={500} />
                 </div>
             </div>
-            <div className="texts">
+            <div className="texts5_3">
                 <div className="leftBox">
                     <div className="left">
                         <div className="title">{text2[0]}</div>
@@ -84,7 +84,7 @@ const Edit = ({ value = {}, onChange, theme }: Props) => {
                     <div className="button">{text1[3]}</div>
                 </div>
             </div>
-        </div>
+        </>
     )
 }
 

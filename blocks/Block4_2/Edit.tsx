@@ -59,7 +59,7 @@ const Edit = ({ value = {}, onChange, theme }: Props) => {
     let src5 = require(`../../public/styles/src/page4/Groupe410@2x.png`).default
     let src6 = require(`../../public/styles/src/page4/Groupe411@2x.png`).default
     return (
-        <div className="block4_2">
+        <>
             <div className="ActivitePart">
                 <div className="left">
                     <Image src={src1} alt="brand1" className="brand" />
@@ -184,7 +184,7 @@ const Edit = ({ value = {}, onChange, theme }: Props) => {
                     </div>
                 </div>
             </div>
-        </div>
+        </>
     )
 }
 

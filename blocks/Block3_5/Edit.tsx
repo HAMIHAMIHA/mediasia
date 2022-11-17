@@ -14,13 +14,13 @@ const Edit = ({ value = {}, onChange, theme }: Props) => {
 
     let src = require(`../../public/styles/src/page2/pland_de_masse@2x.png`).default
     return (
-        <div className="block3_5">
+        <>
             <div className="title yellow">{text1[0]}</div>
             <div className="picture">
                 <Image src={src} alt="brand1" className="brand" />
             </div>
-            <div className="button">{text1[1]}</div>
-        </div>
+            <div className="button3_5">{text1[1]}</div>
+        </>
     )
 }
 

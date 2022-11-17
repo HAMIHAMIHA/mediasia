@@ -18,16 +18,16 @@ const Edit = ({ value = {}, onChange, theme }: Props) => {
 
     let src = require(`../../public/styles/src/page2/image_programme_3@2x.png`).default
     return (
-        <div className="block3_4">
-            <div className="left">
+        <>
+            <div className="left3_4">
                 <div className="title yellow">{text1[0]}</div>
                 <div className="content">{text1[1]}</div>
                 <div className="button">{text1[2]}</div>
             </div>
-            <div className="right">
+            <div className="right3_4">
                 <Image src={src} alt="brand1" width={960} height={500} className="brand" />
             </div>
-        </div>
+        </>
     )
 }
 
