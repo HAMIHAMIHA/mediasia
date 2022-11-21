@@ -1,5 +1,4 @@
-.input,
-.DraftEditor-root {
+.input {
     all: inherit;
     width: 100%;
 
@@ -7,6 +6,11 @@
     padding: 0;
     border: none;
     background-color: transparent;
+    text-align: inherit !important;
+}
+
+.draft * {
+    text-align: inherit !important;
 }
 
 .input::placeholder {

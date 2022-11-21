@@ -1,11 +1,6 @@
 import Image from 'next/image'
 import type { Props } from '../types'
 
-interface Block5_2Props {
-    text1: string[]
-    text2: string[]
-}
-
 const values = {
     text1: [
         '#Community, Mérignac (33)',

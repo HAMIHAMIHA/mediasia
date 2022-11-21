@@ -2,10 +2,6 @@ import { useState } from 'react'
 import Image from 'next/image'
 import type { Props } from '../types'
 
-interface Block1_4Props {
-    text1: string
-}
-
 const values = { text1: 'Ils nous ont fait confiance' }
 
 const Edit = ({ value = {}, onChange, theme }: Props) => {

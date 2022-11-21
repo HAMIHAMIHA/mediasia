@@ -11,6 +11,7 @@ import {
     HighlightOutlined,
 } from '@ant-design/icons'
 import { Editor, EditorState, RichUtils, getDefaultKeyBinding, convertFromHTML, ContentState } from 'draft-js'
+import { convertToHTML } from 'draft-convert'
 
 interface RichEditorProps {
     defaultValue: string | undefined
@@ -37,7 +38,10 @@ const RichEditor = ({ defaultValue, onChange, error }: RichEditorProps) => {
 
     const handleOnChange = (e: EditorState) => {
         setEditorState(e)
-        onChange(ref?.current?.editor?.innerHTML)
+        // onChange(ref?.current?.editor?.innerHTML)
+
+        const html = convertToHTML(e.getCurrentContent()).replace('<p>', '').replace('</p>', '')
+        onChange(html)
     }
 
     const handleKeyCommand = (command: string, editorState: EditorState) => {

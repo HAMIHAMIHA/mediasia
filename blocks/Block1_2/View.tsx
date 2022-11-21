@@ -3,13 +3,6 @@ import Map, { Marker } from 'react-map-gl'
 import Image from 'next/image'
 import type { Props } from '../types'
 
-interface Block1_2Props {
-    number1: number
-    text1: string
-    text2: string[]
-    text3: string[]
-}
-
 const values = {
     number1: 57,
     text1: 'programmes en cours',

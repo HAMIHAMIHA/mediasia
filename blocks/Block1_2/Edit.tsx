@@ -3,13 +3,6 @@ import Map, { Marker } from 'react-map-gl'
 import Image from 'next/image'
 import type { Props } from '../types'
 
-interface Block1_2Props {
-    number1: number
-    text1: string
-    text2: string[]
-    text3: string[]
-}
-
 const values = {
     number1: 57,
     text1: 'programmes en cours',
@@ -107,7 +100,6 @@ const Edit = ({ value = {}, onChange, theme }: Props) => {
                             style={{ width: '100%', height: '100%' }}
                             mapStyle="mapbox://styles/mapbox/streets-v9"
                             mapboxAccessToken="pk.eyJ1IjoicGl6enVwIiwiYSI6ImNsOTNtN3FzbzA1b3Mzdm9lZXpvcG94OXQifQ.PT2kirQB9_9_8By1AT41uQ"
-
                         >
                             <Marker longitude={6} latitude={54} anchor="bottom">
                                 <div className="icon-gps_altarea">

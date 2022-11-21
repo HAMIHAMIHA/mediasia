@@ -1,11 +1,5 @@
 import type { Props } from '../types'
 
-interface Bottom_Props {
-    text1: string[]
-    text2: string[]
-    text3: string[]
-}
-
 const values = {
     text1: ['UNE MARQUE ALTAREA', "Vous avez besoin de plus d'informations ?", 'Nous contacter'],
     text2: ['Le Groupe Altarea', 'Nos programmes', 'Nos références', 'Nous contacter'],

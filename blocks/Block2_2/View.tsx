@@ -2,13 +2,6 @@ import { useState } from 'react'
 import Image from 'next/image'
 import type { Props } from '../types'
 
-interface Block2_2Props {
-    number1: number
-    text1: string
-    text2: string[]
-    text3: string[]
-}
-
 const values = {
     number1: 57,
     text1: 'programmes en cours',
@@ -17,7 +10,7 @@ const values = {
 }
 
 const View = ({ value = {}, theme }: Props) => {
-    const { number1, text1, text2, text3 } = values
+    const { /*number1, text1,*/ text2, text3 } = values
     // scrollbox
     let arr = []
     let arrm = []

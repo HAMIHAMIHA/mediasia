@@ -3,12 +3,6 @@ import { useState } from 'react'
 import Logo_hill_png from '../../public/styles/src/page2/logo_hill_side.png'
 import type { Props } from '../types'
 
-interface Block3_3Props {
-    text1: string[]
-    text2: string[]
-    text3: string[]
-}
-
 const values = {
     text1: [
         'Adresse :',

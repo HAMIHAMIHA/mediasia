@@ -2,17 +2,6 @@ import { useState } from 'react'
 import Image from 'next/image'
 import type { Props } from '../types'
 
-interface Block1_1Props {
-    text0: string[]
-    text1: string
-    text2: string[]
-    text3: string[]
-    text4: string
-    text5: string[]
-    propramme: string[]
-    introduce: string
-}
-
 const colorArr = [
     'dark_red',
     'purple',

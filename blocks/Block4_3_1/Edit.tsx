@@ -1,10 +1,4 @@
-import Image from 'next/image'
 import type { Props } from '../types'
-
-interface Block4_3Props {
-    text1: string[]
-    text2: string[]
-}
 
 const values = {
     text1: [
@@ -21,21 +15,21 @@ const values = {
 }
 
 const Edit = ({ value = {}, onChange, theme }: Props) => {
-    const { text1, text2 } = values
+    const { text1 /*, text2*/ } = values
 
-    let src = require(`../../public/styles/src/page3/image_page_groupe_1@2x.png`).default
+    // let src = require(`../../public/styles/src/page3/image_page_groupe_1@2x.png`).default
     return (
         <>
-                <div className="top4_3">
-                    <div className="left">
-                        <div className="icon-cogedim"></div>
-                        <div className="content">{text1[0]}</div>
-                    </div>
-                    <div className="right">
-                        <div className="content2">{text1[1]}</div>
-                        <div className="content2">{text1[2]}</div>
-                    </div>
+            <div className="top4_3">
+                <div className="left">
+                    <div className="icon-cogedim"></div>
+                    <div className="content">{text1[0]}</div>
                 </div>
+                <div className="right">
+                    <div className="content2">{text1[1]}</div>
+                    <div className="content2">{text1[2]}</div>
+                </div>
+            </div>
         </>
     )
 }

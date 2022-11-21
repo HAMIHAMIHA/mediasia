@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useRef, useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import {
     Editor,
     EditorState,
@@ -9,6 +9,7 @@ import {
     ContentState,
     convertToRaw,
 } from 'draft-js'
+import { convertToHTML } from 'draft-convert'
 
 import styles from './StyledInput.module.css'
 
@@ -20,21 +21,20 @@ interface Props<T> {
 }
 
 const StyledInput = ({ value, onChange, className, style }: Props<string>) => (
-    <div className={className} style={{ ...style, width: '100%' }}>
-        <textarea
-            placeholder="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. "
-            value={value}
-            onChange={(e) => onChange(e.target.value)}
-            className={styles.input}
-            // type="text"
-        />
-    </div>
+    <input
+        className={`${className || ''} ${styles.input}`}
+        style={{ width: '100%', ...style }}
+        placeholder="Lorem ipsum"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        type="text"
+    />
 )
 
 const A = ({ value, onChange, className, style }: Props<string>) => (
-    <span className={className} style={{ ...style, width: '100%' }}>
+    <span className={className} style={{ width: '100%', ...style }}>
         <input
-            placeholder="Lorem ipsum dolor sit amet"
+            placeholder="Lorem ipsum"
             value={value}
             onChange={(e) => onChange(e.target.value)}
             className={styles.input}
@@ -44,9 +44,9 @@ const A = ({ value, onChange, className, style }: Props<string>) => (
 )
 
 const Span = ({ value, onChange, className, style }: Props<string>) => (
-    <span className={className} style={{ ...style, width: '100%' }}>
+    <span className={className} style={{ width: '100%', ...style }}>
         <textarea
-            placeholder="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. "
+            placeholder="Lorem ipsum dolor sit amet."
             value={value}
             onChange={(e) => onChange(e.target.value)}
             className={styles.input}
@@ -82,7 +82,7 @@ const P = ({ value, onChange, className, style }: Props<string>) => {
 }
 
 const Li = ({ value, onChange, className, style }: Props<string>) => (
-    <li className={className} style={{ ...style, width: '100%' }}>
+    <li className={className} style={{ width: '100%', ...style }}>
         <input
             placeholder="Lorem ipsum dolor sit amet"
             value={value}
@@ -94,7 +94,7 @@ const Li = ({ value, onChange, className, style }: Props<string>) => (
 )
 
 const H1 = ({ value, onChange, className, style }: Props<string>) => (
-    <h1 className={className} style={{ ...style, width: '100%' }}>
+    <h1 className={className} style={{ width: '100%', ...style }}>
         <input
             placeholder="Lorem ipsum dolor"
             value={value}
@@ -106,7 +106,7 @@ const H1 = ({ value, onChange, className, style }: Props<string>) => (
 )
 
 const H2 = ({ value, onChange, className, style }: Props<string>) => (
-    <h2 className={className} style={{ ...style, width: '100%' }}>
+    <h2 className={className} style={{ width: '100%', ...style }}>
         <input
             placeholder="Lorem ipsum dolor"
             value={value}
@@ -118,7 +118,7 @@ const H2 = ({ value, onChange, className, style }: Props<string>) => (
 )
 
 const H3 = ({ value, onChange, className, style }: Props<string>) => (
-    <h3 className={className} style={{ ...style, width: '100%' }}>
+    <h3 className={className} style={{ width: '100%', ...style }}>
         <input
             placeholder="Lorem ipsum dolor"
             value={value}
@@ -130,7 +130,7 @@ const H3 = ({ value, onChange, className, style }: Props<string>) => (
 )
 
 const H4 = ({ value, onChange, className, style }: Props<string>) => (
-    <h4 className={className} style={{ ...style, width: '100%' }}>
+    <h4 className={className} style={{ width: '100%', ...style }}>
         <input
             placeholder="Lorem ipsum dolor"
             value={value}
@@ -142,7 +142,7 @@ const H4 = ({ value, onChange, className, style }: Props<string>) => (
 )
 
 const Button = ({ value, onChange, className, style }: Props<string>) => (
-    <button className={className} onClick={(e) => e.preventDefault()} style={{ ...style, width: '100%' }}>
+    <button className={className} onClick={(e) => e.preventDefault()} style={{ width: '100%', ...style }}>
         <input
             placeholder="Lorem ipsum"
             value={value}
@@ -153,16 +153,28 @@ const Button = ({ value, onChange, className, style }: Props<string>) => (
     </button>
 )
 
-const Test = ({ value, onChange, className, style }: Props<string>) => {
+const Text = ({ value, onChange, className, style }: Props<string>) => {
     const ref = useRef<any>()
     const [editorState, setEditorState] = useState(EditorState.createEmpty())
 
     const handleOnChange = (e: EditorState) => {
         setEditorState(e)
-        // console.log(e)
-        console.log('ref:', ref?.current)
-        console.log('state: ', convertToRaw(editorState.getCurrentContent()).blocks)
+
+        const html = convertToHTML(e.getCurrentContent()).replace('<p>', '').replace('</p>', '')
+        onChange(html)
     }
+
+    useEffect(() => {
+        if (!!value) {
+            const blocksFromHTML = convertFromHTML(value)
+            const state = ContentState.createFromBlockArray(
+                blocksFromHTML.contentBlocks,
+                blocksFromHTML.entityMap
+            )
+            handleOnChange(EditorState.createWithContent(state))
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
 
     const handleKeyCommand = (command: string, editorState: EditorState) => {
         const newState = RichUtils.handleKeyCommand(editorState, command)
@@ -185,8 +197,13 @@ const Test = ({ value, onChange, className, style }: Props<string>) => {
     }
 
     return (
-        <div className={className} onClick={(e) => e.preventDefault()} style={{ ...style, width: '100%' }}>
+        <div
+            className={`${styles.draft || ''} ${className}`}
+            onClick={(e) => e.preventDefault()}
+            style={{ width: '100%', ...style }}
+        >
             <Editor
+                placeholder="Lorem ipsum"
                 ref={ref}
                 editorState={editorState}
                 handleKeyCommand={handleKeyCommand}
@@ -198,8 +215,8 @@ const Test = ({ value, onChange, className, style }: Props<string>) => {
     )
 }
 
-StyledInput.div = StyledInput
-StyledInput.span = Span
+StyledInput.div = Text
+StyledInput.span = Text
 StyledInput.p = P
 StyledInput.li = Li
 StyledInput.h1 = H1
@@ -208,6 +225,7 @@ StyledInput.h3 = H3
 StyledInput.h4 = H4
 StyledInput.button = Button
 StyledInput.a = A
-StyledInput.Test = Test
+
+StyledInput.Text = Text
 
 export default StyledInput

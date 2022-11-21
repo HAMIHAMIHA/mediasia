@@ -1,13 +1,6 @@
 import Image from 'next/image'
 import type { Props } from '../types'
 
-interface Block6_2Props {
-    text1: string
-    text2: string[]
-    text3: string[]
-    text4: string
-}
-
 const values = {
     text1: '#Community, Mérignac',
     text2: [
@@ -32,7 +25,7 @@ const values = {
 }
 
 const Edit = ({ value = {}, onChange, theme }: Props) => {
-    const { text1, text2, text3, text4 } = values
+    const { text1, text2, text3 /*, text4*/ } = values
 
     let arr = []
     for (let i = 0; i < text2.length; i++) {
@@ -40,10 +33,10 @@ const Edit = ({ value = {}, onChange, theme }: Props) => {
         let obj = { title: text2[i], content: text3[i] }
         arr.push(obj)
     }
-    let src1 = require(`../../public/styles/src/page4/image_page_reference_2@2x.png`).default
-    let src2 = require(`../../public/styles/src/page4/image_page_reference_7@2x.png`).default
+    // let src1 = require(`../../public/styles/src/page4/image_page_reference_2@2x.png`).default
+    // let src2 = require(`../../public/styles/src/page4/image_page_reference_7@2x.png`).default
     let src3 = require(`../../public/styles/src/page4/image_page_reference_3@2x.png`).default
-    let src4 = require(`../../public/styles/src/page4/image_page_reference_4@2x.png`).default
+    // let src4 = require(`../../public/styles/src/page4/image_page_reference_4@2x.png`).default
     return (
         <>
             <div className="second">

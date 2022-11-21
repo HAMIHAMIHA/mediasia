@@ -1,13 +1,6 @@
-import Image from 'next/image'
-import plan_situation from '../../public/styles/src/page2/plan_situation@2x.png'
+// import Image from 'next/image'
+// import plan_situation from '../../public/styles/src/page2/plan_situation@2x.png'
 import type { Props } from '../types'
-
-interface Block3_2Props {
-    text1: string
-    text2: string[]
-    text3: string[]
-    transports: string[]
-}
 
 const values = {
     text1: 'Plan de situation',
@@ -22,7 +15,7 @@ const values = {
 }
 
 const Edit = ({ value = {}, onChange, theme }: Props) => {
-    const { text1, text2, text3, transports } = values
+    const { /*text1,*/ text2, text3, transports } = values
 
     let arr_name = [0, 1, 2, 3]
     let arr = []

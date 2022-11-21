@@ -1,17 +1,5 @@
 import { useState } from 'react'
-import Image from 'next/image'
 import type { Props } from '../types'
-
-interface Block1_1Props {
-    text0: string[]
-    text1: string
-    text2: string[]
-    text3: string[]
-    text4: string
-    text5: string[]
-    propramme: string[]
-    introduce: string
-}
 
 const colorArr = [
     'dark_red',
@@ -69,7 +57,7 @@ const Edit = ({ value = {}, onChange, theme }: Props) => {
     //         if (!!onChange) onChange(newValue)
     //     }
 
-    const { text0, text1, text2, text3, text4, text5, propramme, introduce } = values
+    const { text0, /* text1, text2, text3, */ text4, text5, propramme, introduce } = values
     const block1 = {
         colorBar: false,
         textTitle: true,
@@ -81,17 +69,17 @@ const Edit = ({ value = {}, onChange, theme }: Props) => {
         whiteText: true,
         person: false,
     }
-    let label_1 = require(`../../public/styles/src/page4/label_1@2x.png`).default
-    let label_2 = require(`../../public/styles/src/page4/label_2@2x.png`).default
-    let label_3 = require(`../../public/styles/src/page4/label_3@2x.png`).default
-    let label_4 = require(`../../public/styles/src/page4/label_4@2x.png`).default
-    const move_down = () => {
-        scrollTo({
-            top: 800,
-            left: 0,
-            behavior: 'smooth',
-        })
-    }
+    // let label_1 = require(`../../public/styles/src/page4/label_1@2x.png`).default
+    // let label_2 = require(`../../public/styles/src/page4/label_2@2x.png`).default
+    // let label_3 = require(`../../public/styles/src/page4/label_3@2x.png`).default
+    // let label_4 = require(`../../public/styles/src/page4/label_4@2x.png`).default
+    // const move_down = () => {
+    //     scrollTo({
+    //         top: 800,
+    //         left: 0,
+    //         behavior: 'smooth',
+    //     })
+    // }
     const [show, setShow] = useState(false)
     const show_box = () => {
         setShow(!show)

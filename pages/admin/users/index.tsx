@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { User, Login, Role } from '@prisma/client'
-import { Tag, Space, Input, Table, Button, Popconfirm } from 'antd'
+import { Space, Input, Table, Button, Popconfirm } from 'antd'
 import Link from 'next/link'
 import Head from 'next/head'
 import get from 'lodash.get'

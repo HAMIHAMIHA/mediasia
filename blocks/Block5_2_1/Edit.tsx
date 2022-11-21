@@ -1,11 +1,6 @@
 import Image from 'next/image'
 import type { Props } from '../types'
 
-interface Block5_2Props {
-    text1: string[]
-    text2: string[]
-}
-
 const values = {
     text1: [
         '#Community, Mérignac (33)',
@@ -22,10 +17,10 @@ const values = {
 }
 
 const Edit = ({ value = {}, onChange, theme }: Props) => {
-    const { text1, text2 } = values
+    const { text1 /*text2*/ } = values
 
     let src1 = require(`../../public/styles/src/page4/image_page_reference_2@2x.png`).default
-    let src2 = require(`../../public/styles/src/page4/image_page_reference_3@2x.png`).default
+    // let src2 = require(`../../public/styles/src/page4/image_page_reference_3@2x.png`).default
     let brand1 = require(`../../public/styles/src/page4/label_1@2x.png`).default
     let brand2 = require(`../../public/styles/src/page4/label_2@2x.png`).default
     let brand3 = require(`../../public/styles/src/page4/label_3@2x.png`).default

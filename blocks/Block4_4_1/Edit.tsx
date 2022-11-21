@@ -1,10 +1,4 @@
-import Image from 'next/image'
 import type { Props } from '../types'
-
-interface Block4_4Props {
-    text1: string[]
-    text2: string[]
-}
 
 const values = {
     text1: [
@@ -22,11 +16,11 @@ const values = {
 }
 
 const Edit = ({ value = {}, onChange, theme }: Props) => {
-    const { text1, text2 } = values
+    const { text1 /*text2*/ } = values
 
-    let src2 = require(`../../public/styles/src/page3/image_page_groupe_2@2x.png`).default
-    let src3 = require(`../../public/styles/src/page3/image_page_groupe_3@2x.png`).default
-    let src4 = require(`../../public/styles/src/page3/image_page_groupe_4@2x.png`).default
+    // let src2 = require(`../../public/styles/src/page3/image_page_groupe_2@2x.png`).default
+    // let src3 = require(`../../public/styles/src/page3/image_page_groupe_3@2x.png`).default
+    // let src4 = require(`../../public/styles/src/page3/image_page_groupe_4@2x.png`).default
     return (
         <>
             <div className="arrows">

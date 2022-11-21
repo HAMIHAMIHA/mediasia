@@ -1,11 +1,6 @@
 import Image from 'next/image'
 import type { Props } from '../types'
 
-interface Block4_3Props {
-    text1: string[]
-    text2: string[]
-}
-
 const values = {
     text1: [
         'Marque historique du Groupe',
@@ -21,7 +16,7 @@ const values = {
 }
 
 const Edit = ({ value = {}, onChange, theme }: Props) => {
-    const { text1, text2 } = values
+    const { /*text1,*/ text2 } = values
 
     let src = require(`../../public/styles/src/page3/image_page_groupe_1@2x.png`).default
     return (

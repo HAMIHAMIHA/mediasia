@@ -1,12 +1,6 @@
 import Image from 'next/image'
 import type { Props } from '../types'
 
-interface Block6_3Props {
-    text1: string
-    text2: string[]
-    text3: string[]
-}
-
 const values = {
     text1: 'Un immeuble exemplaire sur le plan environnemental',
     text2: [

@@ -23,6 +23,7 @@ interface Props {
     icon?: ReactNode
     primary?: boolean
     children?: JSX.Element
+    withoutName?: boolean
 }
 
 const MediaModal = ({
@@ -34,6 +35,7 @@ const MediaModal = ({
     primary = true,
     icon,
     children,
+    withoutName = false,
 }: Props) => {
     const [visible, setVisible] = useState(false)
     const [selected, setSelected] = useState<Media | null>(value || null)
@@ -90,7 +92,7 @@ const MediaModal = ({
                         </Button>
                     )}
                 </div>
-                {value && (
+                {value && !withoutName && (
                     <>
                         <Text>{isLongTag ? `${value?.name.slice(0, 37)}...` : value?.name}</Text>
                         <Button

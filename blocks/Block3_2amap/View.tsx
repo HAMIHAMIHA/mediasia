@@ -2,13 +2,6 @@ import Image from 'next/image'
 import plan_situation from '../../public/styles/src/page2/plan_situation@2x.png'
 import type { Props } from '../types'
 
-interface Block3_2Props {
-    text1: string
-    text2: string[]
-    text3: string[]
-    transports: string[]
-}
-
 const values = {
     text1: 'Plan de situation',
     text2: ['Métro', 'Aéroport', 'TGV', 'Autoroute'],

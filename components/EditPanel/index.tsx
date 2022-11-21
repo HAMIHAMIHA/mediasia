@@ -1,5 +1,4 @@
-import { CloseOutlined, MoreOutlined, SearchOutlined } from '@ant-design/icons'
-import { useOutsideAlerter } from '@hooks/useOutsideAlerter'
+import { CloseOutlined, MoreOutlined } from '@ant-design/icons'
 import { Button, Card } from 'antd'
 import { useRef, useState } from 'react'
 import styles from './EditPanel.module.css'
@@ -12,7 +11,6 @@ interface PanelProps {
 const EditPanel = ({ view, panel }: PanelProps) => {
     const myRef = useRef(null)
     const [isOpen, setIsOpen] = useState(false)
-    useOutsideAlerter(myRef, () => setIsOpen(false))
 
     return (
         <div className={styles.wrap}>
