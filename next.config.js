@@ -26,19 +26,19 @@ const defaultConfig = {
 }
 const nextConfig = {
     webpack(config) {
-      config.module.rules.push({
-        test: /\.svg$/i,
-        issuer: /\.[jt]sx?$/,
-        use: ['@svgr/webpack'],
-      });
-  
-      return config;
+        config.module.rules.push({
+            test: /\.svg$/i,
+            issuer: /\.[jt]sx?$/,
+            use: ['@svgr/webpack'],
+        })
+
+        return config
     },
-  };
+}
 
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
     enabled: process.env.ANALYZE === 'true',
 })
 
 module.exports = withBundleAnalyzer(defaultConfig)
-module.exports = nextConfig;
+module.exports = nextConfig

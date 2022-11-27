@@ -1,18 +1,6 @@
 import type { Props } from '../types'
 
-// const values = {
-//     text1: [
-//         'Une culture entrepreneuriale',
-//         'Animé par une véritable culture entrepreneuriale',
-//         ", Cogedim a développé un fort ancrage territorial, gage d'une croissance durable. Acteur clé de la ville, au contact des métropoles et de leurs territoires, nous offrons à nos clients des solutions urbaines et immobilières à taille humaine. ",
-//         'Nous contacter',
-//         "L'immobilier d'entreprise au servive du développement des territoires.",
-//     ],
-// }
-
 const View = ({ value = {}, theme }: Props) => {
-    // const { text1 } = values
-    // let src=require(`../../public/styles/src/image_home_5@2x.png`).default
     return (
         <>
             <div className="left-box">
@@ -32,7 +20,9 @@ const View = ({ value = {}, theme }: Props) => {
             <div
                 className="right-box"
                 style={{
-                    backgroundImage: value.image ? `url(/api/uploads/images/${value.image.uri})` : undefined,
+                    backgroundImage: `url(${
+                        !!value.image ? `/api/uploads/images/${value.image?.uri}` : '/default.jpg'
+                    }`,
                 }}
             >
                 <div className="white-border">

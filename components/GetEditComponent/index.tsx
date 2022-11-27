@@ -28,7 +28,7 @@ const GetEditComponent = ({ block, value, onChange, theme, fields, formId }: Get
 
     if (!block) return null
 
-    if (get(Blocks, `${block}.needForm`, false) && !formId) {
+    if (!!get(Blocks, `${block}.needForm`) && !formId) {
         return (
             <div
                 style={{
@@ -57,7 +57,9 @@ const GetEditComponent = ({ block, value, onChange, theme, fields, formId }: Get
         )
     }
 
-    const Component = get(Blocks, block, () => null)
+    const Component = get(Blocks, block)
+
+    if (!Component) return null
 
     return (
         <Component.Edit

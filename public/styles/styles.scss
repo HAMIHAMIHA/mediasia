@@ -1369,7 +1369,7 @@
 }
 .right-box {
     position: relative;
-    background-image: url(/styles/src/image_home_5@2x.png);
+    // background-image: url(/styles/src/image_home_5@2x.png);
     background-repeat: no-repeat;
     margin-top: 30px;
     height: 400px;
@@ -1399,7 +1399,7 @@
     }
     @media (min-width: 1200px) {
         width: 50%;
-        background-image: url(/styles/src/image_home_5@2x.png);
+        // background-image: url(/styles/src/image_home_5@2x.png);
         // background-position: 0;
         background-repeat: no-repeat;
         background-size: 100% 600px;
@@ -4138,11 +4138,13 @@
 // margin-top: 40px;
 .first {
     .left {
-        width: 100%;
+        // width: 100%;
+        flex: 1;
     }
     .right {
         margin-top: 20px;
-        width: 100%;
+        // width: 100%;
+        flex: 1;
     }
 }
 @media (min-width: 1000px) {
@@ -4150,14 +4152,17 @@
         display: flex;
         justify-content: center;
         margin-top: 50px;
+        gap: 40px;
         .left {
-            width: 940px;
+            // width: 940px;
+            flex: 1.5;
             min-width: 700px;
             height: 500px;
         }
         .right {
-            width: 580px;
-            margin-left: 40px;
+            // width: 580px;
+            flex: 1;
+            // margin-left: 40px;
             min-width: 430px;
             margin-top: 0;
         }
@@ -4259,22 +4264,25 @@
         margin-top: 40px;
         height: fit-content;
         .leftBox {
-            width: calc(100% - 940px);
+            flex: 0.5;
+            min-width: 425px;
+            // width: calc(100% - 940px);
             display: flex;
             justify-content: right;
             align-items: center;
             background-color: #42145f;
             .left {
                 height: fit-content;
-                width: 450px;
+                // width: 450px;
                 margin-left: 20px;
                 color: #fff;
                 margin-right: 3.125%;
             }
         }
         .right {
-            width: 940px;
-            min-width: 940px;
+            flex: 1;
+            // width: 940px;
+            // min-width: 940px;
             height: 500px;
         }
     }

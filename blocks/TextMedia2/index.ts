@@ -2,11 +2,11 @@ import View from './View'
 import Edit from './Edit'
 import { Availability, Block } from '../types'
 
-const Title: Block = {
-    name: 'Block3 4',
+const TextMedia2: Block = {
+    name: 'Texte + Media 2',
     availability: Availability.ALL,
     View,
     Edit,
 }
 
-export default Title
+export default TextMedia2
