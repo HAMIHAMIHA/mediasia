@@ -2,32 +2,15 @@ import { useState } from 'react'
 import Image from 'next/image'
 import type { Props } from '../types'
 
-const values = { text1: 'Ils nous ont fait confiance' }
-
-const Edit = ({ value = {}, onChange, theme }: Props) => {
-    const { text1 } = values
-
-    let arr = []
-    //brandContainer
-    let n = 0
-    while (n < 3) {
-        for (let i = 1; i < 25; i++) {
-            let obj = { src: require(`../../public/styles/src/brand/logo_client_${i}@2x.png`).default }
-            // let obj={ 'src':`../../public/styles/src/brand/logo_client_${i}@2x.png`}
-            arr.push(obj)
-        }
-        n++
-    }
-    // scrollbox
+const View = ({ value = {}, theme }: Props) => {
     let test1 = 0
     let temporary = 0
     let arr_scroll = []
     let arr_scroll_box = []
-    while (test1 < Math.ceil(arr.length / 24)) {
+    while (test1 < Math.ceil(value.images.length / 24)) {
         for (let i = 0; i < 23; i++) {
-            // console.log(arr[temporary])
-            if (arr[temporary]) {
-                arr_scroll.push(arr[temporary])
+            if (value.images[temporary]) {
+                arr_scroll.push(value.images[temporary])
                 temporary++
             }
         }
@@ -35,8 +18,7 @@ const Edit = ({ value = {}, onChange, theme }: Props) => {
         test1++
         arr_scroll = []
     }
-    // const list = [{src: "!"}]
-    // let src1=require("../../public/styles/src/brand/logo_client_1@2x.png").default;
+
     let [chosen, setChosen] = useState(1)
     const changeChosen = (e: number) => {
         setChosen((chosen = e + 1))
@@ -55,12 +37,15 @@ const Edit = ({ value = {}, onChange, theme }: Props) => {
     }
     return (
         <>
-            <div className="block4Title">{text1}</div>
+            <div className="block4Title" dangerouslySetInnerHTML={{ __html: value.title }} />
             <div className="brandContainer">
                 {arr_scroll_box[chosen - 1].map((e, i) => (
-                    // <div key={i}>{e.src}</div>
                     <div key={i} className="brandBox">
-                        <Image key={i} src={e.src} alt="brand1" className="brand" />
+                        <Image
+                            src={!!e ? `/api/uploads/images/${e?.uri}` : '/default.jpg'}
+                            alt="brand1"
+                            className="brand"
+                        />
                     </div>
                 ))}
             </div>
@@ -86,4 +71,4 @@ const Edit = ({ value = {}, onChange, theme }: Props) => {
     )
 }
 
-export default Edit
+export default View

@@ -1,7 +1,6 @@
 import Block1_1Banner from './Block1_1Banner'
 import Block1_1navBar from './Block1_1navBar'
 import Block1_2 from './Block1_2'
-import Block1_4 from './Block1_4'
 
 import Block2_2 from './Block2_2'
 
@@ -27,6 +26,7 @@ import Block6_2_1 from './Block6_2_1'
 import Block6_2_2 from './Block6_2_2'
 import TitleText2Colonnes from './TitleText2Colonnes'
 
+import LogoList from './LogoList'
 import TexteMedia3 from './TexteMedia3'
 import ListIcons from './ListIcons'
 import Image from './Image'
@@ -68,7 +68,7 @@ const blocks = {
     Block6_2_1,
     Block6_2_2,
 
-    Block1_4,
+    LogoList,
     TitleText2Colonnes,
     TexteMedia1,
     TexteMedia2,

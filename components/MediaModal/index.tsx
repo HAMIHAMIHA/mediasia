@@ -24,6 +24,7 @@ interface Props {
     primary?: boolean
     children?: JSX.Element
     withoutName?: boolean
+    // withoutLabel?: boolean
 }
 
 const MediaModal = ({
@@ -36,7 +37,8 @@ const MediaModal = ({
     icon,
     children,
     withoutName = false,
-}: Props) => {
+}: // withoutLabel = false,
+Props) => {
     const [visible, setVisible] = useState(false)
     const [selected, setSelected] = useState<Media | null>(value || null)
 
