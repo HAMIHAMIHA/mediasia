@@ -1,21 +1,6 @@
 import Image from 'next/image'
 import type { Props } from '../types'
 
-const values = {
-    text1: [
-        'Évolution des usages',
-        'Développement Technologique',
-        'Délocalisation dans les métropoles régionales',
-        'Augmentation du nombre de télétravailleurs',
-        'Des enjeux environnementaux croissants',
-        'Évolution du management',
-        'La Tannerie, Lyon 7',
-        "White, Villeneuve d'Ascq",
-        'Uway, Toulouse',
-    ],
-    text2: ['La Tannerie, Lyon 7', "White, Villeneuve d'Ascq", 'Uway, Toulouse'],
-}
-
 const View = ({ value = {}, theme }: Props) => {
     return (
         <div className="pictures">

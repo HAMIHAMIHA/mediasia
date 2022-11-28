@@ -1,26 +1,8 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import Image from 'next/image'
 import type { Props } from '../types'
 import EditPanel from '@components/EditPanel'
 import { Space } from 'antd'
-import ColorButton from '@components/ColorButton'
-import set from 'lodash.set'
-import MediaModal from '@components/MediaModal'
-import StyledInput from '@components/StyledInput'
-
-const colorArr = [
-    'dark_red',
-    'purple',
-    'blue',
-    'light_blue',
-    'green',
-    'dark_yellow',
-    'medium_yellow',
-    'lemon',
-    'yellow',
-    'orange',
-    'red',
-]
 
 const values = {
     text0: ['Le Groupe Altarea', 'Nos programmes', 'Nos références', 'Nous contacter'],
@@ -57,14 +39,14 @@ const values = {
 //Only block1 can click the button to display the input field
 
 const Edit = ({ value = {}, onChange, theme }: Props) => {
-    const handleChange = (name: string, e: any) => {
-        const newValue = { ...value }
+    // const handleChange = (name: string, e: any) => {
+    //     const newValue = { ...value }
 
-        set(newValue, name, e)
-        if (!!onChange) onChange(newValue)
-    }
+    //     set(newValue, name, e)
+    //     if (!!onChange) onChange(newValue)
+    // }
 
-    const { text0, text1, text2, text3, text4, text5, propramme, introduce } = values
+    const { text1, text2, text3, propramme, introduce } = values
     const block1 = {
         colorBar: true,
         textTitle: true,
@@ -77,9 +59,6 @@ const Edit = ({ value = {}, onChange, theme }: Props) => {
         person: true,
     }
     let label_1 = require(`../../public/styles/src/page4/label_1@2x.png`).default
-    let label_2 = require(`../../public/styles/src/page4/label_2@2x.png`).default
-    let label_3 = require(`../../public/styles/src/page4/label_3@2x.png`).default
-    let label_4 = require(`../../public/styles/src/page4/label_4@2x.png`).default
     const move_down = () => {
         scrollTo({
             top: 800,
@@ -87,23 +66,23 @@ const Edit = ({ value = {}, onChange, theme }: Props) => {
             behavior: 'smooth',
         })
     }
-    const [show, setShow] = useState(false)
-    const show_box = () => {
-        setShow(!show)
-    }
-    const [show2, setShow2] = useState(false)
-    const show_box2 = () => {
-        setShow2(!show2)
-    }
+    // const [show, setShow] = useState(false)
+    // const show_box = () => {
+    //     setShow(!show)
+    // }
+    // const [show2, setShow2] = useState(false)
+    // const show_box2 = () => {
+    //     setShow2(!show2)
+    // }
     const [showi, showInput] = useState(false)
     const show_input = () => {
         showInput(!showi)
     }
-    let [typeColors, changeType] = useState('dark_purple')
-    const changeColor = (e: string) => {
-        changeType((typeColors = e))
-        // console.log(typeColors)
-    }
+    // let [typeColors, changeType] = useState('dark_purple')
+    // const changeColor = (e: string) => {
+    //     changeType((typeColors = e))
+    //     // console.log(typeColors)
+    // }
     let arr = []
     for (let i = 0; i < propramme.length; i++) {
         let obj = { selections: propramme[i] }

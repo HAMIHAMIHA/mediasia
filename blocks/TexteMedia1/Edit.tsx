@@ -3,7 +3,6 @@ import LinkInput from '@components/LinkInput'
 import MediaModal from '@components/MediaModal'
 import StyledInput from '@components/StyledInput'
 import { Space, Switch } from 'antd'
-import { url } from 'inspector'
 import set from 'lodash.set'
 import type { Props } from '../types'
 

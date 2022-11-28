@@ -24,6 +24,7 @@ interface Props {
     primary?: boolean
     children?: JSX.Element
     withoutName?: boolean
+    shape?: 'circle' | 'default' | 'round' | undefined
     // withoutLabel?: boolean
 }
 
@@ -37,6 +38,7 @@ const MediaModal = ({
     icon,
     children,
     withoutName = false,
+    shape,
 }: // withoutLabel = false,
 Props) => {
     const [visible, setVisible] = useState(false)
@@ -89,7 +91,7 @@ Props) => {
                     {children ? (
                         children
                     ) : (
-                        <Button icon={icon} size={size} type={primary ? 'primary' : undefined}>
+                        <Button shape={shape} icon={icon} size={size} type={primary ? 'primary' : undefined}>
                             {label}
                         </Button>
                     )}
@@ -98,6 +100,7 @@ Props) => {
                     <>
                         <Text>{isLongTag ? `${value?.name.slice(0, 37)}...` : value?.name}</Text>
                         <Button
+                            shape={shape}
                             danger
                             size={size}
                             type="primary"
