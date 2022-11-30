@@ -4,6 +4,9 @@ import Image from 'next/image'
 import type { Props } from '../types'
 import { useQuery } from 'react-query'
 import { getContainerDetails } from '@network/containers'
+import { getContents } from '@network/public'
+import get from 'lodash.get'
+import Link from 'next/link'
 
 const values = {
     number1: 57,
@@ -13,11 +16,11 @@ const values = {
 }
 
 const View = ({ value = {}, theme }: Props) => {
-    const { number1, text1, text2, text3 } = values
+    // const { number1, text1, text2, text3 } = values
 
-    /*const container =*/ useQuery(
-        ['containers', { id: value.container }],
-        () => getContainerDetails(value.container as string),
+    const contents = useQuery(
+        ['contents', { container: value.container }],
+        () => getContents(value.container as string),
         {
             enabled: !!value.container,
         }
@@ -28,27 +31,28 @@ const View = ({ value = {}, theme }: Props) => {
         setOpen(!open)
     }
     // scrollbox
-    let arr = []
+    // let arr = []
     let arrm = []
-    let test = 0
-    while (test < 10) {
-        for (let i = 2; i < 5; i++) {
-            let obj = {
-                src: require(`../../public/styles/src/image_home_${i}@2x.png`).default,
-                icon: require(`../../public/styles/src/label_1@2x.png`).default,
-            }
-            arr.push(obj)
-        }
-        test++
-    }
+    // let test = 0
+    // while (test < 10) {
+    //     for (let i = 2; i < 5; i++) {
+    //         let obj = {
+    //             src: require(`../../public/styles/src/image_home_${i}@2x.png`).default,
+    //             icon: require(`../../public/styles/src/label_1@2x.png`).default,
+    //         }
+    //         arr.push(obj)
+    //     }
+    //     test++
+    // }
+
     let test1 = 0
     let temporary = 0
     let arr_scroll = []
     let arr_scroll_box = []
-    while (test1 < Math.ceil(arr.length / 9)) {
+    while (test1 < Math.ceil((contents.data?.length || 0) / 9)) {
         for (let i = 0; i < 8; i++) {
-            if (arr[temporary]) {
-                arr_scroll.push(arr[temporary])
+            if (get(contents, `data.${temporary}`)) {
+                arr_scroll.push(get(contents, `data.${temporary}`))
                 temporary++
             }
         }
@@ -123,9 +127,7 @@ const View = ({ value = {}, theme }: Props) => {
                     </Map>
                 </div> */}
                 <div className={'block2-map' + (open ? ' open' : '')} id="block2-id">
-                    <div className="title">
-                        {number1} {text1}
-                    </div>
+                    <div className="title">{`${contents.data?.length || 0} programmes en cours`}</div>
                     <div className="mapBox">
                         <Map
                             // {...viewport}
@@ -163,75 +165,26 @@ const View = ({ value = {}, theme }: Props) => {
             </div>
             <div className="scrollBox">
                 <div className="scroll-boxm">
-                    {arr_scroll_box[chosen - 1].map((e, i) => (
-                        <div key={i} className="show-box">
-                            <div className="picture-title">
-                                <Image
-                                    key={i}
-                                    src={e.icon}
-                                    alt="brand1"
-                                    width={83}
-                                    height={20}
-                                    className="picture"
-                                />
-                                <Image
-                                    key={i}
-                                    src={e.icon}
-                                    alt="brand1"
-                                    width={83}
-                                    height={20}
-                                    className="picture"
-                                />
-                            </div>
-                            <div className="picture-box picture-box1">
-                                <div className="bgc">
-                                    <Image
-                                        key={i}
-                                        src={e.src}
-                                        alt="brand1"
-                                        width={1200}
-                                        height={900}
-                                        className="picture"
-                                    />
-                                    <div className="picture-text1">{text2[0]}</div>
-                                    <div className="picture-text2">{text2[3]}</div>
-                                </div>
-                                <div className="white-bottom-box">
-                                    <div className="Surface-flex">
-                                        <div className="icon-calendrier"></div>
-                                        <div className="Surface-name">
-                                            <div className="Surface-Surface">{text3[0]}</div>
-                                            <div className="Surface-info">{text3[1]}</div>
-                                        </div>
-                                    </div>
-                                    <div className="Surface-flex">
-                                        <div className="icon-surface"></div>
-                                        <div className="Livraison-name">
-                                            <div className="Surface-Surface">{text3[2]}</div>
-                                            <div className="Surface-info">{text3[3]}</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="Decouvrir">
-                                <div>Découvrir</div>
-                                <div className="icon-right"></div>
-                            </div>
-                        </div>
-                    ))}
-                    <div className="voir">Voir plus de projets</div>
-                </div>
-                <div className="scroll-box-outside">
-                    <div className="scroll-title">
-                        {number1} {text1}
-                    </div>
-                    <div className={'scroll-box' + (open ? ' box-show' : '')}>
-                        {arr_scroll_box[chosen - 1].map((e, i) => (
-                            <div key={i} className={'show-box' + (open ? ' show-box-width' : '')}>
+                    {arr_scroll_box[chosen - 1]?.map((e, i) => {
+                        const coverField = e.fields?.find((f: any) => f.name === value.coverField)
+                        const titleField = e.fields?.find((f: any) => f.name === value.titleField)
+                        const descField = e.fields?.find((f: any) => f.name === value.descField)
+                        const logoLeft = e.fields?.find((f: any) => f.name === value.logoLeft)
+                        const logoRight = e.fields?.find((f: any) => f.name === value.logoRight)
+
+                        const surfField = e.fields?.find((f: any) => f.name === value.surfField)
+                        const livrField = e.fields?.find((f: any) => f.name === value.livrField)
+
+                        return (
+                            <div key={i} className="show-box">
                                 <div className="picture-title">
                                     <Image
                                         key={i}
-                                        src={e.icon}
+                                        src={
+                                            !!logoLeft?.media
+                                                ? `/api/uploads/images/${logoLeft.media?.uri}`
+                                                : '/default.jpg'
+                                        }
                                         alt="brand1"
                                         width={83}
                                         height={20}
@@ -239,7 +192,11 @@ const View = ({ value = {}, theme }: Props) => {
                                     />
                                     <Image
                                         key={i}
-                                        src={e.icon}
+                                        src={
+                                            !!logoRight?.media
+                                                ? `/api/uploads/images/${logoRight.media?.uri}`
+                                                : '/default.jpg'
+                                        }
                                         alt="brand1"
                                         width={83}
                                         height={20}
@@ -250,37 +207,136 @@ const View = ({ value = {}, theme }: Props) => {
                                     <div className="bgc">
                                         <Image
                                             key={i}
-                                            src={e.src}
+                                            src={
+                                                !!coverField?.media
+                                                    ? `/api/uploads/images/${coverField.media?.uri}`
+                                                    : '/default.jpg'
+                                            }
                                             alt="brand1"
                                             width={1200}
                                             height={900}
                                             className="picture"
                                         />
-                                        <div className="picture-text1">{text2[0]}</div>
-                                        <div className="picture-text2">{text2[3]}</div>
+                                        <div className="picture-text1">{titleField?.textValue}</div>
+                                        <div className="picture-text2">{descField?.textValue}</div>
                                     </div>
                                     <div className="white-bottom-box">
                                         <div className="Surface-flex">
-                                            <div className="icon-surface"></div>
+                                            <div className="icon-calendrier"></div>
                                             <div className="Surface-name">
-                                                <div className="Surface-Surface">{text3[0]}</div>
-                                                <div className="Surface-info">{text3[1]}</div>
+                                                <div className="Surface-Surface">{'Surface'}</div>
+                                                <div className="Surface-info">{surfField?.textValue}</div>
                                             </div>
                                         </div>
                                         <div className="Surface-flex">
-                                            <div className="icon-calendrier"></div>
+                                            <div className="icon-surface"></div>
                                             <div className="Livraison-name">
-                                                <div className="Surface-Surface">{text3[2]}</div>
-                                                <div className="Surface-info">{text3[3]}</div>
+                                                <div className="Surface-Surface">{'Livraison'}</div>
+                                                <div className="Surface-info">{livrField?.textValue}</div>
                                             </div>
-                                        </div>
-                                        <div className="Decouvrir">
-                                            <div>Découvrir</div> <div className="icon-right"></div>
                                         </div>
                                     </div>
                                 </div>
+
+                                <Link href={`/${e.slug.full}`}>
+                                    <a>
+                                        <div className="Decouvrir">
+                                            <div>Découvrir</div>
+                                            <div className="icon-right"></div>
+                                        </div>
+                                    </a>
+                                </Link>
                             </div>
-                        ))}
+                        )
+                    })}
+                    <div className="voir">Voir plus de projets</div>
+                </div>
+                <div className="scroll-box-outside">
+                    <div className="scroll-title">{`${contents.data?.length || 0} programmes en cours`}</div>
+                    <div className={'scroll-box' + (open ? ' box-show' : '')}>
+                        {arr_scroll_box[chosen - 1]?.map((e, i) => {
+                            const coverField = e.fields?.find((f: any) => f.name === value.coverField)
+                            const titleField = e.fields?.find((f: any) => f.name === value.titleField)
+                            const descField = e.fields?.find((f: any) => f.name === value.descField)
+                            const logoLeft = e.fields?.find((f: any) => f.name === value.logoLeft)
+                            const logoRight = e.fields?.find((f: any) => f.name === value.logoRight)
+
+                            const surfField = e.fields?.find((f: any) => f.name === value.surfField)
+                            const livrField = e.fields?.find((f: any) => f.name === value.livrField)
+
+                            return (
+                                <div key={i} className={'show-box' + (open ? ' show-box-width' : '')}>
+                                    <div className="picture-title">
+                                        <Image
+                                            key={i}
+                                            src={
+                                                !!logoLeft?.media
+                                                    ? `/api/uploads/images/${logoLeft.media?.uri}`
+                                                    : '/default.jpg'
+                                            }
+                                            alt="brand1"
+                                            width={83}
+                                            height={20}
+                                            className="picture"
+                                        />
+                                        <Image
+                                            key={i}
+                                            src={
+                                                !!logoRight?.media
+                                                    ? `/api/uploads/images/${logoRight.media?.uri}`
+                                                    : '/default.jpg'
+                                            }
+                                            alt="brand1"
+                                            width={83}
+                                            height={20}
+                                            className="picture"
+                                        />
+                                    </div>
+                                    <div className="picture-box picture-box1">
+                                        <div className="bgc">
+                                            <Image
+                                                key={i}
+                                                src={
+                                                    !!coverField?.media
+                                                        ? `/api/uploads/images/${coverField.media?.uri}`
+                                                        : '/default.jpg'
+                                                }
+                                                alt="brand1"
+                                                width={1200}
+                                                height={900}
+                                                className="picture"
+                                            />
+                                            <div className="picture-text1">{titleField?.textValue}</div>
+                                            <div className="picture-text2">{descField?.textValue}</div>
+                                        </div>
+                                        <div className="white-bottom-box">
+                                            <div className="Surface-flex">
+                                                <div className="icon-surface"></div>
+                                                <div className="Surface-name">
+                                                    <div className="Surface-Surface">{'Surface'}</div>
+                                                    <div className="Surface-info">{surfField?.textValue}</div>
+                                                </div>
+                                            </div>
+                                            <div className="Surface-flex">
+                                                <div className="icon-calendrier"></div>
+                                                <div className="Livraison-name">
+                                                    <div className="Surface-Surface">{'Livraison'}</div>
+                                                    <div className="Surface-info">{livrField?.textValue}</div>
+                                                </div>
+                                            </div>
+                                            <Link href={`/${e.slug.full}`}>
+                                                <a>
+                                                    <div className="Decouvrir">
+                                                        <div>Découvrir</div>{' '}
+                                                        <div className="icon-right"></div>
+                                                    </div>
+                                                </a>
+                                            </Link>
+                                        </div>
+                                    </div>
+                                </div>
+                            )
+                        })}
                     </div>
                     <div className={'border-bottom' + (open ? ' border-bottom-click' : '')}></div>
                     <div className="border-selection">
