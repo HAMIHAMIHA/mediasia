@@ -2,11 +2,11 @@ import View from './View'
 import Edit from './Edit'
 import { Availability, Block } from '../types'
 
-const Title: Block = {
-    name: 'Block4 3 1',
+const TitleText4images: Block = {
+    name: 'Title + text + 4 images - 2 colonnes',
     availability: Availability.ALL,
     View,
     Edit,
 }
 
-export default Title
+export default TitleText4images

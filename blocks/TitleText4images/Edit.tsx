@@ -1,3 +1,6 @@
+import MediaModal from '@components/MediaModal'
+import StyledInput from '@components/StyledInput'
+import set from 'lodash.set'
 import Image from 'next/image'
 import type { Props } from '../types'
 
@@ -42,10 +45,15 @@ const values = {
 }
 
 const Edit = ({ value = {}, onChange, theme }: Props) => {
-    const { text1, text2, text3, text4, text5 } = values
+    const handleChange = (name: string, e: any) => {
+        const newValue = { ...value }
 
-    let src1 = require(`../../public/styles/src/page3/graphique@2x.png`).default
-    let src2 = require(`../../public/styles/src/page3/organigrame@2x.png`).default
+        set(newValue, name, e)
+        if (!!onChange) onChange(newValue)
+    }
+
+    const { text2, text3, text4, text5 } = values
+
     let src3 = require(`../../public/styles/src/page4/Groupe408@2x.png`).default
     let src4 = require(`../../public/styles/src/page4/Groupe409@2x.png`).default
     let src5 = require(`../../public/styles/src/page4/Groupe410@2x.png`).default
@@ -53,16 +61,46 @@ const Edit = ({ value = {}, onChange, theme }: Props) => {
     return (
         <>
             <div className="ActivitePart">
-                <div className="left">
-                    <Image src={src1} alt="brand1" className="brand" />
+                <div className="left" style={{ position: 'relative' }}>
+                    <div style={{ position: 'absolute', top: 3, left: 3, zIndex: 2 }}>
+                        <MediaModal
+                            withoutName
+                            value={value.image1}
+                            onMediaSelected={(e) => handleChange('image1', e)}
+                        />
+                    </div>
+                    <Image
+                        src={!!value.image1 ? `/api/uploads/images/${value.image1?.uri}` : '/default.jpg'}
+                        alt="brand1"
+                        className="brand"
+                        layout="fill"
+                    />
                 </div>
                 <div className="right">
                     <div className="text">
-                        <div className="title">{text1[0]}</div>
-                        <div className="content">{text1[1]}</div>
+                        <div className="title">
+                            <StyledInput value={value.title} onChange={(e) => handleChange('title', e)} />
+                        </div>
+                        <StyledInput.div
+                            className="content"
+                            value={value.text}
+                            onChange={(e) => handleChange('text', e)}
+                        />
                     </div>
-                    <div className="picture">
-                        <Image src={src2} alt="brand1" className="brand" />
+                    <div className="picture" style={{ position: 'relative' }}>
+                        <div style={{ position: 'absolute', top: 3, left: 3, zIndex: 2 }}>
+                            <MediaModal
+                                withoutName
+                                value={value.image2}
+                                onMediaSelected={(e) => handleChange('image2', e)}
+                            />
+                        </div>
+                        <Image
+                            src={!!value.image2 ? `/api/uploads/images/${value.image2?.uri}` : '/default.jpg'}
+                            alt="brand1"
+                            className="brand"
+                            layout="fill"
+                        />
                     </div>
                 </div>
             </div>

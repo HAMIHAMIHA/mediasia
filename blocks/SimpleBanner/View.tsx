@@ -2,20 +2,6 @@ import { useState } from 'react'
 import Image from 'next/image'
 import type { Props } from '../types'
 
-const colorArr = [
-    'dark_red',
-    'purple',
-    'blue',
-    'light_blue',
-    'green',
-    'dark_yellow',
-    'medium_yellow',
-    'lemon',
-    'yellow',
-    'orange',
-    'red',
-]
-
 const values = {
     text0: ['Le Groupe Altarea', 'Nos programmes', 'Nos références', 'Nous contacter'],
     text1: 'LE BUREAU EN RÉGION PAR COGEDIM',
@@ -49,8 +35,8 @@ const values = {
 }
 
 //Only block1 can click the button to display the input field
-const View = ({ value = {}, theme }: Props) => {
-    const { text0, text1, text2, text3, text4, text5, propramme, introduce } = values
+const View = ({ value = {}, theme, onChange }: Props) => {
+    const { text3, propramme, introduce } = values
     const block1 = {
         colorBar: false,
         textTitle: true,
@@ -63,9 +49,6 @@ const View = ({ value = {}, theme }: Props) => {
         person: false,
     }
     let label_1 = require(`../../public/styles/src/page4/label_1@2x.png`).default
-    let label_2 = require(`../../public/styles/src/page4/label_2@2x.png`).default
-    let label_3 = require(`../../public/styles/src/page4/label_3@2x.png`).default
-    let label_4 = require(`../../public/styles/src/page4/label_4@2x.png`).default
     const move_down = () => {
         scrollTo({
             top: 800,
@@ -73,23 +56,23 @@ const View = ({ value = {}, theme }: Props) => {
             behavior: 'smooth',
         })
     }
-    const [show, setShow] = useState(false)
-    const show_box = () => {
-        setShow(!show)
-    }
-    const [show2, setShow2] = useState(false)
-    const show_box2 = () => {
-        setShow2(!show2)
-    }
+    // const [show, setShow] = useState(false)
+    // const show_box = () => {
+    //     setShow(!show)
+    // }
+    // const [show2, setShow2] = useState(false)
+    // const show_box2 = () => {
+    //     setShow2(!show2)
+    // }
     const [showi, showInput] = useState(false)
     const show_input = () => {
         showInput(!showi)
     }
-    let [typeColors, changeType] = useState('dark_purple')
-    const changeColor = (e: string) => {
-        changeType((typeColors = e))
-        // console.log(typeColors)
-    }
+    // let [typeColors, changeType] = useState('dark_purple')
+    // const changeColor = (e: string) => {
+    //     changeType((typeColors = e))
+    //     // console.log(typeColors)
+    // }
     let arr = []
     for (let i = 0; i < propramme.length; i++) {
         let obj = { selections: propramme[i] }
@@ -97,10 +80,87 @@ const View = ({ value = {}, theme }: Props) => {
     }
     return (
         <>
-            <div className="imageBox">
-                <div className="Header">
-                    <div className="left">
-                        <div className="icon-logo_purple">
+            <div
+                className="imageBox"
+                style={{
+                    backgroundImage: `url(${
+                        !!value.image ? `/api/uploads/images/${value.image?.uri}` : '/default.jpg'
+                    }`,
+                }}
+            >
+                {/* <div className="Header">
+                <div className="left">
+                    <div className="icon-logo_purple">
+                        <span className="path1"></span>
+                        <span className="path2"></span>
+                        <span className="path3"></span>
+                        <span className="path4"></span>
+                        <span className="path5"></span>
+                        <span className="path6"></span>
+                        <span className="path7"></span>
+                        <span className="path8"></span>
+                        <span className="path9"></span>
+                        <span className="path10"></span>
+                    </div>
+                    <div className="icon-burger_menu" onClick={show_box}></div>
+                </div>
+                <div className="title-text">{text0[0]}</div>
+                <div className="title-text" onClick={show_box}>
+                    {text0[1]}
+                </div>
+                <div className="title-text">{text0[2]}</div>
+                <div className="button" onClick={show_input}>
+                    <div className="icon-mail"></div>
+                    <div className="title-color-text">{text0[3]}</div>
+                </div>
+                <div className={show ? 'mchooseBox' : 'hidden'}>
+                    <div className="Part">
+                        <div className="leftPart"></div>
+                        <div className="rightPart">
+                            <div className="titleText">{text0[0]}</div>
+                            <div className="titleText " onClick={show_box2}>
+                                {text0[1]}
+                            </div>
+                            <div className={show2 ? 'contentText' : 'hidden'}>
+                                {colorArr.map((e, i) => (
+                                    <div key={i} className={'text5 ' + e}>
+                                        {text5[i]}
+                                    </div>
+                                ))}
+                            </div>
+                            <div className="titleText">{text0[2]}</div>
+                            <div className="titleText">{text0[3]}</div>
+                        </div>
+                    </div>
+                </div>
+                <div className={show ? 'chooseBox' : 'hidden'}>
+                    <div className="chooseBoxinner">
+                        <div className="leftPart">{text4}</div>
+                        <div className="rightPart">
+                            {colorArr.map((e, i) => (
+                                <div
+                                    key={i}
+                                    className={'choice ' + 'hover_' + e}
+                                    onClick={() => changeColor(e)}
+                                >
+                                    {text5[i]}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            </div> */}
+                {/* <div className={block1.colorBar ? 'colorBar ' + typeColors + '_bgc' : 'hidden'}>
+                <div className="typebox">
+                    <div className="type">test{' > '}</div>
+                    <div className="type">test</div>
+                </div>
+            </div> */}
+                <div className="text-box">
+                    <div className="text">
+                        <div className={block1.textTitle ? 'textTitle' : 'hidden'}>{value.title}</div>
+                        {/* <div className={block1.logo ? 'logo' : 'hidden'}>
+                        <div className="icon-logo_hill_side">
                             <span className="path1"></span>
                             <span className="path2"></span>
                             <span className="path3"></span>
@@ -108,89 +168,21 @@ const View = ({ value = {}, theme }: Props) => {
                             <span className="path5"></span>
                             <span className="path6"></span>
                             <span className="path7"></span>
-                            <span className="path8"></span>
-                            <span className="path9"></span>
-                            <span className="path10"></span>
                         </div>
-                        <div className="icon-burger_menu" onClick={show_box}></div>
-                    </div>
-                    <div className="title-text">{text0[0]}</div>
-                    <div className="title-text" onClick={show_box}>
-                        {text0[1]}
-                    </div>
-                    <div className="title-text">{text0[2]}</div>
-                    <div className="button" onClick={show_input}>
-                        <div className="icon-mail"></div>
-                        <div className="title-color-text">{text0[3]}</div>
-                    </div>
-                    <div className={show ? 'mchooseBox' : 'hidden'}>
-                        <div className="Part">
-                            <div className="leftPart"></div>
-                            <div className="rightPart">
-                                <div className="titleText">{text0[0]}</div>
-                                <div className="titleText " onClick={show_box2}>
-                                    {text0[1]}
-                                </div>
-                                <div className={show2 ? 'contentText' : 'hidden'}>
-                                    {colorArr.map((e, i) => (
-                                        <div key={i} className={'text5 ' + e}>
-                                            {text5[i]}
-                                        </div>
-                                    ))}
-                                </div>
-                                <div className="titleText">{text0[2]}</div>
-                                <div className="titleText">{text0[3]}</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className={show ? 'chooseBox' : 'hidden'}>
-                        <div className="chooseBoxinner">
-                            <div className="leftPart">{text4}</div>
-                            <div className="rightPart">
-                                {colorArr.map((e, i) => (
-                                    <div
-                                        key={i}
-                                        className={'choice ' + 'hover_' + e}
-                                        onClick={() => changeColor(e)}
-                                    >
-                                        {text5[i]}
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div className={block1.colorBar ? 'colorBar ' + typeColors + '_bgc' : 'hidden'}>
-                    <div className="typebox">
-                        <div className="type">test{' > '}</div>
-                        <div className="type">test</div>
-                    </div>
-                </div>
-                <div className="text-box">
-                    <div className="text">
-                        <div className={block1.textTitle ? 'textTitle' : 'hidden'}>{text1}</div>
-                        <div className={block1.logo ? 'logo' : 'hidden'}>
-                            <div className="icon-logo_hill_side">
-                                <span className="path1"></span>
-                                <span className="path2"></span>
-                                <span className="path3"></span>
-                                <span className="path4"></span>
-                                <span className="path5"></span>
-                                <span className="path6"></span>
-                                <span className="path7"></span>
-                            </div>
-                        </div>
-                        <p className="content">
-                            {text2[0]}
-                            <strong>{text2[1]}</strong>
-                            {text2[2]}
-                            <strong>{text2[3]}</strong>
-                        </p>
-                        <p className="content">
-                            {text2[4]}
-                            <strong>{text2[5]}</strong>
-                            {text2[6]}
-                        </p>
+                    </div> */}
+
+                        <div className="content" dangerouslySetInnerHTML={{ __html: value.text || '' }} />
+                        {/* <p className="content">
+                        {text2[0]}
+                        <strong>{text2[1]}</strong>
+                        {text2[2]}
+                        <strong>{text2[3]}</strong>
+                    </p>
+                    <p className="content">
+                        {text2[4]}
+                        <strong>{text2[5]}</strong>
+                        {text2[6]}
+                    </p> */}
                     </div>
                     <div className={block1.roundButton ? 'roundButton' : 'hidden'} onClick={move_down}>
                         <div className="icon-composant">
@@ -198,50 +190,51 @@ const View = ({ value = {}, theme }: Props) => {
                             <span className="path2"></span>
                         </div>
                     </div>
-                    <div className={block1.brands ? 'brands' : 'hidden'}>
-                        <div className="icon-lower">
-                            <Image src={label_1} width={100} height={24} alt="" />
-                        </div>
-                        <div className="icon">
-                            <Image src={label_2} alt="" />
-                        </div>
-                        <div className="icon">
-                            <Image src={label_3} alt="" />
-                        </div>
-                        <div className="icon">
-                            <Image src={label_4} alt="" />
-                        </div>
+                    {/* <div className={block1.brands ? 'brands' : 'hidden'}>
+                    <div className="icon-lower">
+                        <Image src={label_1} width={100} height={24} alt="" />
                     </div>
-                    <div className={block1.infos ? 'infos' : 'hidden'}>
-                        <div className="line1">
-                            <text className="title">title:</text>
-                            <text className="content"> content</text>
-                        </div>
-                        <div className="line2">
-                            <text className="title">title:</text>
-                            <text className="content"> content</text>
-                        </div>
-                        <div className="line3">
-                            <text className="title">title:</text>
-                            <text className="content"> content</text>
-                        </div>
+                    <div className="icon">
+                        <Image src={label_2} alt="" />
                     </div>
-                    <div className={block1.button ? 'button' : 'hidden'}>
-                        <div className="icon-mail"></div>
-                        <div className="title-color-text">button</div>
+                    <div className="icon">
+                        <Image src={label_3} alt="" />
+                    </div>
+                    <div className="icon">
+                        <Image src={label_4} alt="" />
+                    </div>
+                </div> */}
+                    {/* <div className={block1.infos ? 'infos' : 'hidden'}>
+                    <div className="line1">
+                        <text className="title">title:</text>
+                        <text className="content"> content</text>
+                    </div>
+                    <div className="line2">
+                        <text className="title">title:</text>
+                        <text className="content"> content</text>
+                    </div>
+                    <div className="line3">
+                        <text className="title">title:</text>
+                        <text className="content"> content</text>
                     </div>
                 </div>
-                <div className={'arcBox ' + typeColors + '_bgc07'}>
+                <div className={block1.button ? 'button' : 'hidden'}>
+                    <div className="icon-mail"></div>
+                    <div className="title-color-text">button</div>
+                </div> */}
+                </div>
+                <div className={'arcBox dark_purple_bgc07'}>
                     <div className={block1.person ? 'hidden' : 'mwhiteText'}>{text3[1]}</div>
                     <div className={block1.person ? 'person' : 'hidden'}>
                         <Image src={label_1} alt="" />
                     </div>
                 </div>
                 <div className="white-text-box">
-                    <div className="white-text">
-                        <text>{text3[0]}</text>
-                        <text>{text3[1]}</text>
-                    </div>
+                    {/* <StyledInput.div
+                    className="white-text"
+                    value={value.title2}
+                    onChange={(e) => handleChange('title2', e)}
+                /> */}
                 </div>
                 <div className="white-ball-box">
                     <div className="white-ball"></div>
@@ -342,12 +335,12 @@ const View = ({ value = {}, theme }: Props) => {
                     <div className="bottomText">{introduce}</div>
                 </form>
                 {/* <div className="merci">
-                <div className="circular">
-                    <Image src={src} className="logo" width={100} height={100}/>
-                </div>
-                <button type="submit" className="fermer" onClick={show_input}>Fermer</button>
-                <div className="bottomText">{introduce}</div>
-            </div>  */}
+        <div className="circular">
+            <Image src={src} className="logo" width={100} height={100}/>
+        </div>
+        <button type="submit" className="fermer" onClick={show_input}>Fermer</button>
+        <div className="bottomText">{introduce}</div>
+    </div>  */}
             </div>
         </>
     )

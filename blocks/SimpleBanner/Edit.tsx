@@ -3,6 +3,9 @@ import Image from 'next/image'
 import type { Props } from '../types'
 import EditPanel from '@components/EditPanel'
 import { Space } from 'antd'
+import set from 'lodash.set'
+import StyledInput from '@components/StyledInput'
+import MediaModal from '@components/MediaModal'
 
 const values = {
     text0: ['Le Groupe Altarea', 'Nos programmes', 'Nos références', 'Nous contacter'],
@@ -39,14 +42,14 @@ const values = {
 //Only block1 can click the button to display the input field
 
 const Edit = ({ value = {}, onChange, theme }: Props) => {
-    // const handleChange = (name: string, e: any) => {
-    //     const newValue = { ...value }
+    const handleChange = (name: string, e: any) => {
+        const newValue = { ...value }
 
-    //     set(newValue, name, e)
-    //     if (!!onChange) onChange(newValue)
-    // }
+        set(newValue, name, e)
+        if (!!onChange) onChange(newValue)
+    }
 
-    const { text1, text2, text3, propramme, introduce } = values
+    const { text3, propramme, introduce } = values
     const block1 = {
         colorBar: true,
         textTitle: true,
@@ -105,7 +108,23 @@ const Edit = ({ value = {}, onChange, theme }: Props) => {
         <EditPanel
             view={
                 <>
-                    <div className="imageBox">
+                    <div
+                        className="imageBox"
+                        style={{
+                            position: 'relative',
+                            backgroundImage: `url(${
+                                !!value.image ? `/api/uploads/images/${value.image?.uri}` : '/default.jpg'
+                            }`,
+                        }}
+                    >
+                        <div style={{ position: 'absolute', top: 3, left: 3 }}>
+                            <MediaModal
+                                withoutName
+                                type="IMAGE"
+                                value={value.image}
+                                onMediaSelected={(e) => handleChange('image', e)}
+                            />
+                        </div>
                         {/* <div className="Header">
                             <div className="left">
                                 <div className="icon-logo_purple">
@@ -176,7 +195,12 @@ const Edit = ({ value = {}, onChange, theme }: Props) => {
                         </div> */}
                         <div className="text-box">
                             <div className="text">
-                                <div className={block1.textTitle ? 'textTitle' : 'hidden'}>{text1}</div>
+                                <div className={block1.textTitle ? 'textTitle' : 'hidden'}>
+                                    <StyledInput
+                                        value={value.title}
+                                        onChange={(e) => handleChange('title', e)}
+                                    />
+                                </div>
                                 {/* <div className={block1.logo ? 'logo' : 'hidden'}>
                                     <div className="icon-logo_hill_side">
                                         <span className="path1"></span>
@@ -188,7 +212,13 @@ const Edit = ({ value = {}, onChange, theme }: Props) => {
                                         <span className="path7"></span>
                                     </div>
                                 </div> */}
-                                <p className="content">
+
+                                <StyledInput.div
+                                    className="content"
+                                    value={value.text}
+                                    onChange={(e) => handleChange('text', e)}
+                                />
+                                {/* <p className="content">
                                     {text2[0]}
                                     <strong>{text2[1]}</strong>
                                     {text2[2]}
@@ -198,7 +228,7 @@ const Edit = ({ value = {}, onChange, theme }: Props) => {
                                     {text2[4]}
                                     <strong>{text2[5]}</strong>
                                     {text2[6]}
-                                </p>
+                                </p> */}
                             </div>
                             <div
                                 className={block1.roundButton ? 'roundButton' : 'hidden'}
@@ -249,10 +279,11 @@ const Edit = ({ value = {}, onChange, theme }: Props) => {
                             </div>
                         </div>
                         <div className="white-text-box">
-                            <div className="white-text">
-                                <text>{text3[0]}</text>
-                                <text>{text3[1]}</text>
-                            </div>
+                            {/* <StyledInput.div
+                                className="white-text"
+                                value={value.title2}
+                                onChange={(e) => handleChange('title2', e)}
+                            /> */}
                         </div>
                         <div className="white-ball-box">
                             <div className="white-ball"></div>

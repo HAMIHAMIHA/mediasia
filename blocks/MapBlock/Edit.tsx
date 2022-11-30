@@ -2,10 +2,15 @@ import { useState } from 'react'
 import Map, { Marker } from 'react-map-gl'
 import Image from 'next/image'
 import type { Props } from '../types'
-import { Space } from 'antd'
+import { Divider, Select, Space, Typography } from 'antd'
 import CustomSelect from '@components/CustomSelect'
 import set from 'lodash.set'
 import EditPanel from '@components/EditPanel'
+import { useQuery } from 'react-query'
+import { getContainerDetails } from '@network/containers'
+import { ContainerFieldType } from '@prisma/client'
+
+const { Text } = Typography
 
 const values = {
     number1: 57,
@@ -21,6 +26,14 @@ const Edit = ({ value = {}, onChange, theme }: Props) => {
         set(newValue, name, e)
         if (!!onChange) onChange(newValue)
     }
+
+    const container = useQuery(
+        ['containers', { id: value.container }],
+        () => getContainerDetails(value.container as string),
+        {
+            enabled: !!value.container,
+        }
+    )
 
     const { number1, text1, text2, text3 } = values
     const [open, setOpen] = useState(false)
@@ -279,11 +292,53 @@ const Edit = ({ value = {}, onChange, theme }: Props) => {
                 </>
             }
             panel={
-                <Space>
+                <Space direction="vertical">
                     <CustomSelect.ListContainers
                         value={value.container}
                         onChange={(e) => handleChange('container', e)}
                     />
+                    {!!value.container && (
+                        <>
+                            <Divider />
+                            <Text>Cover</Text>
+                            <Select
+                                style={{ width: 240 }}
+                                value={value.coverField}
+                                onChange={(e) => handleChange('coverField', e)}
+                            >
+                                {container.data?.fields
+                                    ?.filter(
+                                        (field) => field.type === ContainerFieldType.IMAGE && !field.multiple
+                                    )
+                                    .map((field) => (
+                                        <Select.Option key={field.id} value={field.name}>
+                                            {field.label}
+                                        </Select.Option>
+                                    ))}
+                            </Select>
+
+                            <Text>Title</Text>
+                            <Select
+                                style={{ width: 240 }}
+                                value={value.titleField}
+                                onChange={(e) => handleChange('titleField', e)}
+                            >
+                                {container.data?.fields
+                                    ?.filter(
+                                        (field) =>
+                                            field.type === ContainerFieldType.NUMBER ||
+                                            field.type === ContainerFieldType.LINK ||
+                                            field.type === ContainerFieldType.PARAGRAPH ||
+                                            field.type === ContainerFieldType.STRING
+                                    )
+                                    .map((field) => (
+                                        <Select.Option key={field.id} value={field.name}>
+                                            {field.label}
+                                        </Select.Option>
+                                    ))}
+                            </Select>
+                        </>
+                    )}
                 </Space>
             }
         />

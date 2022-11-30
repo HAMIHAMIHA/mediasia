@@ -2,6 +2,8 @@ import { useState } from 'react'
 import Map, { Marker } from 'react-map-gl'
 import Image from 'next/image'
 import type { Props } from '../types'
+import { useQuery } from 'react-query'
+import { getContainerDetails } from '@network/containers'
 
 const values = {
     number1: 57,
@@ -12,6 +14,15 @@ const values = {
 
 const View = ({ value = {}, theme }: Props) => {
     const { number1, text1, text2, text3 } = values
+
+    /*const container =*/ useQuery(
+        ['containers', { id: value.container }],
+        () => getContainerDetails(value.container as string),
+        {
+            enabled: !!value.container,
+        }
+    )
+
     const [open, setOpen] = useState(false)
     const change_map_size = () => {
         setOpen(!open)
