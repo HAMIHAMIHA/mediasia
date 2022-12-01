@@ -3,11 +3,13 @@ import EditPanel from '@components/EditPanel'
 import LinkInput from '@components/LinkInput'
 import MediaModal from '@components/MediaModal'
 import StyledInput from '@components/StyledInput'
-import { Button, Space, Switch } from 'antd'
+import { Button, Select, Space, Switch, Typography } from 'antd'
 import set from 'lodash.set'
 import Image from 'next/image'
 import { useState } from 'react'
 import type { Props } from '../types'
+
+const { Text } = Typography
 
 const Edit = ({ value = { images: [] }, onChange, theme }: Props) => {
     const handleChange = (name: string, e: any) => {
@@ -195,12 +197,41 @@ const Edit = ({ value = { images: [] }, onChange, theme }: Props) => {
             }
             panel={
                 <Space direction="vertical">
+                    <Text>Has Button:</Text>
                     <Switch
                         checked={value.hasButton}
                         onChange={() => handleChange('hasButton', !value.hasButton)}
                     />
+
+                    <Text>Button type:</Text>
                     {value.hasButton && (
-                        <LinkInput value={value.buttonLink} onChange={(e) => handleChange('buttonLink', e)} />
+                        <Select
+                            value={value.buttonType}
+                            onChange={(e) => handleChange('buttonType', e)}
+                            style={{ width: 240 }}
+                        >
+                            <Select.Option value="link">Link</Select.Option>
+                            <Select.Option value="file">File</Select.Option>
+                        </Select>
+                    )}
+                    {value.hasButton && value.buttonType === 'link' && (
+                        <>
+                            <Text>Link:</Text>
+                            <LinkInput
+                                value={value.buttonLink}
+                                onChange={(e) => handleChange('buttonLink', e)}
+                            />
+                        </>
+                    )}
+                    {value.hasButton && value.buttonType === 'file' && (
+                        <>
+                            <Text>File:</Text>
+                            <MediaModal
+                                type="FILE"
+                                value={value.buttonFile}
+                                onMediaSelected={(e) => handleChange('buttonFile', e)}
+                            />
+                        </>
                     )}
                 </Space>
             }

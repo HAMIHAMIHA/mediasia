@@ -5,8 +5,8 @@ import Arrow2Columns from './Arrow2Columns'
 // import Block2_2 from './Block2_2'
 
 // import Block4_3_2 from './Block4_3_2'
-// import Block5_2_1 from './Block5_2_1'
-// import Block5_2_2 from './Block5_2_2'
+import Block5_2_1 from './Block5_2_1'
+import Block5_2_2 from './Block5_2_2'
 // import Block5_3 from './Block5_3'
 // import Block5_4 from './Block5_4'
 // import Block5_5_1 from './Block5_5_1'
@@ -33,8 +33,8 @@ const blocks = {
     // Block2_2,
 
     // Block4_3_2,
-    // Block5_2_1,
-    // Block5_2_2,
+    Block5_2_1,
+    Block5_2_2,
     // Block5_3,
     // Block5_4,
     // Block5_5_1,

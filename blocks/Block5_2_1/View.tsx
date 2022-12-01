@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import Link from 'next/link'
 import type { Props } from '../types'
 
 const values = {
@@ -17,103 +18,109 @@ const values = {
 }
 
 const View = ({ value = {}, theme }: Props) => {
-    const { text1, text2 } = values
-
     let src1 = require(`../../public/styles/src/page4/image_page_reference_2@2x.png`).default
     let src2 = require(`../../public/styles/src/page4/image_page_reference_3@2x.png`).default
     let brand1 = require(`../../public/styles/src/page4/label_1@2x.png`).default
     let brand2 = require(`../../public/styles/src/page4/label_2@2x.png`).default
     let brand3 = require(`../../public/styles/src/page4/label_3@2x.png`).default
     let brand4 = require(`../../public/styles/src/page4/label_4@2x.png`).default
-    return (
-        <div className="block5_2">
-            <div className="community">
-                <div className="left">
-                    <Image src={src1} alt="brand1" width={940} height={500} />
+
+    if (value.orientation) {
+        return (
+            <>
+                <div className="left5_2_1">
+                    <Image
+                        src={!!value.image ? `/api/uploads/images/${value.image?.uri}` : '/default.jpg'}
+                        alt="brand1"
+                        width={940}
+                        height={500}
+                    />
                 </div>
-                <div className="right">
-                    <div className="title">{text1[0]}</div>
-                    <div className="introduce">{text1[1]}</div>
-                    <div className="content">{text1[2]}</div>
+                <div className="right5_2_1">
+                    <div className="title">{value.title}</div>
+                    <div className="introduce">{value.intro}</div>
+                    <div className="content" dangerouslySetInnerHTML={{ __html: value.text || '' }} />
                     <div className="brands">
-                        <div className="brand1">
-                            <Image src={brand1} alt="brand1" width={100} height={24} className="brand1" />
-                        </div>
-                        <div className="brand2">
-                            <Image src={brand2} alt="brand1" width={58} height={50} />
-                        </div>
-                        <div className="brand2">
-                            <Image src={brand3} alt="brand1" width={68} height={50} />
-                        </div>
-                        <div className="brand2">
-                            <Image src={brand4} alt="brand1" width={114} height={50} />
+                        {value?.images?.map((e: any, i: number) => (
+                            <div key={i} className="brand1">
+                                <Image
+                                    src={!!e ? `/api/uploads/images/${e?.uri}` : '/default.jpg'}
+                                    alt="brand1"
+                                    width={100}
+                                    height={24}
+                                    className="brand1"
+                                />
+                            </div>
+                        ))}
+                    </div>
+                    {value.hasButton && (
+                        <Link
+                            href={
+                                value.buttonType === 'link'
+                                    ? value.buttonLink
+                                    : `/api/uploads/files/${value.buttonFile?.uri}`
+                            }
+                        >
+                            <a>
+                                <div className="button">{value.buttonText}</div>
+                            </a>
+                        </Link>
+                    )}
+                </div>
+            </>
+        )
+    } else {
+        return (
+            <>
+                <div className="mnom">
+                    <div className="mright">
+                        <Image src={src1} alt="brand1" width={940} height={500} />
+                    </div>
+                    <div className="left-box">
+                        <div className="left">
+                            <div className="title">{value.title}</div>
+                            <div className="introduce">{value.intro}</div>
+                            <div className="content" dangerouslySetInnerHTML={{ __html: value.text || '' }} />
+                            <div className="brands">
+                                {value?.images?.map((e: any, i: number) => (
+                                    <div key={i} className="brand1">
+                                        <Image
+                                            src={!!e ? `/api/uploads/images/${e?.uri}` : '/default.jpg'}
+                                            alt="brand1"
+                                            width={100}
+                                            height={24}
+                                            className="brand1"
+                                        />
+                                    </div>
+                                ))}
+                            </div>
+                            {value.hasButton && (
+                                <Link
+                                    href={
+                                        value.buttonType === 'link'
+                                            ? value.buttonLink
+                                            : `/api/uploads/files/${value.buttonFile?.uri}`
+                                    }
+                                >
+                                    <a>
+                                        <div className="button">{value.buttonText}</div>
+                                    </a>
+                                </Link>
+                            )}
                         </div>
                     </div>
-                    <div className="button">{text1[3]}</div>
-                </div>
-            </div>
-            <div className="nom">
-                <div className="mright">
-                    <Image src={src1} alt="brand1" width={940} height={500} />
-                </div>
-                <div className="left-box">
-                    <div className="left">
-                        <div className="title">{text2[0]}</div>
-                        <div className="introduce">{text2[1]}</div>
-                        <div className="content">{text2[2]}</div>
-                        <div className="brands">
-                            <div className="brand1">
-                                <Image src={brand1} alt="brand1" width={100} height={24} className="brand1" />
-                            </div>
-                            <div className="brand2">
-                                <Image src={brand2} alt="brand1" width={58} height={50} />
-                            </div>
-                            <div className="brand2">
-                                <Image src={brand3} alt="brand1" width={68} height={50} />
-                            </div>
-                            <div className="brand2">
-                                <Image src={brand4} alt="brand1" width={114} height={50} />
-                            </div>
-                        </div>
-                        <div className="button">{text2[3]}</div>
+                    <div className="right">
+                        <Image
+                            src={!!value.image ? `/api/uploads/images/${value.image?.uri}` : '/default.jpg'}
+                            alt="brand1"
+                            width={580}
+                            height={500}
+                        />
                     </div>
                 </div>
-                <div className="right">
-                    <Image src={src2} alt="brand1" width={580} height={500} />
-                </div>
-            </div>
-            <div className="mnom">
-                <div className="mright">
-                    <Image src={src1} alt="brand1" width={940} height={500} />
-                </div>
-                <div className="left-box">
-                    <div className="left">
-                        <div className="title">{text2[0]}</div>
-                        <div className="introduce">{text2[1]}</div>
-                        <div className="content">{text2[2]}</div>
-                        <div className="brands">
-                            <div className="brand1">
-                                <Image src={brand1} alt="brand1" width={100} height={24} className="brand1" />
-                            </div>
-                            <div className="brand2">
-                                <Image src={brand2} alt="brand1" width={58} height={50} />
-                            </div>
-                            <div className="brand2">
-                                <Image src={brand3} alt="brand1" width={68} height={50} />
-                            </div>
-                            <div className="brand2">
-                                <Image src={brand4} alt="brand1" width={114} height={50} />
-                            </div>
-                        </div>
-                        <div className="button">{text2[3]}</div>
-                    </div>
-                </div>
-                <div className="right">
-                    <Image src={src2} alt="brand1" width={580} height={500} />
-                </div>
-            </div>
-        </div>
-    )
+            </>
+        )
+    }
 }
 
 export default View

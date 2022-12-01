@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import type { Props } from '../types'
 
 const View = ({ value = {}, theme }: Props) => {
@@ -10,10 +11,20 @@ const View = ({ value = {}, theme }: Props) => {
                         <text className="text2" dangerouslySetInnerHTML={{ __html: value.text }} />
                     </div>
                     {value.hasButton && (
-                        <div className="button cursorPointer">
-                            <div className="icon-mail"></div>
-                            <div className="title-color-text">{value.buttonText}</div>
-                        </div>
+                        <Link
+                            href={
+                                value.buttonType === 'link'
+                                    ? value.buttonLink
+                                    : `/api/uploads/files/${value.buttonFile?.uri}`
+                            }
+                        >
+                            <a>
+                                <div className="button cursorPointer">
+                                    <div className="icon-mail"></div>
+                                    <div className="title-color-text">{value.buttonText}</div>
+                                </div>
+                            </a>
+                        </Link>
                     )}
                 </div>
             </div>

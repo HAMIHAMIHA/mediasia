@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import Link from 'next/link'
 import type { Props } from '../types'
 
 const View = ({ value = {}, theme }: Props) => {
@@ -8,7 +9,17 @@ const View = ({ value = {}, theme }: Props) => {
                 <div className="title yellow" dangerouslySetInnerHTML={{ __html: value.title }} />
                 <div className="content" dangerouslySetInnerHTML={{ __html: value.text }} />
                 {value.hasButton && (
-                    <div className="button" dangerouslySetInnerHTML={{ __html: value.button }} />
+                    <Link
+                        href={
+                            value.buttonType === 'link'
+                                ? value.buttonLink
+                                : `/api/uploads/files/${value.buttonFile?.uri}`
+                        }
+                    >
+                        <a>
+                            <div className="button" dangerouslySetInnerHTML={{ __html: value.button }} />
+                        </a>
+                    </Link>
                 )}
             </div>
             <div className="right3_4">

@@ -145,6 +145,7 @@ const Admin = () => {
                                     </Text>
                                     <Select
                                         value={values.block}
+                                        disabled={!!values.block}
                                         onChange={(e) => onHandleChange('block', e)}
                                         style={{ width: 240 }}
                                         status={errors.block ? 'error' : undefined}

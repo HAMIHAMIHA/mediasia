@@ -83,6 +83,13 @@ const SectionManager = ({ values, onChange, fields, filterAvailability }: Sectio
                     <div key={section.id || section.tempId} style={{ display: 'flex', gap: 8 }}>
                         <Space direction="vertical" size={1}>
                             <Button
+                                type="primary"
+                                onClick={() => removeSection(idx)}
+                                danger
+                                icon={<MinusOutlined />}
+                                size="small"
+                            />
+                            <Button
                                 disabled={idx === 0}
                                 onClick={() => SectionUp(idx)}
                                 type="primary"
@@ -99,59 +106,57 @@ const SectionManager = ({ values, onChange, fields, filterAvailability }: Sectio
                                 size="small"
                             />
                         </Space>
+
                         <Card
                             bodyStyle={{ padding: 0 }}
                             title={
-                                <Space>
-                                    <Text
-                                        style={{
-                                            fontSize: 14,
-                                            fontWeight: 'normal',
-                                        }}
-                                    >
-                                        Block:
-                                    </Text>
-                                    <CustomSelect.ListBlocks
-                                        section={section.block || undefined}
-                                        element={section.elementId || undefined}
-                                        onSectionChange={(e) => onHandleChange(`${idx}.block`, e)}
-                                        onElementChange={(e) => onHandleChange(`${idx}.elementId`, e)}
-                                        filterAvailability={filterAvailability}
-                                    />
-                                    {!!section.block && get(Blocks, `${section.block}.needForm`, false) && (
-                                        <>
-                                            <Divider type="vertical" />
-                                            <Text
-                                                style={{
-                                                    fontSize: 14,
-                                                    fontWeight: 'normal',
-                                                }}
-                                            >
-                                                Form:
-                                            </Text>
-                                            <CustomSelect.ListForms
-                                                value={section.formId}
-                                                onChange={(e) => onHandleChange(`${idx}.formId`, e)}
-                                            />
-                                        </>
-                                    )}
-                                </Space>
-                            }
-                            extra={
-                                <Button
-                                    type="primary"
-                                    onClick={() => removeSection(idx)}
-                                    danger
-                                    icon={<MinusOutlined />}
-                                    size="small"
-                                />
+                                !!section.block || !!section.elementId ? null : (
+                                    <Space>
+                                        <Text
+                                            style={{
+                                                fontSize: 14,
+                                                fontWeight: 'normal',
+                                            }}
+                                        >
+                                            Block:
+                                        </Text>
+                                        <CustomSelect.ListBlocks
+                                            section={section.block || undefined}
+                                            element={section.elementId || undefined}
+                                            onSectionChange={(e) => onHandleChange(`${idx}.block`, e)}
+                                            onElementChange={(e) => onHandleChange(`${idx}.elementId`, e)}
+                                            filterAvailability={filterAvailability}
+                                        />
+                                        {!!section.block && get(Blocks, `${section.block}.needForm`, false) && (
+                                            <>
+                                                <Divider type="vertical" />
+                                                <Text
+                                                    style={{
+                                                        fontSize: 14,
+                                                        fontWeight: 'normal',
+                                                    }}
+                                                >
+                                                    Form:
+                                                </Text>
+                                                <CustomSelect.ListForms
+                                                    value={section.formId}
+                                                    onChange={(e) => onHandleChange(`${idx}.formId`, e)}
+                                                />
+                                            </>
+                                        )}
+                                    </Space>
+                                )
                             }
                             style={{ flex: 1 }}
                         >
                             {!!section.block && (
                                 <GetEditComponent
                                     block={section.block}
-                                    theme={get(theme, 'data', { background: '', primary: '', secondary: '' })}
+                                    theme={get(theme, 'data', {
+                                        background: '',
+                                        primary: '',
+                                        secondary: '',
+                                    })}
                                     value={section.content}
                                     onChange={(e) => onHandleChange(`${idx}.content`, e)}
                                     fields={fields}

@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import Link from 'next/link'
 import { useState } from 'react'
 import type { Props } from '../types'
 
@@ -62,7 +63,7 @@ const View = ({ value = {}, theme }: Props) => {
                     </div>
                 </div>
                 <div className="rightBox">
-                    <div className="logo">
+                    <div className="logo" style={{ position: 'relative' }}>
                         {value.logo && (
                             <Image
                                 src={`/api/uploads/images/${value.logo?.uri}`}
@@ -73,18 +74,28 @@ const View = ({ value = {}, theme }: Props) => {
                         )}
                     </div>
                     {value.hasButton && (
-                        <>
-                            <div className="messages">
-                                <div>{value.text}</div>
-                            </div>
-                            <div className="bottom">
-                                <div className="question">{value.question}</div>
-                                <div className="button">
-                                    <div className="icon-mail"></div>
-                                    <div className="title-color-text">{value.buttonText}</div>
-                                </div>
-                            </div>
-                        </>
+                        <Link
+                            href={
+                                value.buttonType === 'link'
+                                    ? value.buttonLink
+                                    : `/api/uploads/files/${value.buttonFile?.uri}`
+                            }
+                        >
+                            <a>
+                                <>
+                                    <div className="messages">
+                                        <div>{value.text}</div>
+                                    </div>
+                                    <div className="bottom">
+                                        <div className="question">{value.question}</div>
+                                        <div className="button">
+                                            <div className="icon-mail"></div>
+                                            <div className="title-color-text">{value.buttonText}</div>
+                                        </div>
+                                    </div>
+                                </>
+                            </a>
+                        </Link>
                     )}
                 </div>
             </div>

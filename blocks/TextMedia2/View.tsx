@@ -8,7 +8,7 @@ const View = ({ value = {}, theme }: Props) => {
                 <div className="leftBox">
                     <div className="left" dangerouslySetInnerHTML={{ __html: value.text || '' }} />
                 </div>
-                <div className="right">
+                <div className="right" style={{ position: 'relative' }}>
                     <Image
                         src={!!value.image ? `/api/uploads/images/${value.image?.uri}` : '/default.jpg'}
                         layout="fill"

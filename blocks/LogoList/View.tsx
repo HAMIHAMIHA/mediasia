@@ -40,11 +40,12 @@ const View = ({ value = {}, theme }: Props) => {
             <div className="block4Title" dangerouslySetInnerHTML={{ __html: value.title }} />
             <div className="brandContainer">
                 {arr_scroll_box[chosen - 1].map((e, i) => (
-                    <div key={i} className="brandBox">
+                    <div key={i} className="brandBox" style={{ position: 'relative' }}>
                         <Image
                             src={!!e ? `/api/uploads/images/${e?.uri}` : '/default.jpg'}
                             alt="brand1"
                             className="brand"
+                            layout="fill"
                         />
                     </div>
                 ))}
