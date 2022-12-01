@@ -3,17 +3,9 @@ import Map, { Marker } from 'react-map-gl'
 import Image from 'next/image'
 import type { Props } from '../types'
 import { useQuery } from 'react-query'
-import { getContainerDetails } from '@network/containers'
 import { getContents } from '@network/public'
 import get from 'lodash.get'
 import Link from 'next/link'
-
-const values = {
-    number1: 57,
-    text1: 'programmes en cours',
-    text2: ['Hill Side - Toulouse', 'Boréal - Lyon 7', 'EMH - Villeurbanne', 'Commercialisation en cours'],
-    text3: ['Surface', '31 000 m2 SDP', 'Livraison', '3e trimestre 2020'],
-}
 
 const View = ({ value = {}, theme }: Props) => {
     // const { number1, text1, text2, text3 } = values

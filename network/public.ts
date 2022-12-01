@@ -1,5 +1,5 @@
 import INSTANCE from './api'
-import { Content, Prisma } from '@prisma/client'
+import { Content } from '@prisma/client'
 
 export const getContents = (container?: string, q?: string): Promise<Content[]> =>
     new Promise((resolve, reject) => {

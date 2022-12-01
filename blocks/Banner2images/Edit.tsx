@@ -18,12 +18,12 @@ const Edit = ({ value = {}, onChange, theme }: Props) => {
                     <div style={{ position: 'absolute', top: 3, left: 3, zIndex: 2 }}>
                         <MediaModal
                             withoutName
-                            value={value.image1}
+                            value={value?.image1}
                             onMediaSelected={(e) => handleChange('image1', e)}
                         />
                     </div>
                     <Image
-                        src={!!value.image1 ? `/api/uploads/images/${value.image1?.uri}` : '/default.jpg'}
+                        src={!!value?.image1 ? `/api/uploads/images/${value?.image1?.uri}` : '/default.jpg'}
                         alt="brand1"
                         layout="fill"
                         className="brand1"
@@ -33,12 +33,12 @@ const Edit = ({ value = {}, onChange, theme }: Props) => {
                     <div style={{ position: 'absolute', top: 3, left: 3, zIndex: 2 }}>
                         <MediaModal
                             withoutName
-                            value={value.image1}
-                            onMediaSelected={(e) => handleChange('image1', e)}
+                            value={value?.image2}
+                            onMediaSelected={(e) => handleChange('image2', e)}
                         />
                     </div>
                     <Image
-                        src={!!value.image2 ? `/api/uploads/images/${value.image2?.uri}` : '/default.jpg'}
+                        src={!!value?.image2 ? `/api/uploads/images/${value?.image2?.uri}` : '/default.jpg'}
                         alt="brand2"
                         layout="fill"
                         className="brand1"
