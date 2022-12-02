@@ -45,7 +45,7 @@ const Edit = ({ value = {}, onChange, theme }: Props) => {
                                 <StyledInput value={value.title} onChange={(e) => handleChange('title', e)} />
                             </div>
                             <div className="introduce">
-                                <StyledInput value={value.intro} onChange={(e) => handleChange('into', e)} />
+                                <StyledInput value={value.intro} onChange={(e) => handleChange('intro', e)} />
                             </div>
                             <StyledInput.div
                                 className="content"
@@ -101,7 +101,7 @@ const Edit = ({ value = {}, onChange, theme }: Props) => {
                                     <div className="introduce">
                                         <StyledInput
                                             value={value.intro}
-                                            onChange={(e) => handleChange('into', e)}
+                                            onChange={(e) => handleChange('intro', e)}
                                         />
                                     </div>
                                     <StyledInput.div

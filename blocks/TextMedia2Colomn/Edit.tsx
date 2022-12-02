@@ -23,7 +23,7 @@ const Edit = ({ value = {}, onChange, theme }: Props) => {
             view={
                 <>
                     <div className="block5_4">
-                        <div className="images" style={{ position: 'relative', height: 676 }}>
+                        <div className="images" style={{ position: 'relative', height: 676, top: 0 }}>
                             <div style={{ position: 'absolute', top: 3, left: 3, zIndex: 2 }}>
                                 <MediaModal
                                     withoutName
@@ -44,7 +44,7 @@ const Edit = ({ value = {}, onChange, theme }: Props) => {
                                 <StyledInput value={value.title} onChange={(e) => handleChange('title', e)} />
                             </div>
                             <div className="introduce">
-                                <StyledInput value={value.intro} onChange={(e) => handleChange('into', e)} />
+                                <StyledInput value={value.intro} onChange={(e) => handleChange('intro', e)} />
                             </div>
                             <StyledInput.div
                                 className="content"

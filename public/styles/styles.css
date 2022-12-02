@@ -3986,7 +3986,7 @@
         overflow: hidden;
         position: absolute;
         clip: rect(300px 1920px 900px 0px);
-        /* top: -300px; */
+        top: -300px;
     }
     .block5_4 .texts {
         width: 800px;
