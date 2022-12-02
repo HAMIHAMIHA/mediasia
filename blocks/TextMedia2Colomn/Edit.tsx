@@ -17,7 +17,6 @@ const Edit = ({ value = {}, onChange, theme }: Props) => {
         if (!!onChange) onChange(newValue)
     }
 
-    let src1 = require(`../../public/styles/src/page4/image_page_reference_6@2x.png`).default
     return (
         <EditPanel
             view={

@@ -2,15 +2,6 @@ import Image from 'next/image'
 import Link from 'next/link'
 import type { Props } from '../types'
 
-const values = {
-    text1: [
-        'Nom du projet',
-        'Sous-titre ici',
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc non nulla sit amet ante cursus commodo sit amet nec nisl. In eu nulla enim. Sed maximus nulla in nunc viverra scelerisque. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Cras dictum sed lorem id mattis. Ut lacinia sapien non blandit ornare. Duis vitae posuere lorem.',
-        'Découvrir ce projet',
-    ],
-}
-
 const View = ({ value = {}, theme }: Props) => {
     let src1 = require(`../../public/styles/src/page4/image_page_reference_6@2x.png`).default
     return (
