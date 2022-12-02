@@ -3,7 +3,7 @@ import Edit from './Edit'
 import { Availability, Block } from '../types'
 
 const Title: Block = {
-    name: 'Block5 2 1',
+    name: 'Texte + Media + Logos',
     availability: Availability.ALL,
     View,
     Edit,
